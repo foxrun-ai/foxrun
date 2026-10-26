@@ -1,0 +1,7 @@
+{
+  "name": "check-help",
+  "run": "dry-run",
+  "note": "skillify writes into the Dojo, so the replay reads --help only; the unit tests cover writes in temporary Dojos.",
+  "input": "bin/skillify check --help",
+  "expect": {"exit": 0, "output_contains": ["--replay-agent", "--name-override"]}
+}

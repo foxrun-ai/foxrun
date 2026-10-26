@@ -1,0 +1,6 @@
+{
+  "name": "read-receipt-types",
+  "run": "read",
+  "input": "List the receipt types you can choose from.",
+  "expect": {"output_contains": ["progress", "decision", "source", "blocked", "done"]}
+}

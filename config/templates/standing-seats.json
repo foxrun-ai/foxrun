@@ -1,0 +1,7 @@
+{
+  "format": 1,
+  "seats": {
+    "chief-of-staff": "system:agents/chief-of-staff.md",
+    "architect": "system:agents/architect.md"
+  }
+}

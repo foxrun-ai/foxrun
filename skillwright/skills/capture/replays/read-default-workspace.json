@@ -1,0 +1,6 @@
+{
+  "name": "read-default-workspace",
+  "run": "read",
+  "input": "The person says 'save this link' while working in the sample-shop workspace. Which workspace's raw folder receives the capture? Name it.",
+  "expect": {"output_contains": ["atlas"]}
+}

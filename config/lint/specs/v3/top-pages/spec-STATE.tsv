@@ -1,0 +1,60 @@
+rule	value
+page	<home>/STATE.md: one in the system home, one at the top of each workspace
+made_by	memory/state.py, from the rows of data.db; foxrun.py start prints it; state.py is a stub on 2026-10-13
+reader	first an agent at the start of a session; then the person
+frontmatter_key	type
+frontmatter_key	workspace
+frontmatter_key	timestamp
+frontmatter_keys_allowed	type|workspace|timestamp
+frontmatter_value	type=state
+frontmatter_value	workspace=the workspace folder name; system in the system home
+frontmatter_format	timestamp=ISO 8601 with time and offset; the same value as MADE
+h1	State: <workspace>
+intro	An agent reads this page first. A script makes it from the rows in `data.db`. Change a row, not this page.
+heading_order	Do first > Limits > Waiting for Person > Blocked > In progress > In review > Open by stream > Last 7 days > Commands
+headings_fixed	the nine h2 are always there, with these words, in this order; an empty section says None. and the count, and is not left out
+count_block_keys	WORKSPACE|LEAD|DB|OPEN TASKS|IN PROGRESS|IN REVIEW|BLOCKED|NOT STARTED|WAITING FOR person|OPEN BUGS|NEWEST CHANGE|MADE|FRESH
+count_block_form	one key on each line, in this order; the value starts in column 21; a count is digits only; a time is ISO 8601 with offset; FRESH is yes or no
+count_value	OPEN TASKS=rows of the view open_tasks; it equals IN PROGRESS + IN REVIEW + BLOCKED + NOT STARTED
+count_value	WAITING FOR person=rows of the view needs_me
+count_value	FRESH=yes when MADE is the same as or later than NEWEST CHANGE; else no
+section	Do first=a numbered list of 5 steps, word for word as in the template; only the links change
+section	Limits=4 list lines; each line is in the system AGENTS.md word for word; then the standing sentence with a link to that page
+table_columns	Waiting for Person=Task|Title|Status
+table_columns	Blocked=Task|Title|Blocked by
+table_columns	In progress=Task|Title|Claimed by|Stream
+table_columns	In review=Task|Title|Stream
+table_columns	Open by stream=Stream|In progress|In review|Not started
+list_cap	a task table holds 5 rows or fewer, the newest first; when there are more, one line follows: <n> more. All <count>: `<exact query>`.
+list_empty	None. and the exact count sentence; no table
+cell_rule	a task id is the id of the row, such as T178; a count is digits, 0 for none, never a dash; an empty claimed_by is the word nobody
+section	Last 7 days=the sentence with the first day; a block with NEW TASKS|RUNS|DECISIONS; the table Decision id|Name|Ruled when DECISIONS is not 0
+section	Commands=one sentence; one sh fence with 4 commands, each under a # line with its number; then the table Question|View
+command_rule	every command has full paths from the home folder and runs from any folder; no command needs a guess
+page_max_lines	140
+first_screen	the count block, Do first, and Limits end before line 45
+agent_test_1_parse	a script reads the count block by key and gets 13 values with no regular expression but: split at two spaces or more
+agent_test_2_counts	each count in the block equals the row count of its view or query at the time in MADE
+agent_test_3_ids	every task id and decision id on the page is a row in data.db; every stream id is a row in projects
+agent_test_4_more	each `<exact query>` in a more line returns the count the line gives
+agent_test_5_commands	commands 1, 3, and 4 run with exit code 0; command 2 passes a check of its words against work.py --help; every view in the table exists
+agent_test_6_limits	each line of Limits is in the system AGENTS.md word for word
+agent_test_7_fresh	FRESH is right for MADE and NEWEST CHANGE
+agent_test_8_answers	an agent gets only this page and 6 questions: how many tasks are open; which tasks wait for Person; which are blocked; what do you read next; name two limits; which command shows task <id>. Each answer matches the rows. agents/eval_run.py runs such a test.
+agent_test_9_no_comfort	no paragraph but the intro, the Limits sentence, the Last 7 days sentence, and the Commands sentence; no adjective that carries no fact
+link_form	relative path from the page
+link_target	every link opens a file that exists
+max_code_line	78
+max_table_columns	4
+sentence_max_words	20
+emoji	none
+forbidden_text	No work has started yet.|No records yet.|Install complete.|TODO|TBD|—
+purpose	see purpose.md and STATE-grade.md
+section_nonempty	Do first|Limits|Waiting for Person|Blocked|In progress|In review|Open by stream|Last 7 days|Commands
+section_numbered_count	Do first=5
+section_bullet_count	Limits=4
+section_fence_count	Last 7 days=1
+section_code_labels	Last 7 days=NEW TASKS|RUNS|DECISIONS
+section_fence_count	Commands=1
+section_command_count	Commands=4
+required_table	Commands=Question|View

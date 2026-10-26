@@ -1,0 +1,287 @@
+#!/usr/bin/env python3
+"""Show where Foxrun setup stands, part by part, and change the answers the person gives.
+
+Parts, in order: questions, threads, hooks, backup.
+  status [--part P]               read-only; prints each part, what is open, and the next question
+  hooks --answer yes|no           the answer to the memory question; yes runs foxrun.py hookup, no writes nothing
+  set --field key=value [...]     changes one setup answer in config/person.json; takes --dry-run
+JSON goes to stdout. Notes go to stderr.
+"""
+
+import argparse
+from datetime import datetime, timedelta, timezone
+import json
+import os
+from pathlib import Path
+import re
+import subprocess
+import sys
+import uuid
+
+
+PARTS = ("questions", "threads", "hooks", "backup")
+WORKSPACE = re.compile(r"[a-z0-9][a-z0-9-]{0,62}\Z")
+RUNTIMES = ("claude", "codex", "both")
+# Only these answers change here. A new name or a new workspace is a new install or a workspace job.
+SETTABLE = ("runtime", "default_workspace")
+THREAD = Path(__file__).resolve().parents[2] / "thread" / "bin" / "thread"
+MEMORY_QUESTION = ("Turn on automatic memory? Your agent loads your open work at the start of every chat, "
+                   "and saves where it left off before a long chat gets trimmed. Recommended.")
+WHAT = {"SessionStart": "loads your open work when a chat starts, and again after a long chat is trimmed",
+        "PreCompact": "saves where the agent left off before a long chat is trimmed",
+        "SessionEnd": "closes the chat's run record when the chat ends"}
+OLD_CORE = ("This Foxrun core has no hookup command yet. Update the core first (setup step 1), "
+            "then answer the memory question again. Setup wrote no settings file.")
+
+
+def note(text):
+    print("setup: " + text, file=sys.stderr)
+
+
+def home():
+    return Path(os.environ.get("FOXRUN_HOME") or Path.home() / ".foxrun").expanduser()
+
+
+def person(system):
+    file = system / "config/person.json"
+    if not file.is_file():
+        return file, {}
+    data = json.loads(file.read_text(encoding="utf-8"))
+    return file, data if isinstance(data, dict) else {}
+
+
+def portfolio(system, data):
+    if os.environ.get("FOXRUN_PORTFOLIO"):
+        return Path(os.environ["FOXRUN_PORTFOLIO"]).expanduser()
+    value = data.get("portfolio")
+    if isinstance(value, str) and value:
+        path = Path(value).expanduser()
+        return path if path.is_absolute() else (system / path).resolve()
+    return Path.home() / "foxrun"
+
+
+def runtimes(data):
+    value = data.get("runtime", "both")
+    return ("claude", "codex") if value == "both" else (value,) if value in ("claude", "codex") else ()
+
+
+def questions(system):
+    file, data = person(system)
+    open_items = []
+    if not data.get("name"):
+        open_items.append({"field": "name", "question": "What name should Foxrun use for you?",
+                           "how": "a new name is a new install; do not change it here"})
+    if data.get("runtime") not in RUNTIMES:
+        open_items.append({"field": "runtime", "question": "Which app reads your work: claude, codex, or both?",
+                           "choices": list(RUNTIMES)})
+    folder = portfolio(system, data)
+    default = data.get("default_workspace")
+    if not default or not (folder / str(default)).is_dir():
+        choices = sorted(p.name for p in folder.iterdir() if p.is_dir() and (p / "AGENTS.md").is_file()) \
+            if folder.is_dir() else []
+        open_items.append({"field": "default_workspace", "question": "Which workspace should a session open in?",
+                           "choices": choices})
+    answers = {key: data.get(key) for key in ("name", "runtime", "default_workspace")}
+    return {"part": "questions", "file": str(file), "answers": answers, "open": open_items}
+
+
+def threads(system):
+    if not THREAD.is_file():
+        return {"part": "threads", "open": [], "error": "the thread skill is missing: " + str(THREAD)}
+    done = subprocess.run([sys.executable, str(THREAD), "list"], capture_output=True, text=True,
+                          env=os.environ.copy(), timeout=60)
+    if done.returncode:
+        return {"part": "threads", "open": [], "error": done.stdout.strip() or done.stderr.strip()}
+    listing = json.loads(done.stdout)
+    # The Chief of Staff and the workspace lead come first, as the README promises (T862).
+    missing = sorted(listing["without_thread"], key=lambda seat: 0 if "chief" in seat else 1 if "lead" in seat else 2)
+    open_items = [{"seat": seat, "question": "Make a thread for " + seat + "?",
+                   "how": "thread skill: thread plan, then make or record"} for seat in missing]
+    return {"part": "threads", "with_thread": [row["seat"] for row in listing["agents"] if row["has_thread"]],
+            "open": open_items}
+
+
+def settings_path(runtime):
+    base = os.environ.get("CLAUDE_CONFIG_DIR") if runtime == "claude" else os.environ.get("CODEX_HOME")
+    folder = Path(base).expanduser() if base else Path.home() / ("." + runtime)
+    return folder / ("settings.json" if runtime == "claude" else "hooks.json")
+
+
+def expected_hooks(system, runtime):
+    """The hooks Claude and Codex keep (g-hook-verdicts-2026-10-21): session-start, after-compact,
+    before-compact, and session-end when its script is installed. start-rules is for Hermes only."""
+    wanted = {"session-start": "SessionStart", "after-compact": "SessionStart", "before-compact": "PreCompact"}
+    found = {str(system / "hooks" / runtime / name): event for name, event in wanted.items()}
+    end = system / "hooks" / runtime / (runtime + "_session_end.sh")
+    if end.is_file():
+        found[str(end)] = "SessionEnd"
+    return found
+
+
+def hooks(system):
+    _, data = person(system)
+    report, open_items = [], []
+    for runtime in runtimes(data):
+        file = settings_path(runtime)
+        commands = {}
+        if file.is_file() and not file.is_symlink():
+            try:
+                raw = json.loads(file.read_text(encoding="utf-8")).get("hooks", {})
+            except (json.JSONDecodeError, AttributeError):
+                raw = None
+            if not isinstance(raw, dict):
+                open_items.append({"runtime": runtime, "question": "Fix " + str(file) + ": it is not a JSON object with hooks."})
+                continue
+            for event, groups in raw.items():
+                for group in groups if isinstance(groups, list) else []:
+                    for handler in group.get("hooks", []) if isinstance(group, dict) else []:
+                        if isinstance(handler, dict):
+                            commands.setdefault(event, []).append(str(handler.get("command", "")))
+        missing = [{"event": event, "script": script} for script, event in expected_hooks(system, runtime).items()
+                   if not any(script in command for command in commands.get(event, []))]
+        report.append({"runtime": runtime, "settings": str(file), "missing": missing})
+    if any(item["missing"] for item in report):
+        open_items.append({"question": MEMORY_QUESTION, "choices": ["Yes (recommended)", "No"],
+                           "recommended": "yes", "how": "bin/setup hooks --answer yes|no"})
+    return {"part": "hooks", "runtimes": report, "open": open_items}
+
+
+def answer_hooks(system, answer):
+    """The person's answer to the memory question. Yes runs `foxrun.py hookup` for each runtime with
+    missing hooks: it backs up the settings file, adds only the Foxrun entries, and keeps every other entry."""
+    report = hooks(system)["runtimes"]
+    if answer == "no":
+        return {"answer": "no", "written": False,
+                "note": "Automatic memory stays off. Run /foxrun-setup hooks to turn it on later."}
+    connect = [{"runtime": item["runtime"], "settings": item["settings"], **missing}
+               for item in report for missing in item["missing"]]
+    if not connect:
+        return {"answer": "yes", "written": False, "will_connect": [], "note": "Automatic memory is already on."}
+    chosen = sorted({row["runtime"] for row in connect})
+    command = [sys.executable, "-B", str(system / "foxrun.py"), "hookup",
+               "--runtime", "both" if len(chosen) == 2 else chosen[0], "--home", str(system), "--json"]
+    if not Path(command[2]).is_file():
+        raise ValueError("the Foxrun core is not installed: " + command[2] + " is missing")
+    done = subprocess.run(command, capture_output=True, text=True, env=os.environ.copy(), timeout=120,
+                          stdin=subprocess.DEVNULL)
+    if done.returncode == 2 and "invalid choice" in done.stderr:
+        raise ValueError(OLD_CORE)
+    if done.returncode:
+        raise ValueError("foxrun.py hookup failed; setup wrote nothing itself: "
+                         + (done.stdout.strip() or done.stderr.strip()))
+    connected = json.loads(done.stdout)["runtimes"]
+    after = hooks(system)
+    return {"answer": "yes", "written": any(row["written"] for row in connected),
+            "command": " ".join(command[2:]), "connected": connected,
+            "backups": sorted({row["backup"] for row in connected if row["backup"]}),
+            "what_it_does": {event: WHAT[event] for event in dict.fromkeys(row["event"] for row in connect)},
+            "still_missing": [row for row in after["runtimes"] if row["missing"]],
+            "next": "Open a new chat. Your start page prints when it starts and after each long chat is trimmed."}
+
+
+def backup(system):
+    receipts = sorted((system / "runs/nightly").glob("*-nightly/receipt.json")) if (system / "runs/nightly").is_dir() else []
+    last = None
+    for receipt in reversed(receipts):
+        try:
+            row = json.loads(receipt.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if isinstance(row, dict) and not row.get("dry_run"):
+            last = {"folder": receipt.parent.name, "result": "ok" if row.get("exit") == 0 else "failed"}
+            break
+    try:
+        enabled = bool(json.loads((system / "health.json").read_text(encoding="utf-8")).get("schedules_enabled"))
+    except (OSError, json.JSONDecodeError, AttributeError):
+        enabled = False
+    state = system / "state"
+    remote = None
+    if (state / ".git").exists() and not state.is_symlink():
+        done = subprocess.run(["git", "-C", str(state), "remote"], capture_output=True, text=True, timeout=10,
+                              env={**os.environ, "GIT_OPTIONAL_LOCKS": "0"})
+        remote = done.stdout.split()[0] if done.returncode == 0 and done.stdout.split() else None
+    # A job set up outside install leaves schedules_enabled unset; a nightly run in the last two days counts.
+    recent = False
+    if last:
+        try:
+            stamp = datetime.strptime(last["folder"][:-len("-nightly")], "%Y%m%dT%H%M%S%fZ").replace(tzinfo=timezone.utc)
+            recent = datetime.now(timezone.utc) - stamp < timedelta(days=2)
+        except ValueError:
+            pass
+    enabled = enabled or recent
+    open_items = []
+    if not enabled:
+        open_items.append({"question": "Turn on the nightly job?",
+                           "command": "python3 " + str(system / "cron/schedule.py") + " --on"})
+    if last and last["result"] != "ok":
+        open_items.append({"question": "The last nightly run failed. Look at runs/nightly/" + last["folder"] + "?"})
+    if remote is None:
+        open_items.append({"question": "Push the state backup to a private remote repository?",
+                           "how": "a change on an outside platform; the person sets the remote"})
+    return {"part": "backup", "nightly_on": enabled, "last_nightly": last, "state_remote": remote,
+            "open": open_items}
+
+
+def status(system, only=None):
+    checks = {"questions": questions, "threads": threads, "hooks": hooks, "backup": backup}
+    parts = [checks[name](system) for name in PARTS if only in (None, name)]
+    first = next(((part["part"], part["open"][0]) for part in parts if part["open"]), None)
+    return {"parts": parts, "next": {"part": first[0], **first[1]} if first else None}
+
+
+def set_fields(system, pairs, dry_run):
+    file, data = person(system)
+    if not file.is_file():
+        raise ValueError("no config/person.json in " + str(system))
+    changes = {}
+    for pair in pairs:
+        key, sep, value = pair.partition("=")
+        if not sep or key not in SETTABLE:
+            raise ValueError("set takes " + ", ".join(k + "=<value>" for k in SETTABLE) + "; got " + pair)
+        if key == "runtime" and value not in RUNTIMES:
+            raise ValueError("runtime must be one of " + ", ".join(RUNTIMES))
+        if key == "default_workspace":
+            if not WORKSPACE.fullmatch(value) or not (portfolio(system, data) / value).is_dir():
+                raise ValueError("no workspace folder named " + value)
+            if value not in data.get("workspaces", [value]):
+                raise ValueError(value + " is not in the workspaces list of config/person.json")
+        changes[key] = {"from": data.get(key), "to": value}
+    if not dry_run:
+        data.update({key: change["to"] for key, change in changes.items()})
+        temporary = file.with_name(file.name + "." + uuid.uuid4().hex + ".tmp")
+        temporary.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        os.replace(temporary, file)
+    return {"file": str(file), "changes": changes, "dry_run": dry_run}
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(prog="setup", description=__doc__,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+    commands = parser.add_subparsers(dest="command", required=True)
+    show = commands.add_parser("status", help="where each setup part stands; read-only")
+    show.add_argument("--part", choices=PARTS)
+    memory = commands.add_parser("hooks", help="answer the automatic memory question; yes connects the hooks")
+    memory.add_argument("--answer", choices=("yes", "no"), required=True)
+    change = commands.add_parser("set", help="change a setup answer in config/person.json")
+    change.add_argument("--field", action="append", required=True, metavar="KEY=VALUE",
+                        help="runtime=claude|codex|both, or default_workspace=<workspace>")
+    change.add_argument("--dry-run", action="store_true", help="print the change; write nothing")
+    args = parser.parse_args(argv)
+    system = home()
+    try:
+        if args.command == "status":
+            result = status(system, args.part)
+        elif args.command == "hooks":
+            result = answer_hooks(system, args.answer)
+        else:
+            result = set_fields(system, args.field, args.dry_run)
+    except (ValueError, OSError, json.JSONDecodeError, subprocess.SubprocessError) as error:
+        print(json.dumps({"error": str(error)}, ensure_ascii=False))
+        note(str(error))
+        return 1
+    print(json.dumps(result, indent=2, ensure_ascii=False))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,30 @@
+rule	value
+page	<workspace>/ops/DASHBOARD.md
+made_by	a script, from the rows of data.db and the pages in ops/functions/
+frontmatter_key	type
+frontmatter_key	workspace
+frontmatter_key	timestamp
+frontmatter_keys_allowed	type|workspace|timestamp
+frontmatter_format	timestamp=ISO 8601 with time and offset
+frontmatter_value	type=index
+h1	Dashboard: <workspace>
+block_order	h1 > intro > go-to line > count block > Programs > Streams > Functions
+go_to_line	**Go to:** [State](../STATE.md) · [Team](../team/TEAM.md) · [Log](../history/LOG.md)
+heading_order	Programs > Streams > Functions
+count_block_labels	PROGRAMS|STREAMS|FUNCTION PAGES|OPEN TASKS|MADE
+table_columns	Programs=Program|Objective|Status
+table_columns	Streams=Stream|Open|In review|Done
+cell_source	Streams=counts of tasks with no parent; Open = not done, canceled, or superseded
+table_columns	Functions=Function|Under|In the rows
+row_source	Functions=one row for each page in ops/functions/<group>/; Under = the group when the page is not the group's own page
+cell_source	In the rows=yes and the name when the table functions has that id; else no
+split_with_state	STATE.md is for the agent's first move; this page is the business view: programs, streams, functions
+forbidden_text	Not set|Source rows are a build snapshot.
+link_form	relative path from the page
+link_target	every link opens a file, a folder, or a section that exists
+max_code_line	78
+max_table_columns	4
+sentence_max_words	20
+emoji	none
+forbidden_text	No records yet.|TODO|TBD
+purpose	see purpose.md and locations.md

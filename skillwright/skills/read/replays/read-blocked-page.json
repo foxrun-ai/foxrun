@@ -1,0 +1,6 @@
+{
+  "name": "read-blocked-page",
+  "run": "read",
+  "input": "capture-read fails on a web page with HTTP 403. Which command do you run next, and what does its first rung try?",
+  "expect": {"output_contains": ["capture-recover", "Wayback"]}
+}

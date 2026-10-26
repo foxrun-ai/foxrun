@@ -1,0 +1,13 @@
+#!/bin/sh
+export FOXRUN_HOME="${FOXRUN_HOME:-$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)}"
+export PYTHONDONTWRITEBYTECODE=1
+payload=$(cat)
+if [ -f "$FOXRUN_HOME/hooks/write_handoff.py" ]; then
+    printf '%s' "$payload" | python3 "$FOXRUN_HOME/hooks/write_handoff.py" "$@" || :
+fi
+if [ -f "$FOXRUN_HOME/memory/before_compact.py" ]; then
+    printf '%s' "$payload" | python3 "$FOXRUN_HOME/memory/before_compact.py" "$@" || :
+else
+    printf '%s\n' 'Memory handoff check is unavailable.'
+fi
+exit 0

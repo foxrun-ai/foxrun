@@ -1,0 +1,22 @@
+{
+  "status": "ok",
+  "reader": "defuddle",
+  "source": "web",
+  "url": "https://example.invalid/articles/sources?utm_campaign=fixture",
+  "canonical_url": "https://example.invalid/articles/sources",
+  "id": "sources-article",
+  "title": "Keep sources close",
+  "author": "Example Author",
+  "author_handle": "",
+  "published": "2026-10-02T09:30:00+00:00",
+  "fetched_at": "2026-10-08T05:02:00-04:00",
+  "text": "# Keep sources close\n\nSave the article before you write about it.\n\nA local copy lets you check the original words.\nKeep the HTML beside the readable text.\n",
+  "transcript": null,
+  "comments": [],
+  "media": [{"url": "https://example.invalid/articles/sources", "path": "media/article.html", "kind": "html"}],
+  "media_dir": "media",
+  "media_token": "fixture-media-token",
+  "metrics": {},
+  "repo": {},
+  "error": null
+}

@@ -1,0 +1,23 @@
+spec	kind	value
+v3/top-pages/spec-GLOSSARY.tsv	optional_heading	*
+v3/tool-page/spec.tsv	optional_heading	Notes
+v3/top-pages/spec-index.tsv	optional_heading	Extra at the top
+v3/top-pages/spec-RESOLVER.tsv	optional_heading	Not on disk
+v3/top-pages/spec-RESOLVER-system.tsv	optional_heading	Not on disk
+v3/top-pages/spec-HOWTO.tsv	optional_heading	Options
+v3/top-pages/spec-HOWTO.tsv	optional_heading	Not in this version
+v3/top-pages/spec-CLAUDE.tsv	required_pattern	^@AGENTS\.md$
+v3/tool-page/spec.tsv	required_pattern	^\*\*How .+ uses it\.\*\* This part is (his|Foxrun's) use, not the tool:$
+v3/tool-page/spec.tsv	required_pattern	^\*\*Install:\*\* \[.+\]\(.+\) · `.+`$
+v3/tool-page/spec.tsv	required_pattern	In plain words: 
+v3/top-pages/spec-DOCUMENTATION.tsv	h2_prefix	~
+v3/top-pages/spec-SCHEMA.tsv	required_pattern	^## Front matter$
+v3/top-pages/spec-TOPICS.tsv	required_pattern	^## Contents$
+build-spec/spec.tsv	required_pattern	(?m)^## Problem\n+(?!\s*##)\S
+build-spec/spec.tsv	required_pattern	(?m)^## Result\n+(?!\s*##)\S
+build-spec/spec.tsv	required_pattern	(?m)^## Scope\n+(?!\s*##)\S
+build-spec/spec.tsv	required_pattern	(?m)^## Sources\n+(?!\s*##)\S
+build-spec/spec.tsv	required_pattern	(?m)^## Changes\n+(?!\s*##)\S
+build-spec/spec.tsv	required_pattern	(?m)^## Checks\n+(?!\s*##)\S
+build-spec/spec.tsv	required_pattern	(?m)^## Rollback\n+(?!\s*##)\S
+build-spec/spec.tsv	required_pattern	(?m)^## Open questions\n+(?!\s*##)\S

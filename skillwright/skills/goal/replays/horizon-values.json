@@ -1,0 +1,6 @@
+{
+  "name": "horizon-values",
+  "run": "read",
+  "input": "List the horizon values a goal can take.",
+  "expect": {"output_contains": ["north-star", "3-year", "1-year", "quarter"]}
+}

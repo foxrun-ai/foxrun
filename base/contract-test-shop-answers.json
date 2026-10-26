@@ -1,0 +1,26 @@
+{
+  "workspace": "sample-shop",
+  "sources": [
+    "AGENTS.md",
+    "sample-shop/AGENTS.md",
+    "CLAUDE.md",
+    "sample-shop/CLAUDE.md"
+  ],
+  "answers": {
+    "root-file": "inbox",
+    "root-send": "no",
+    "root-ask": "person",
+    "root-load": "workspace",
+    "root-touch": "secret",
+    "workspace-file": "resolver",
+    "workspace-send": "no",
+    "workspace-ask": "person",
+    "workspace-load": "soul",
+    "workspace-touch": "no",
+    "runtime-file": "agents",
+    "runtime-send": "no",
+    "runtime-ask": "person",
+    "runtime-load": "agents",
+    "runtime-touch": "no"
+  }
+}

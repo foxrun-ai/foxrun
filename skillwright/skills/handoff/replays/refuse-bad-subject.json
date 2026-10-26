@@ -1,0 +1,10 @@
+{
+  "name": "refuse-bad-subject",
+  "run": "dry-run",
+  "input": "bin/handoff-path {tmp}/ws Bad_Subject",
+  "setup": {"dirs": ["ws"]},
+  "expect": {
+    "exit": 2,
+    "output_contains": ["subject must be lowercase kebab-case"]
+  }
+}

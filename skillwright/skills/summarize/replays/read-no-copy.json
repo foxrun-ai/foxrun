@@ -1,0 +1,6 @@
+{
+  "name": "read-no-copy",
+  "run": "read",
+  "input": "Which two flags keep a summarize run from saving a copy of the source?",
+  "expect": {"output_contains": ["--no-cache", "--no-media-cache"]}
+}

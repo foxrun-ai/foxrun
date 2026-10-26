@@ -1,0 +1,6 @@
+{
+  "name": "question-cites-ids",
+  "run": "read",
+  "input": "The person asks: what did we already try for the flaky upload test? How do you answer, and what does each claim in the answer carry?",
+  "expect": {"output_contains": ["find", "session id"]}
+}

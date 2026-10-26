@@ -1,0 +1,49 @@
+{
+  "format": 1,
+  "squad": "dev-lean",
+  "purpose": "Build and check Foxrun (system home, product src, skills, contracts, checks) when Claude quota is low: Codex carries the build and the routine checks; Opus reads only judgment calls and writes the person's pages.",
+  "workflow": "review",
+  "lead": "architect",
+  "source": "development squad policy, 2026-10-20",
+  "roles": {
+    "build": {
+      "department": "engineering",
+      "runtime": "codex",
+      "tier": "code",
+      "effort": "high"
+    },
+    "routine-read": {
+      "department": "qa",
+      "runtime": "codex",
+      "tier": "work",
+      "effort": "high"
+    },
+    "judgment-read": {
+      "department": "architecture",
+      "runtime": "claude",
+      "tier": "judgment"
+    },
+    "recheck": {
+      "department": "audit",
+      "runtime": "codex",
+      "tier": "cheap",
+      "effort": "medium"
+    },
+    "pages": {
+      "department": "docs",
+      "runtime": "claude",
+      "tier": "judgment"
+    }
+  },
+  "judgment_read_when": [
+    "a change to a ruling, an approval, a skill's job, privacy, money, or what ships to users",
+    "the final read of a batch before anything turns green"
+  ],
+  "rules": [
+    "no test weakened or deleted without a cited ruling",
+    "no string split or trick to pass a check",
+    "when two sources disagree, stop and report; never pick in silence",
+    "every new file gets its purpose line in the same commit",
+    "each worker is its own run_in_background call; no nohup &"
+  ]
+}

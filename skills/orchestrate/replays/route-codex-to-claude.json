@@ -1,0 +1,7 @@
+{
+  "name": "route-codex-to-claude",
+  "run": "dry-run",
+  "note": "resolve only prints a route; it starts nothing, so it has no --dry-run and runs in the temporary folder.",
+  "input": "bin/orchestrate resolve --from codex --to claude --want quick --cwd {tmp} --task \"Read the brief\"",
+  "expect": {"exit": 0, "output_contains": ["\"status\": \"resolved\"", "claude -p", "--allowedTools Read,Glob,Grep"]}
+}

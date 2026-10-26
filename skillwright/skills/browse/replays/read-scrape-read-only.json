@@ -1,0 +1,6 @@
+{
+  "name": "read-scrape-read-only",
+  "run": "read",
+  "input": "In browse scrape mode, may the agent submit a form on the page? Answer yes or no, and name the output shape.",
+  "expect": {"output_contains": ["no", "JSON"]}
+}

@@ -1,0 +1,6 @@
+{
+  "name": "plan-before-apply",
+  "run": "read",
+  "input": "Which script makes a new workspace, and what must happen before --apply?",
+  "expect": {"output_contains": ["install_workspace.py", "plan"]}
+}

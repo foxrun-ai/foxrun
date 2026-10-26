@@ -1,0 +1,27 @@
+scope	path	except_workspaces
+workspace	AGENTS.md	
+workspace	CLAUDE.md	
+workspace	index.md	
+workspace	STATE.md	
+workspace	RESOLVER.md	
+workspace	GLOSSARY.md	
+system	AGENTS.md	
+system	CLAUDE.md	
+system	README.md	
+system	STATE.md	
+system	RESOLVER.md	
+system	GLOSSARY.md	
+system	SCHEMA.md	
+system	DOCUMENTATION.md	
+system	CHANGELOG.md	
+system	INSTALL.md	
+system	GUIDE.md	
+portfolio	AGENTS.md	
+portfolio	CLAUDE.md	
+portfolio	index.md	
+atlas	LIBRARY.md	
+atlas	AGENTS.md	
+atlas	CLAUDE.md	
+atlas	TOPICS.md	
+atlas	SCHEMA.md	
+workspace	history/LOG.md	

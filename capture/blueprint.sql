@@ -1,0 +1,27 @@
+-- Capture v1: the raw file wins; one row records each canonical URL.
+CREATE TABLE IF NOT EXISTS captures (
+    id TEXT PRIMARY KEY NOT NULL,
+    canonical_url TEXT NOT NULL UNIQUE,
+    url TEXT NOT NULL,
+    source TEXT NOT NULL CHECK (source IN ('x','instagram','youtube','github','reddit','web','pdf')),
+    things_id TEXT NOT NULL DEFAULT '',
+    title TEXT NOT NULL DEFAULT '',
+    author TEXT NOT NULL DEFAULT '',
+    author_handle TEXT NOT NULL DEFAULT '',
+    published TEXT NOT NULL DEFAULT '',
+    captured TEXT NOT NULL,
+    fetched_at TEXT NOT NULL,
+    reader TEXT NOT NULL DEFAULT '',
+    path TEXT NOT NULL,
+    sha256 TEXT NOT NULL CHECK (length(sha256) = 64),
+    note TEXT NOT NULL DEFAULT '',
+    summary_path TEXT NOT NULL DEFAULT '',
+    seen INTEGER NOT NULL DEFAULT 1 CHECK (seen >= 1),
+    last_seen TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'ok' CHECK (status IN ('ok','needs-login','unsupported','error')),
+    error TEXT NOT NULL DEFAULT '',
+    tags TEXT NOT NULL DEFAULT '[]' CHECK (json_valid(tags) AND json_type(tags) = 'array' AND json_array_length(tags) <= 3),
+    tag_confidence TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(tag_confidence) AND json_type(tag_confidence) = 'object'),
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);

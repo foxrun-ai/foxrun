@@ -1,0 +1,46 @@
+rule	value
+page	~/.foxrun/workspaces/<workspace>/TEAM.md
+source_folder	~/foxrun/<workspace>/team/
+frontmatter_key	type
+frontmatter_key	workspace
+frontmatter_key	timestamp
+frontmatter_keys_allowed	type|workspace|timestamp
+frontmatter_value	type=index
+frontmatter_value	workspace=<the folder name of the page>
+frontmatter_format	timestamp=ISO 8601 with time and offset
+made_by	base/make_workspaces_view.py
+hand_edit	not allowed: a second run of the script must give the same bytes, except timestamp and MADE
+h1	Team: <workspace>
+nav_line	**Team** · [Skills](SKILLS.md) · [Tools](TOOLS.md)
+source_line	View of [`<source_folder>`](<link>). `base/make_workspaces_view.py` makes this page. Edit a seat file, then run the script.
+block_order	h1 > nav_line > source_line > count block > table > ALSO IN team/
+count_block_labels	SEATS|LEAD|MADE
+count_value	SEATS=number of seat files
+count_value	LEAD=the seat id lead-<workspace>; (not on disk) when that file is missing
+count_value	MADE=local date and time, YYYY-MM-DD HH:MM, same minute as timestamp
+table_columns	Seat|What it does|Loads
+row_source	one row for each *.md directly in the source folder, without TEAM.md
+row_order	the lead first; then A to Z by seat id
+cell_source	Seat=the file name without .md, in backticks, as a link to the seat file; the lead row adds ' · lead'
+cell_source	What it does=front matter summary; when there is no summary, front matter description; all of it, on one line; (not on disk) when both are missing
+cell_source	Loads=<n> skills · <n> tools; skills = count of front matter skills; tools = count of front matter tools when the file has the key id, else count of mcpServers; 1 skill and 1 tool are singular
+table_when_empty	replace the table with the sentence: No seat file is in this folder yet.
+block	ALSO IN team/ = every other file or folder directly in the source folder, without dot files; columns NAME|WHAT IT IS|HOLDS
+block_label	TEAM.md=the team page of this workspace
+block_label	claude/=Claude files made from the seats
+block_label	codex/=Codex files made from the seats
+block_label	any other name=(not on disk)
+block_cell	HOLDS=<n> files for a folder (1 file is singular); empty for a file
+link_form	relative path from the page to the file in the workspace home
+link_target	every link opens a file or folder that exists
+block_form	a code fence; label in capitals; count in round brackets after two spaces; column names in capitals; three spaces before each line; columns padded with spaces
+block_when_empty	leave the whole block out when its count is 0
+block_row_order	A to Z by the first column
+max_code_line	78
+max_table_columns	4
+table_cell_guard	a | in a cell is written \|; line breaks in a cell become one space
+forbidden_text	No records yet.|No work has started yet.|TODO|TBD
+emoji	only ✅ 🔄 ☑️ ⬜, and only as a status mark
+blank_page	not allowed: the count block is always there
+no_business_name	does not apply here: a page under workspaces/<workspace>/ is the view of that workspace and can name it
+purpose	see purpose.md: the reader, the question the page answers in ten seconds, and the next page

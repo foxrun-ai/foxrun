@@ -1,0 +1,6 @@
+{
+  "name": "read-task-row",
+  "run": "read",
+  "input": "Someone wants a new Markdown checklist to track the work they will do this week. Where should that work live instead, and which command writes it?",
+  "expect": {"output_contains": ["data.db", "work.py"]}
+}

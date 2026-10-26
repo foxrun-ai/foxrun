@@ -1,0 +1,6 @@
+{
+  "name": "checked-word-writer",
+  "run": "read",
+  "input": "The person approved removal of a system glossary word. Name the checked command, workspace, identity fields, and required source. Where do a business's words go?",
+  "expect": {"output_contains": ["words.py", "--home ~/.foxrun", "--portfolio ~/foxrun", "remove", "--workspace system", "--group", "--word", "--source"]}
+}

@@ -1,0 +1,215 @@
+# The tool shelf: one row for each tool, and where each one applies.
+# Install copies this file to config/tools.yaml. After install the file is yours.
+# owner: product = Foxrun ships the page; an update replaces it. owner: person = your own page.
+# why: dependency, needed by <skill>, or recommended.
+# applies_to pushes a tool to workspaces, like `where` in config/catalog.yaml for skills:
+#   global = every workspace · off = no workspace · [name, name] = those workspaces.
+#   A row with no applies_to is off.
+# After a change, run: python3 "$HOME/.foxrun/base/make_workspaces_view.py"
+# Each workspace's TOOLS.md then lists the tool under "From the shelf".
+format: 1
+tools:
+  - name: defuddle
+    kind: cli
+    page: tools/cli/defuddle.md
+    owner: product
+    why: dependency of the capture web reader
+    applies_to: global
+  - name: yt-dlp
+    kind: cli
+    page: tools/cli/yt-dlp.md
+    owner: product
+    why: dependency of the capture youtube reader
+    applies_to: global
+  - name: instaloader
+    kind: cli
+    page: tools/cli/instaloader.md
+    owner: product
+    why: dependency of the capture instagram reader
+    applies_to: global
+  - name: pdftotext
+    kind: cli
+    page: tools/cli/pdftotext.md
+    owner: product
+    why: dependency of the capture pdf reader
+    applies_to: global
+  - name: gh
+    kind: cli
+    page: tools/cli/gh.md
+    owner: product
+    why: dependency of the capture github reader
+    applies_to: global
+  - name: printing-press
+    kind: cli
+    page: tools/cli/printing-press.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: browser-humanize
+    kind: cli
+    page: tools/cli/browser-humanize.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: ctx7
+    kind: cli
+    page: tools/cli/ctx7.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: cua-driver
+    kind: cli
+    page: tools/cli/cua-driver.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: firecrawl
+    kind: cli
+    page: tools/cli/firecrawl.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: gogcli
+    kind: cli
+    page: tools/cli/gogcli.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: gstack-browse
+    kind: cli
+    page: tools/cli/gstack-browse.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: herdr
+    kind: cli
+    page: tools/cli/herdr.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: ig-read
+    kind: cli
+    page: tools/cli/ig-read.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: imsg
+    kind: cli
+    page: tools/cli/imsg.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: remindctl
+    kind: cli
+    page: tools/cli/remindctl.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: summarize
+    kind: cli
+    page: tools/cli/summarize.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: tmux
+    kind: cli
+    page: tools/cli/tmux.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: tweet-read
+    kind: cli
+    page: tools/cli/tweet-read.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: clipy
+    kind: mcp
+    page: tools/mcp/clipy.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: deepwiki-mcp
+    kind: mcp
+    page: tools/mcp/deepwiki-mcp.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: paper
+    kind: mcp
+    page: tools/mcp/paper.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: qmd-mcp-cli
+    kind: mcp
+    page: tools/mcp/qmd-mcp-cli.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: jev
+    kind: service
+    page: tools/service/jev.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: playwright
+    kind: mcp
+    page: tools/mcp/playwright.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: macos-automator
+    kind: mcp
+    page: tools/mcp/macos-automator.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: op
+    kind: cli
+    page: tools/cli/op.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: impeccable
+    kind: cli
+    page: tools/cli/impeccable.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: agent-secret-read
+    kind: cli
+    page: tools/cli/agent-secret-read.md
+    owner: product
+    why: Foxrun command
+    applies_to: global
+  - name: bm-render
+    kind: cli
+    page: tools/cli/bm-render.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: ffmpeg
+    kind: cli
+    page: tools/cli/ffmpeg.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: repomix
+    kind: cli
+    page: tools/cli/repomix.md
+    owner: product
+    why: recommended
+    applies_to: off
+  - name: runtime-session-search
+    kind: cli
+    page: tools/cli/runtime-session-search.md
+    owner: product
+    why: Foxrun command
+    applies_to: global
+  - name: codex-at-openai-codex
+    kind: plugin
+    page: tools/plugin/codex-at-openai-codex.md
+    owner: product
+    why: recommended
+    applies_to: off

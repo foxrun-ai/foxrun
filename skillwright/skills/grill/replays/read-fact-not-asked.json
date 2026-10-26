@@ -1,0 +1,6 @@
+{
+  "name": "read-fact-not-asked",
+  "run": "read",
+  "input": "While grilling a plan you need to know which database the workspace uses. Do you ask the person? Answer yes or no and say what you do instead, in one line. End with: Ask person: <yes|no>",
+  "expect": {"output_contains": ["Ask person: no"]}
+}

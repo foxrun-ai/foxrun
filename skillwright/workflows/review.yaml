@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "flow": "review",
+  "kind": "workflow",
+  "purpose": "Do one job, have a reader check it, and repeat until the reader passes it.",
+  "inputs": {
+    "job": {
+      "required": true,
+      "what": "The job to do, in plain words"
+    },
+    "bar": {
+      "required": false,
+      "what": "What good looks like; the reader checks the work against it"
+    }
+  },
+  "lead": "builder",
+  "worker_minutes": 30,
+  "members": {
+    "builder": {
+      "seat": "toolsmith",
+      "what": "Drafts the work, repairs findings, and records material progress with log.",
+      "runtime": "codex",
+      "effort": "high",
+      "access": "write",
+      "tier": "code"
+    },
+    "routine": {
+      "seat": "keeper",
+      "what": "Checks the job, tests, sources, and earlier failures in saved sessions.",
+      "runtime": "codex",
+      "effort": "high",
+      "access": "read",
+      "tier": "work"
+    },
+    "checker": {
+      "seat": "skillwright",
+      "what": "Rechecks every finding and the evidence that the repair works.",
+      "runtime": "codex",
+      "effort": "medium",
+      "access": "read",
+      "tier": "cheap"
+    },
+    "reader": {
+      "seat": "architect",
+      "what": "Reads all evidence and gives the final verdict. Never changes the work.",
+      "runtime": "claude",
+      "effort": "high",
+      "access": "read",
+      "tier": "judgment"
+    }
+  },
+  "graph": {
+    "build": {
+      "member": "builder",
+      "needs": [],
+      "input": [
+        "job",
+        "bar",
+        "in a repair round: the last read.md, under runner/attempts/"
+      ],
+      "output": "The work, or what changed and where, with proof. In a repair round: each finding of the last read and what you did about it. Record material progress on the existing task when supplied; never create a task just to log.",
+      "done_when": {
+        "file": "build.md"
+      },
+      "return": "reader",
+      "skill": "log"
+    },
+    "read": {
+      "member": "reader",
+      "needs": [
+        "recheck"
+      ],
+      "input": [
+        "job",
+        "bar",
+        "build.md",
+        "routine.md",
+        "recheck.md"
+      ],
+      "output": "First line verdict: pass or verdict: fail. Then each finding, with the proof that shows it. Fail when any required check fails or any finding lacks proof of resolution.",
+      "verdict": true,
+      "done_when": {
+        "file": "read.md"
+      },
+      "return": "builder"
+    },
+    "routine-read": {
+      "member": "routine",
+      "skill": "runtime-session-search",
+      "needs": [
+        "build"
+      ],
+      "input": [
+        "job",
+        "bar",
+        "build.md"
+      ],
+      "output": "Check the draft and relevant saved failures against the job; name each finding with proof.",
+      "done_when": {
+        "file": "routine.md"
+      },
+      "return": "checker"
+    },
+    "recheck": {
+      "member": "checker",
+      "needs": [
+        "routine-read"
+      ],
+      "input": [
+        "job",
+        "bar",
+        "build.md",
+        "routine.md"
+      ],
+      "output": "Check every routine finding against the draft and the proof. Report every unresolved finding.",
+      "done_when": {
+        "file": "recheck.md"
+      },
+      "return": "reader"
+    }
+  },
+  "loop": {
+    "repair": {
+      "on": "read",
+      "repeat": [
+        "build",
+        "routine-read",
+        "recheck",
+        "read"
+      ],
+      "max_rounds": 3
+    }
+  },
+  "rules": [
+    "The reader never changes the work it reads.",
+    "Fix each finding of the last read, or say why not."
+  ]
+}

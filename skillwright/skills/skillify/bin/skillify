@@ -1,0 +1,1773 @@
+#!/usr/bin/env python3
+"""Build, recover, promote, and check Skills Dojo skills."""
+
+from __future__ import annotations
+
+import argparse
+import importlib.machinery
+import importlib.util
+import json
+import os
+from pathlib import Path
+import re
+import shlex
+import shutil
+import sqlite3
+import subprocess
+import sys
+import tempfile
+from typing import Callable, Iterable
+
+
+NAME_PATTERN = re.compile(r"^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$")
+SECRET_KEY_PATTERN = re.compile(r"(?i)(authorization|cookie|password|secret|token|api[_-]?key)")
+SECRET_TEXT_PATTERNS = (
+    re.compile(r"(?i)\bBearer\s+[A-Za-z0-9._~+/-]+=*"),
+    re.compile(r"(?i)\b(?:api[_-]?key|password|secret|token)=([^\s'\"]+)"),
+)
+ALLOWED_TOOL_PARTS = (
+    "apply_patch",
+    "bash",
+    "browser",
+    "computer",
+    "cua",
+    "edit",
+    "exec",
+    "playwright",
+    "shell",
+    "terminal",
+    "web__run",
+    "write",
+)
+MAX_RESULT_CHARS = 4000
+NAME_LAW = "~/.foxrun/skillwright/standards/skill-law.md"
+KINDS = ("knowledge", "tool", "driving")
+DEFAULT_KIND = "knowledge"
+
+
+class SkillifyError(RuntimeError):
+    pass
+
+
+HERE = Path(__file__).resolve().parent
+
+
+def _default_dojo() -> Path:
+    """The Dojo is the authoring repo, never the immutable release this file may run from."""
+    env = os.environ.get("SKILLS_DOJO_ROOT")
+    if env:
+        return Path(env).expanduser()
+    candidate = HERE.parents[2] if HERE.parents[1].name == "skills" else HERE.parents[1]
+    if (candidate / "tools" / "skill_ship.py").is_file() and (candidate / ".git").exists():
+        return candidate
+    return Path("~/.foxrun/skillwright").expanduser()
+
+
+DEFAULT_DOJO = _default_dojo()
+DEFAULT_SESSION_SEARCH = Path(
+    "~/.foxrun/skills/runtime-session-search/bin/runtime-session-search"
+).expanduser()
+DEFAULT_HERMES_SKILLS = Path("~/.hermes/skills").expanduser()
+
+
+def load_program(path: Path, module_name: str):
+    loader = importlib.machinery.SourceFileLoader(module_name, str(path))
+    spec = importlib.util.spec_from_loader(loader.name, loader)
+    if spec is None:
+        raise SkillifyError(f"cannot load program: {path}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    added = str(path.parent) not in sys.path
+    if added:
+        sys.path.insert(0, str(path.parent))
+    try:
+        loader.exec_module(module)
+    finally:
+        if added:
+            sys.path.remove(str(path.parent))
+    return module
+
+
+def dojo_root() -> Path:
+    return Path(os.environ.get("SKILLIFY_DOJO_ROOT", str(DEFAULT_DOJO))).expanduser().resolve()
+
+
+def person_root(root: Path) -> Path | None:
+    """The person's own skill source (g-source-installed-yours-and-skill-owners).
+
+    SKILLS_PERSON_ROOT names it; an empty value turns it off. Without it, only the
+    installed home uses <portfolio>/skillwright, so an isolated Dojo never reads it.
+    """
+    value = os.environ.get("SKILLS_PERSON_ROOT")
+    if value is not None:
+        return Path(value).expanduser().resolve() if value else None
+    if root.resolve() != Path("~/.foxrun/skillwright").expanduser().resolve():
+        return None
+    candidate = (Path(os.environ.get("FOXRUN_PORTFOLIO", "~/foxrun")).expanduser() / "skillwright").resolve()
+    return candidate if (candidate / "skills").is_dir() else None
+
+
+def source_root(root: Path, name: str) -> Path:
+    """The repository that holds one skill: the person's copy wins over a product skill."""
+    person = person_root(root)
+    if person is not None and (person / "skills" / name / "SKILL.md").is_file():
+        return person
+    return root
+
+
+def authoring_root(root: Path) -> Path:
+    """New skills are the person's: they go to the person's source when it exists."""
+    return person_root(root) or root
+
+
+def skill_root(root: Path) -> Path:
+    """Keep repository tools and manifests separate from authored skills."""
+    return root / "skills" if (root / "skills").is_dir() or root.name == "skillwright" else root
+
+
+def session_search_path() -> Path:
+    return Path(
+        os.environ.get("SKILLIFY_RUNTIME_SESSION_SEARCH_BIN", str(DEFAULT_SESSION_SEARCH))
+    ).expanduser().resolve()
+
+
+def hermes_skills_root() -> Path:
+    return Path(
+        os.environ.get("SKILLIFY_HERMES_SKILLS_ROOT", str(DEFAULT_HERMES_SKILLS))
+    ).expanduser().resolve()
+
+
+def stores_root() -> Path:
+    return Path(os.environ.get("SKILLIFY_STORES_ROOT", "~")).expanduser().resolve()
+
+
+def release_tool(root: Path) -> Path:
+    return Path(
+        os.environ.get("SKILLIFY_RELEASE_TOOL", str(root / "tools" / "skill_ship.py"))
+    ).expanduser().resolve()
+
+
+def validate_name(
+    name: str,
+    *,
+    root: Path | None = None,
+    existing: bool = False,
+    name_override: str | None = None,
+) -> None:
+    if Path(name).name != name or name in {".", ".."}:
+        raise SkillifyError(f"unsafe skill path '{name}'; see {NAME_LAW}")
+    if name_override is not None and not name_override.strip():
+        raise SkillifyError(f"--name-override needs a reason; see {NAME_LAW}")
+    words = name.split("-")
+    breaks = []
+    if len(name) > 64 or not NAME_PATTERN.fullmatch(name):
+        breaks.append("start with a letter; use at most 64 lowercase letters, digits, and single dashes")
+    if len(words) > 3:
+        breaks.append("use at most 3 words")
+    if any(word in {"and", "my"} for word in words):
+        breaks.append("do not use the words 'and' or 'my'")
+    if any(re.fullmatch(r"v[0-9]+", word) for word in words):
+        breaks.append("do not use a version word such as 'v2'")
+    if breaks:
+        detail = "; ".join(breaks)
+        if not existing and name_override is None:
+            raise SkillifyError(f"name '{name}' breaks {NAME_LAW}: {detail}")
+        suffix = f"; override reason: {name_override.strip()}" if name_override is not None else ""
+        if existing and name_override is None:
+            suffix = "; existing and kit skills are exempt until T245; do not rename"
+        print(f"skillify: warning: name '{name}' breaks {NAME_LAW}: {detail}{suffix}", file=sys.stderr)
+    if root is not None and not existing:
+        first = words[0]
+        siblings = sorted(
+            child.name
+            for child in skill_root(root).iterdir()
+            if child.is_dir() and (child / "SKILL.md").is_file()
+            and child.name != name and child.name.split("-")[0] == first
+        )
+        if len(siblings) >= 2:
+            print(
+                f"skillify: warning: {NAME_LAW}: check sort and same-word tests for "
+                f"'{name}' beside {', '.join(siblings)}",
+                file=sys.stderr,
+            )
+
+
+def quote_yaml(value: str) -> str:
+    return json.dumps(value, ensure_ascii=False)
+
+
+def parse_kinds(value: str | Iterable[str] | None, *, with_bin: bool = False) -> list[str]:
+    """Return the skill kinds in law order. A script makes the skill a tool skill."""
+    if value is None:
+        raw: list[str] = [DEFAULT_KIND]
+    elif isinstance(value, str):
+        raw = [item.strip() for item in value.split(",")]
+    else:
+        raw = [str(item).strip() for item in value]
+    unknown = sorted({item for item in raw if item not in KINDS})
+    if unknown or not raw:
+        raise SkillifyError(
+            f"unknown skill kind {', '.join(unknown) or '(empty)'}; use {', '.join(KINDS)}; see {NAME_LAW}"
+        )
+    kinds = set(raw)
+    if with_bin:
+        kinds.add("tool")
+    if len(kinds) > 1:
+        kinds.discard("knowledge")
+    return [kind for kind in KINDS if kind in kinds]
+
+
+def default_body(name: str, kinds: Iterable[str] = (DEFAULT_KIND,)) -> list[str]:
+    title = name.replace("-", " ").title()
+    kinds = list(kinds)
+    steps: list[tuple[str, str]] = []
+    if "tool" in kinds:
+        steps.extend(
+            [
+                (
+                    f"Run `bin/{name} --dry-run` and read the JSON on stdout. Run `bin/{name} --help` for flags.",
+                    "the JSON shows the planned change and the exit code is 0.",
+                ),
+                (
+                    f"Run `bin/{name}` without `--dry-run` to make the change.",
+                    'the JSON on stdout says `"ok": true`.',
+                ),
+            ]
+        )
+    if "driving" in kinds:
+        steps.extend(
+            [
+                (
+                    "Open only the tab or app the task needs. Note what you opened.",
+                    "the page or screen shows the expected title.",
+                ),
+                (
+                    "Do the exact action on the page or screen.",
+                    "the page or screen shows the expected result.",
+                ),
+                (
+                    "Read back the exact text you will send, as it shows on screen. In rehearsal, stop here.",
+                    "the read-back matches the approved text word for word.",
+                ),
+                (
+                    "Send only after the approved gate.",
+                    "the sent item shows once, with the approved text.",
+                ),
+            ]
+        )
+    if not steps:
+        steps = [
+            ("Describe the first exact action and why it matters.", "name what you see when this step worked."),
+            ("Describe the next exact action.", "name what you see when this step worked."),
+        ]
+    lines = [
+        f"# {title}",
+        "",
+        "Say what this skill does and why, in one or two lines.",
+        "",
+        "## Steps",
+        "",
+    ]
+    for index, (action, done) in enumerate(steps, 1):
+        lines.extend([f"{index}. {action}", f"   Done when: {done}"])
+    lines.extend(
+        [
+            "",
+            "## Gotchas",
+            "",
+            "- Add traps that sit outside the steps. A correction to a step fixes that step; it does not go here.",
+        ]
+    )
+    if "driving" in kinds:
+        lines.extend(
+            [
+                "",
+                "## Stop",
+                "",
+                "- Close only the tabs or apps you opened. Leave all others as you found them.",
+                "- Never send without the approved gate. Without it, stop before the send and report what would have gone.",
+            ]
+        )
+    return lines
+
+
+def bin_stub(name: str, description: str) -> str:
+    """A script stub that follows the script rules in the skill law."""
+    return (
+        "#!/usr/bin/env python3\n"
+        f'"""{name}: follows the script rules in {NAME_LAW}.\n\n'
+        "No prompts. --help answers. JSON goes to stdout and notes go to stderr.\n"
+        "Any write takes --dry-run, and a dry run writes nothing.\n"
+        '"""\n\n'
+        "from __future__ import annotations\n\n"
+        "import argparse\n"
+        "import json\n"
+        "import sys\n\n\n"
+        "def build_parser() -> argparse.ArgumentParser:\n"
+        f"    parser = argparse.ArgumentParser(prog={json.dumps(name)}, description={json.dumps(description.strip())})\n"
+        '    parser.add_argument("--dry-run", action="store_true", help="print the planned change as JSON and write nothing")\n'
+        "    return parser\n\n\n"
+        "def main(argv: list[str] | None = None) -> int:\n"
+        "    args = build_parser().parse_args(argv)\n"
+        '    plan = {"change": "describe the change this script makes"}\n'
+        "    if args.dry_run:\n"
+        '        print(json.dumps({"ok": True, "dry_run": True, "plan": plan}))\n'
+        "        return 0\n"
+        f'    print("{name}: no write is built yet", file=sys.stderr)\n'
+        '    print(json.dumps({"ok": True, "dry_run": False, "plan": plan}))\n'
+        "    return 0\n\n\n"
+        "if __name__ == '__main__':\n"
+        "    raise SystemExit(main())\n"
+    )
+
+
+def test_stub(name: str, kinds: Iterable[str]) -> str:
+    if "tool" not in kinds:
+        return (
+            "import unittest\n\n\n"
+            "class SkillTests(unittest.TestCase):\n"
+            "    def test_placeholder(self) -> None:\n"
+            "        self.assertTrue(True)\n\n\n"
+            "if __name__ == '__main__':\n"
+            "    unittest.main()\n"
+        )
+    return (
+        "import json\n"
+        "from pathlib import Path\n"
+        "import subprocess\n"
+        "import sys\n"
+        "import unittest\n\n\n"
+        f"BIN = Path(__file__).resolve().parents[1] / 'bin' / {json.dumps(name)}\n\n\n"
+        "class SkillTests(unittest.TestCase):\n"
+        "    def run_bin(self, *args: str) -> subprocess.CompletedProcess[str]:\n"
+        "        return subprocess.run(\n"
+        "            [sys.executable, str(BIN), *args], text=True, capture_output=True, stdin=subprocess.DEVNULL, check=False\n"
+        "        )\n\n"
+        "    def test_help_answers(self) -> None:\n"
+        "        self.assertEqual(self.run_bin('--help').returncode, 0)\n\n"
+        "    def test_dry_run_prints_json(self) -> None:\n"
+        "        completed = self.run_bin('--dry-run')\n"
+        "        self.assertEqual(completed.returncode, 0)\n"
+        "        self.assertTrue(json.loads(completed.stdout)['dry_run'])\n\n\n"
+        "if __name__ == '__main__':\n"
+        "    unittest.main()\n"
+    )
+
+
+def body_from_text(path: Path) -> list[str]:
+    if not path.is_file():
+        raise SkillifyError(f"text source not found: {path}")
+    lines = path.read_text(encoding="utf-8").splitlines()
+    return lines[:60]
+
+
+def skill_document(
+    name: str,
+    description: str,
+    body: Iterable[str],
+    *,
+    status: str | None = None,
+    kinds: Iterable[str] | None = None,
+) -> str:
+    frontmatter = ["---", f"name: {name}", f"description: {quote_yaml(description.strip())}"]
+    if kinds:
+        frontmatter.append(f"kind: {', '.join(kinds)}")
+    if status:
+        frontmatter.append(f"status: {status}")
+    frontmatter.extend(["---", ""])
+    return "\n".join(frontmatter + list(body)).rstrip() + "\n"
+
+
+def scaffold(
+    root: Path,
+    name: str,
+    description: str,
+    *,
+    from_text: Path | None = None,
+    with_bin: bool = False,
+    with_tests: bool = False,
+    name_override: str | None = None,
+    kind: str | Iterable[str] | None = None,
+) -> Path:
+    destination = skill_root(root) / name
+    kinds = parse_kinds(kind, with_bin=with_bin)
+    validate_name(
+        name, root=root, existing=destination.exists() or destination.is_symlink(),
+        name_override=name_override,
+    )
+    if not description.strip():
+        raise SkillifyError("description must not be empty")
+    if destination.exists() or destination.is_symlink():
+        raise SkillifyError(f"skill already exists: {name}")
+    body = body_from_text(from_text) if from_text else default_body(name, kinds)
+    destination.mkdir(parents=False)
+    (destination / "SKILL.md").write_text(
+        skill_document(name, description, body, kinds=kinds), encoding="utf-8"
+    )
+    if "tool" in kinds:
+        binary = destination / "bin" / name
+        binary.parent.mkdir()
+        binary.write_text(bin_stub(name, description), encoding="utf-8")
+        binary.chmod(0o755)
+    write_replay_cases(destination, example_replay_cases(name, kinds))
+    if with_tests:
+        tests = destination / "tests"
+        tests.mkdir()
+        (tests / "__init__.py").write_text("", encoding="utf-8")
+        (tests / f"test_{name.replace('-', '_')}.py").write_text(
+            test_stub(name, kinds), encoding="utf-8"
+        )
+    return destination
+
+
+def redact_text(value: str) -> str:
+    redacted = value
+    for pattern in SECRET_TEXT_PATTERNS:
+        if "bearer" in pattern.pattern.casefold():
+            redacted = pattern.sub("Bearer [REDACTED]", redacted)
+        else:
+            redacted = pattern.sub(lambda match: match.group(0).split("=", 1)[0] + "=[REDACTED]", redacted)
+    return redacted
+
+
+def redact(value: object, key: str = "") -> object:
+    if key and SECRET_KEY_PATTERN.search(key):
+        return "[REDACTED]"
+    if isinstance(value, dict):
+        return {str(item_key): redact(item, str(item_key)) for item_key, item in value.items()}
+    if isinstance(value, list):
+        return [redact(item) for item in value]
+    if isinstance(value, str):
+        return redact_text(value)
+    return value
+
+
+def is_allowed_tool(name: str) -> bool:
+    normalized = name.casefold().replace("-", "_")
+    return any(part in normalized for part in ALLOWED_TOOL_PARTS)
+
+
+def result_text(value: object) -> str:
+    if isinstance(value, str):
+        text = value
+    else:
+        text = json.dumps(redact(value), ensure_ascii=False, sort_keys=True)
+    text = redact_text(text).replace("```", "'''" )
+    if len(text) > MAX_RESULT_CHARS:
+        text = text[:MAX_RESULT_CHARS] + "\n[truncated]"
+    return text
+
+
+def explicit_error(value: object) -> bool:
+    if isinstance(value, dict):
+        for key in ("is_error", "isError", "error"):
+            item = value.get(key)
+            if item is True or (key == "error" and isinstance(item, str) and item):
+                return True
+        if value.get("returncode") not in {None, 0}:
+            return True
+        return any(explicit_error(item) for item in value.values())
+    if isinstance(value, list):
+        return any(explicit_error(item) for item in value)
+    return False
+
+
+def jsonl_records(path: Path) -> list[dict[str, object]]:
+    records = []
+    for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+        try:
+            value = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(value, dict):
+            records.append(value)
+    return records
+
+
+def pair_events(calls: list[dict[str, object]], results: dict[str, object]) -> list[dict[str, object]]:
+    events = []
+    for call in calls:
+        call_id = str(call.get("id") or "")
+        if call_id not in results:
+            continue
+        output = results[call_id]
+        if explicit_error(output):
+            continue
+        events.append(
+            {
+                "tool": str(call["tool"]),
+                "arguments": redact(call.get("arguments", {})),
+                "result": result_text(output),
+            }
+        )
+    return events
+
+
+def claude_events(path: Path) -> list[dict[str, object]]:
+    calls: list[dict[str, object]] = []
+    results: dict[str, object] = {}
+    for record in jsonl_records(path):
+        message = record.get("message")
+        if not isinstance(message, dict):
+            continue
+        content = message.get("content")
+        if not isinstance(content, list):
+            continue
+        for block in content:
+            if not isinstance(block, dict):
+                continue
+            if block.get("type") == "tool_use" and is_allowed_tool(str(block.get("name") or "")):
+                calls.append(
+                    {
+                        "id": str(block.get("id") or ""),
+                        "tool": str(block.get("name") or ""),
+                        "arguments": block.get("input", {}),
+                    }
+                )
+            elif block.get("type") == "tool_result":
+                results[str(block.get("tool_use_id") or "")] = block
+    return pair_events(calls, results)
+
+
+def codex_events(path: Path) -> list[dict[str, object]]:
+    calls: list[dict[str, object]] = []
+    results: dict[str, object] = {}
+    for record in jsonl_records(path):
+        if record.get("type") != "response_item":
+            continue
+        payload = record.get("payload")
+        if not isinstance(payload, dict):
+            continue
+        kind = payload.get("type")
+        if kind in {"function_call", "custom_tool_call", "local_shell_call"}:
+            name = str(payload.get("name") or kind or "")
+            if not is_allowed_tool(name):
+                continue
+            arguments = payload.get("arguments", payload.get("input", payload.get("action", {})))
+            if isinstance(arguments, str):
+                try:
+                    arguments = json.loads(arguments)
+                except json.JSONDecodeError:
+                    pass
+            calls.append(
+                {
+                    "id": str(payload.get("call_id") or payload.get("id") or ""),
+                    "tool": name,
+                    "arguments": arguments,
+                }
+            )
+        elif kind in {"function_call_output", "custom_tool_call_output", "local_shell_call_output"}:
+            results[str(payload.get("call_id") or payload.get("id") or "")] = payload.get("output", payload)
+    return pair_events(calls, results)
+
+
+def hermes_events(database: Path, session_id: str) -> list[dict[str, object]]:
+    connection = sqlite3.connect(f"file:{database}?mode=ro", uri=True)
+    try:
+        connection.execute("PRAGMA query_only=ON")
+        columns = {str(row[1]) for row in connection.execute("PRAGMA table_info(messages)")}
+        required = {"session_id", "role", "content", "tool_call_id", "tool_calls", "tool_name"}
+        if not required <= columns:
+            raise SkillifyError("Hermes transcript store has no tool-call columns")
+        active = " AND active = 1" if "active" in columns else ""
+        rows = connection.execute(
+            "SELECT id, role, content, tool_call_id, tool_calls, tool_name "
+            f"FROM messages WHERE session_id = ?{active} ORDER BY id",
+            (session_id,),
+        )
+        calls: list[dict[str, object]] = []
+        results: dict[str, object] = {}
+        for _, role, content, tool_call_id, tool_calls, tool_name in rows:
+            normalized = str(role).casefold()
+            if normalized in {"assistant", "agent", "hermes"} and tool_calls:
+                try:
+                    decoded = json.loads(tool_calls)
+                except (TypeError, json.JSONDecodeError):
+                    continue
+                if not isinstance(decoded, list):
+                    continue
+                for item in decoded:
+                    if not isinstance(item, dict):
+                        continue
+                    function = item.get("function")
+                    if not isinstance(function, dict):
+                        function = {}
+                    arguments: object = function.get("arguments", item.get("arguments", {}))
+                    if isinstance(arguments, str):
+                        try:
+                            arguments = json.loads(arguments)
+                        except json.JSONDecodeError:
+                            pass
+                    name = str(function.get("name") or item.get("name") or "")
+                    if name == "tool_call" and isinstance(arguments, dict):
+                        name = str(arguments.get("name") or "")
+                        arguments = arguments.get("arguments", {})
+                    if not is_allowed_tool(name):
+                        continue
+                    calls.append(
+                        {
+                            "id": str(item.get("id") or item.get("call_id") or ""),
+                            "tool": name,
+                            "arguments": arguments,
+                        }
+                    )
+            elif normalized == "tool" and tool_call_id:
+                decoded_content: object = content
+                if isinstance(content, str):
+                    try:
+                        decoded_content = json.loads(content)
+                    except json.JSONDecodeError:
+                        pass
+                results[str(tool_call_id)] = {
+                    "tool_name": tool_name,
+                    "content": decoded_content,
+                }
+        return pair_events(calls, results)
+    finally:
+        connection.close()
+
+
+def load_session_search(path: Path):
+    if not path.is_file():
+        raise SkillifyError(f"runtime-session-search not found: {path}")
+    return load_program(path, f"skillify_runtime_session_search_{os.getpid()}")
+
+
+def collect_session_events(
+    runtime: str,
+    session_id: str,
+    *,
+    search_bin: Path,
+    store_root: Path,
+) -> list[dict[str, object]]:
+    search = load_session_search(search_bin)
+    stores = search.load_stores()
+    observed = search.read(
+        session_id,
+        stores=stores,
+        stores_root=store_root,
+        runtime=runtime,
+    )
+    if observed.get("status") == "choice_required":
+        raise SkillifyError("session id exists in more than one native store")
+    if observed.get("status") not in {"read", "no_reply"}:
+        raise SkillifyError(f"native session not found: {runtime}:{session_id}")
+    if runtime in {"claude", "codex"}:
+        store = Path(str(observed.get("store") or ""))
+        if not store.is_file():
+            native_root = store_root / (".claude/projects" if runtime == "claude" else ".codex/sessions")
+            store = stores._session_jsonl_path(native_root, runtime, session_id)
+        if not store or not Path(store).is_file():
+            raise SkillifyError(f"native session store not found: {runtime}:{session_id}")
+        return claude_events(Path(store)) if runtime == "claude" else codex_events(Path(store))
+    choices = []
+    for profile, database in search.hermes_databases(store_root):
+        try:
+            messages = stores._hermes_last_messages(database, session_id)
+        except Exception:
+            continue
+        if messages[0] or messages[1]:
+            choices.append(database)
+    if len(choices) != 1:
+        raise SkillifyError("Hermes session id is missing or ambiguous")
+    return hermes_events(choices[0], session_id)
+
+
+def render_session_body(runtime: str, session_id: str, events: list[dict[str, object]]) -> list[str]:
+    title = f"{runtime.title()} Session Flow"
+    lines = [
+        f"# {title}",
+        "",
+        f"Source session: `{runtime}:{session_id}`.",
+        "Only successful tool calls and results appear below. Model reasoning is excluded.",
+        "",
+        "## Steps",
+        "",
+    ]
+    for index, event in enumerate(events, 1):
+        arguments = json.dumps(event["arguments"], indent=2, ensure_ascii=False, sort_keys=True)
+        lines.extend(
+            [
+                f"### {index}. `{event['tool']}`",
+                "",
+                "Arguments:",
+                "```json",
+                arguments,
+                "```",
+                "Result check:",
+                "```text",
+                str(event["result"]),
+                "```",
+                "",
+            ]
+        )
+    return lines
+
+
+def from_session(
+    root: Path,
+    runtime: str,
+    session_id: str,
+    name: str,
+    *,
+    search_bin: Path,
+    store_root: Path,
+    name_override: str | None = None,
+) -> Path:
+    destination = skill_root(root) / name
+    validate_name(
+        name, root=root, existing=destination.exists() or destination.is_symlink(),
+        name_override=name_override,
+    )
+    if destination.exists() or destination.is_symlink():
+        raise SkillifyError(f"skill already exists: {name}")
+    events = collect_session_events(
+        runtime,
+        session_id,
+        search_bin=search_bin,
+        store_root=store_root,
+    )
+    if not events:
+        raise SkillifyError("session has no successful browser, computer-use, shell, or file-edit tool calls")
+    description = f"Replay the successful {runtime} tool flow from native session {session_id}."
+    destination.mkdir()
+    (destination / "SKILL.md").write_text(
+        skill_document(
+            name,
+            description,
+            render_session_body(runtime, session_id, events),
+            status="draft",
+        ),
+        encoding="utf-8",
+    )
+    write_replay_cases(
+        destination,
+        [
+            {
+                "name": "read-first-step",
+                "run": "read",
+                "input": "Which tool does step 1 use? Give the tool name.",
+                "expect": {"output_contains": [str(events[0]["tool"])]},
+            }
+        ],
+    )
+    return destination
+
+
+def split_frontmatter(text: str) -> tuple[list[str], list[str]]:
+    lines = text.splitlines()
+    if not lines or lines[0] != "---":
+        return [], lines
+    try:
+        end = lines.index("---", 1)
+    except ValueError:
+        return [], lines
+    return lines[1:end], lines[end + 1 :]
+
+
+def frontmatter_value(lines: list[str], key: str) -> str | None:
+    for index, line in enumerate(lines):
+        if not line.startswith(f"{key}:"):
+            continue
+        value = line.split(":", 1)[1].strip()
+        if value in {"|", ">"}:
+            values = []
+            for following in lines[index + 1 :]:
+                if following and not following[0].isspace():
+                    break
+                values.append(following.strip())
+            return " ".join(item for item in values if item)
+        if value.startswith(('"', "'")):
+            try:
+                return str(json.loads(value))
+            except json.JSONDecodeError:
+                return value.strip("'\"")
+        return value
+    return None
+
+
+def normalize_promoted_skill(path: Path, name: str) -> None:
+    source = (path / "SKILL.md").read_text(encoding="utf-8")
+    frontmatter, body = split_frontmatter(source)
+    description = frontmatter_value(frontmatter, "description") or f"Promoted Hermes skill {name}."
+    while body and not body[0].strip():
+        body.pop(0)
+    origin = [
+        "Origin: hermes skill_manage.",
+        "The Hermes copy remains in place and keeps local precedence until the curator archives it.",
+        "",
+    ]
+    (path / "SKILL.md").write_text(
+        skill_document(name, description, origin + body), encoding="utf-8"
+    )
+
+
+def promote(
+    root: Path, hermes_root: Path, name: str, *, name_override: str | None = None
+) -> tuple[Path, str]:
+    source = hermes_root / name
+    destination = skill_root(root) / name
+    validate_name(
+        name, root=root, existing=destination.exists() or destination.is_symlink(),
+        name_override=name_override,
+    )
+    if source.is_symlink() or not source.is_dir() or not (source / "SKILL.md").is_file():
+        raise SkillifyError(f"Hermes skill not found as a physical directory: {name}")
+    if destination.exists() or destination.is_symlink():
+        raise SkillifyError(f"skill already exists: {name}")
+    shutil.copytree(source, destination, symlinks=True)
+    normalize_promoted_skill(destination, name)
+    receipt = (
+        f"promoted {name}; source kept at {source}; "
+        "Hermes local precedence remains until curator archive"
+    )
+    return destination, receipt
+
+
+def load_frontmatter_validator(path: Path):
+    if not path.is_file():
+        raise SkillifyError(f"release tool not found: {path}")
+    return load_program(path, f"skillify_release_tool_{os.getpid()}").validate_frontmatter
+
+
+def root_skill_names(root: Path) -> dict[str, list[str]]:
+    names: dict[str, list[str]] = {}
+    for child in sorted(skill_root(root).iterdir(), key=lambda item: item.name):
+        skill_file = child / "SKILL.md"
+        if not skill_file.is_file():
+            continue
+        frontmatter, _ = split_frontmatter(skill_file.read_text(encoding="utf-8"))
+        inner = frontmatter_value(frontmatter, "name")
+        if inner:
+            names.setdefault(inner, []).append(child.name)
+    return names
+
+
+def read_skill_catalog(root):
+    import importlib.util
+    path = root / "tools/skill_catalog.py"
+    spec = importlib.util.spec_from_file_location("skillify_catalog", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module, root / "config/catalog.yaml"
+
+
+def add_policy_entry(root: Path, name: str) -> None:
+    module, path = read_skill_catalog(root)
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    if raw.get("where", {}).get(name) == "off":
+        raise SkillifyError("This source is off; review its catalog rule first: " + name)
+    # Absence means global. Validation must not grow a manual publish list.
+    module.catalog_scope(raw, name, root)
+
+
+def run_skill_tests(skill_dir: Path) -> None:
+    tests = skill_dir / "tests"
+    if not tests.is_dir():
+        return
+    uv = shutil.which("uv")
+    command = (
+        [uv, "run", "--with", "pytest", "pytest", "-q", "-p", "no:cacheprovider", "tests"]
+        if uv
+        else [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"]
+    )
+    completed = subprocess.run(
+        command,
+        cwd=skill_dir,
+        text=True,
+        capture_output=True,
+        env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"},
+        check=False,
+    )
+    if completed.returncode:
+        detail = completed.stderr.strip().splitlines() or completed.stdout.strip().splitlines()
+        raise SkillifyError(detail[-1] if detail else "skill tests failed")
+
+
+def copy_dojo_for_dry_run(root: Path, destination: Path) -> None:
+    shutil.copytree(
+        root,
+        destination,
+        symlinks=True,
+        ignore=shutil.ignore_patterns(".git", ".pytest_cache", "__pycache__", "*.pyc", "skill-state", "skill-releases", ".env", ".env.*", "auth.json", "credentials.json"),
+    )
+    alias = root / 'config/catalog.yaml'
+    if alias.is_symlink():
+        import importlib.util
+        helper = root / 'tools/catalog_state.py'
+        spec = importlib.util.spec_from_file_location('preview_catalog_state', helper)
+        module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+        _raw, ident, _approval = module.approved_catalog(root)
+        payload = alias.read_bytes()
+        if module.digest(payload) != ident:
+            raise SkillifyError('Catalog version changed during preview copy.')
+        if os.readlink(alias) != '../../config/catalog.yaml':
+            raise SkillifyError('Catalog alias changed; preserve ../../config/catalog.yaml.')
+        owner = destination.parent / 'config/catalog.yaml'
+        owner.parent.mkdir(parents=True, exist_ok=True); owner.write_bytes(payload)
+        module.approve_existing(destination, 'Isolated copy of the approved preview catalog', state=destination.parent / 'state')
+
+
+
+def command_ok(command: list[str], *, cwd: Path, env: dict[str, str]) -> None:
+    completed = subprocess.run(command, cwd=cwd, env=env, text=True, capture_output=True, check=False)
+    if completed.returncode:
+        detail = completed.stderr.strip().splitlines() or completed.stdout.strip().splitlines()
+        raise SkillifyError(detail[-1] if detail else f"command failed: {' '.join(command)}")
+
+
+def run_ship_dry_run(root: Path, tool: Path, name: str | None = None, *, changed: bool = True) -> None:
+    with tempfile.TemporaryDirectory(prefix="skillify-check-") as temporary:
+        temp = Path(temporary)
+        staged = temp / "dojo"
+        remote = temp / "origin.git"
+        copy_dojo_for_dry_run(root, staged)
+        # The preview ships the person's copy from the staged Dojo; no person source is read there.
+        # The ship loads skillify itself, so a person-owned skillify is staged too.
+        for wanted in dict.fromkeys([name, "skillify"] if name else []):
+            source = source_root(root, wanted)
+            if source == root:
+                continue
+            target = staged / "skills" / wanted
+            if target.exists():
+                shutil.rmtree(target)
+            shutil.copytree(skill_root(source) / wanted, target, symlinks=True,
+                            ignore=shutil.ignore_patterns(".git", ".pytest_cache", "__pycache__", "*.pyc"))
+            law = source / "standards/skill-law.md"
+            if wanted == "skillify" and law.is_file():
+                (staged / "standards").mkdir(exist_ok=True)
+                shutil.copyfile(law, staged / "standards/skill-law.md")
+        base_env = {
+            **os.environ,
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "GIT_AUTHOR_NAME": "skillify check",
+            "GIT_AUTHOR_EMAIL": "skillify-check@local",
+            "GIT_COMMITTER_NAME": "skillify check",
+            "GIT_COMMITTER_EMAIL": "skillify-check@local",
+        }
+        command_ok(["git", "init", "-q", "-b", "main"], cwd=staged, env=base_env)
+        command_ok(["git", "add", "."], cwd=staged, env=base_env)
+        command_ok(["git", "commit", "-q", "-m", "skillify check snapshot"], cwd=staged, env=base_env)
+        command_ok(["git", "init", "-q", "--bare", str(remote)], cwd=temp, env=base_env)
+        command_ok(["git", "remote", "add", "origin", str(remote)], cwd=staged, env=base_env)
+        command_ok(["git", "push", "-q", "-u", "origin", "main"], cwd=staged, env=base_env)
+        dry_env = {
+            **base_env,
+            "SKILLS_DOJO_ROOT": str(staged),
+            "SKILL_RELEASES_ROOT": str(temp / "releases"),
+            "SKILL_STATE_ROOT": str(temp / "state"),
+            "SKILLS_ACTIVE_PATH": str(temp / "shelf"),
+            "SKILLS_CLAUDE_ROOT": str(temp / "claude"),
+            "SKILLS_CODEX_ROOT": str(temp / "codex"),
+            "SKILLS_PIN_PATH": str(temp / "skills.yaml"),
+            "SKILLS_PARITY_TOOL": str(root / "tools" / "skill_route.py"),
+            "SKILLIFY_PREVIEW_CHANGED": "1" if changed else "0",
+            "SKILLS_PERSON_ROOT": "",
+        }
+        if name is None:
+            raise SkillifyError("Name the skill for the ship preview.")
+        command_ok([str(tool), "ship", "--skill", name, "--dry-run"], cwd=staged, env=dry_env)
+
+
+def mark_active(skill_file: Path) -> None:
+    lines = skill_file.read_text(encoding="utf-8").splitlines()
+    try:
+        end = lines.index("---", 1)
+    except ValueError:
+        return
+    for index in range(1, end):
+        if lines[index] == "status: draft":
+            lines[index] = "status: active"
+            skill_file.write_text("\n".join(lines) + "\n", encoding="utf-8")
+            return
+
+
+# --- The seven checks in `skillify check` (skill law, T231) -----------------
+
+TRIGGER_CHARS = 57
+DESCRIPTION_LIMIT = 1024
+BODY_LINE_LIMIT = 500
+HELP_TIMEOUT_SECONDS = 10
+TRIGGER_VERBS = (
+    "add", "answer", "apply", "approve", "ask", "assemble", "audit", "build", "capture", "change",
+    "check", "claim", "classify", "clean", "close", "collect", "compare", "compress", "connect",
+    "control", "convert", "copy", "create", "debug", "design", "detect", "draft", "draw", "drive",
+    "edit", "export", "fetch", "file", "find", "fix", "generate", "grill", "guard", "hand",
+    "import", "inspect", "install", "investigate", "keep", "launch", "list", "load", "log", "make",
+    "manage", "map", "merge", "monitor", "move", "open", "organize", "pick", "plan", "prepare",
+    "promote", "publish", "pull", "push", "read", "record", "refresh", "rename", "render", "reply",
+    "report", "research", "restore", "resume", "review", "route", "run", "save", "scan", "search",
+    "send", "set", "ship", "show", "sort", "start", "steer", "stop", "summarize", "sweep", "sync",
+    "tag", "test", "track", "triage", "turn", "update", "upgrade", "upload", "use", "verify",
+    "walk", "write",
+)
+TRIGGER_VERB_PATTERN = re.compile(
+    r"(?i)\b(?:" + "|".join(TRIGGER_VERBS) + r")(?:s|es|ed|d|ing|ning|ping|ging)?\b"
+)
+SKILL_LOCAL_DIRS = (
+    "agents", "assets", "bin", "examples", "lib", "references", "replays", "scripts", "templates", "tests",
+)
+RUN_OUTPUT_DIRS = (
+    "build", "cache", "dist", "logs", "out", "output", "outputs", "run", "runs", "state", "tmp",
+)
+PATH_TOKEN = re.compile(r"^(?:\.{1,2}/)?[A-Za-z0-9_@.+-]+(?:/[A-Za-z0-9_@.+-]+)*/?$")
+MARKDOWN_LINK = re.compile(r"\[[^\]]*\]\(\s*<?([^)\s>]+)>?(?:\s+\"[^\"]*\")?\s*\)")
+INLINE_CODE = re.compile(r"`([^`\n]+)`")
+FENCE = re.compile(r"^\s*(```+|~~~+)(.*)$")
+PLACEHOLDER = re.compile(r"[<>{}$*]|\.\.\.")
+WHEN_TO_READ = re.compile(r"(?i)\b(when|before|after|if|for|during|while|only|until|unless)\b")
+PROMPT_PATTERNS = (re.compile(r"\binput\("), re.compile(r"\bread\s+(?:-[A-Za-z]+\s+)*-[A-Za-z]*p\b"))
+WRITE_PATTERNS = (
+    re.compile(r"\bopen\([^)]*[\"'][wax]b?\+?[\"']"),
+    re.compile(r"\.write_(?:text|bytes)\("),
+    re.compile(r"\bshutil\.(?:copy|copy2|copyfile|copytree|move|rmtree)\("),
+    re.compile(r"\bos\.(?:replace|rename|remove|unlink|makedirs)\("),
+    re.compile(r"\bfs\.(?:writeFile|writeFileSync|appendFile|appendFileSync|rmSync|unlinkSync)\b"),
+    re.compile(r"(?m)^[^#\n]*[^\s&>0-9]\s*>>?\s*(?!&|/dev/null)[\"'$A-Za-z0-9_./~]"),
+    re.compile(r"(?m)^\s*(?:tee|cp|mv|rm|touch|mkdir)\s"),
+    re.compile(r"\bsed\s+-i\b"),
+)
+HELP_SUPPORT = re.compile(r"(--help|argparse|\busage\b|click|typer|commander|yargs|getopts|docopt)", re.I)
+KIT_MARKER = "<!-- AUTO-GENERATED from SKILL.md.tmpl"
+
+
+class LawReport:
+    """Collects one line per finding; refusals apply only to new or changed skills."""
+
+    def __init__(self, name: str, *, strict: bool) -> None:
+        self.name = name
+        self.strict = strict
+        self.refusals: list[str] = []
+
+    def line(self, check: str, detail: str) -> str:
+        return f"{self.name}: {check}: {detail}; see {NAME_LAW}"
+
+    def warn(self, check: str, detail: str) -> None:
+        print(f"skillify: warning: {self.line(check, detail)}", file=sys.stderr)
+
+    def note(self, check: str, detail: str) -> None:
+        print(f"skillify: note: {self.line(check, detail)}", file=sys.stderr)
+
+    def refuse(self, check: str, detail: str) -> None:
+        """Refuse a new or changed skill; an existing or kit skill only warns (exempt until T245)."""
+        if self.strict:
+            self.refusals.append(f"refuse: {self.line(check, detail)}")
+            return
+        self.warn(check, f"{detail} (existing or kit skill: warn only until T245)")
+
+
+def skill_changed(root: Path, name: str) -> bool:
+    """True when the skill folder is new or differs from the upstream base; no git means new."""
+    def git(*args: str) -> subprocess.CompletedProcess[str]:
+        return subprocess.run(
+            ["git", "-C", str(root), *args], text=True, capture_output=True, check=False,
+            env={**os.environ, "GIT_OPTIONAL_LOCKS": "0"},
+        )
+
+    if git("rev-parse", "--is-inside-work-tree").returncode:
+        return True
+    pathspec = (skill_root(root).relative_to(root) / name).as_posix()
+    if git("status", "--porcelain", "--", pathspec + "/").stdout.strip():
+        return True
+    if git("ls-files", "--error-unmatch", "--", pathspec + "/SKILL.md").returncode:
+        return True
+    for base in ("@{upstream}", "origin/main"):
+        merge_base = git("merge-base", "HEAD", base)
+        if merge_base.returncode == 0:
+            return git("diff", "--quiet", merge_base.stdout.strip(), "HEAD", "--", pathspec + "/").returncode != 0
+    return False
+
+
+def skill_description(skill_file: Path) -> str:
+    frontmatter, _ = split_frontmatter(skill_file.read_text(encoding="utf-8", errors="replace"))
+    return (frontmatter_value(frontmatter, "description") or "").strip()
+
+
+def shelf_description_total(root: Path) -> tuple[int, int]:
+    total = count = 0
+    for child in sorted(skill_root(root).iterdir()):
+        skill_file = child / "SKILL.md"
+        if child.is_dir() and skill_file.is_file():
+            total += len(skill_description(skill_file))
+            count += 1
+    return total, count
+
+
+def declared_kinds(frontmatter: list[str]) -> tuple[list[str], list[str]]:
+    value = frontmatter_value(frontmatter, "kind") or ""
+    raw = [item.strip() for item in value.split(",") if item.strip()]
+    return [item for item in raw if item in KINDS], [item for item in raw if item not in KINDS]
+
+
+def check_trigger_opener(report: LawReport, description: str) -> None:
+    opener = description[:TRIGGER_CHARS]
+    if len(description) > TRIGGER_CHARS and description[TRIGGER_CHARS - 1].isalnum() and description[TRIGGER_CHARS].isalnum():
+        report.warn("check 1 trigger opener", f"the first {TRIGGER_CHARS} characters cut a word: '{opener}'")
+    if not TRIGGER_VERB_PATTERN.search(opener):
+        report.warn("check 1 trigger opener", f"the first {TRIGGER_CHARS} characters name no known verb: '{opener}'")
+
+
+def check_catalog_budget(report: LawReport, root: Path, description: str) -> None:
+    total, count = shelf_description_total(root)
+    report.note("check 2 catalog budget", f"description {len(description)} chars; shelf total {total} chars across {count} skills")
+    if len(description) > DESCRIPTION_LIMIT:
+        report.refuse("check 2 catalog budget", f"description is {len(description)} chars; the limit is {DESCRIPTION_LIMIT}")
+
+
+def markdown_lines_outside_fences(lines: list[str]) -> Iterable[tuple[int, str, str | None]]:
+    """Yield (index, line, fence) where fence is None outside code, else 'example' or 'code'."""
+    fence: str | None = None
+    marker = ""
+    previous = ""
+    for index, line in enumerate(lines):
+        match = FENCE.match(line)
+        if fence is None and match:
+            marker = match.group(1)[0] * 3
+            info = match.group(2)
+            fence = "example" if "example" in info.casefold() or "example" in previous.casefold() else "code"
+            continue
+        if fence is not None and line.strip().startswith(marker):
+            fence = None
+            continue
+        yield index, line, fence
+        if line.strip():
+            previous = line
+
+
+def clean_token(token: str) -> str:
+    return token.strip().strip("\"'`,;:()[]").rstrip(".")
+
+
+def is_skill_local(path: str) -> bool:
+    """A file under a skill folder such as bin/ or references/. Folders and ./ command paths do not count."""
+    first, _, rest = path.partition("/")
+    return first in SKILL_LOCAL_DIRS and bool(rest) and not path.endswith("/")
+
+
+def exempt_path(path: str) -> bool:
+    if PLACEHOLDER.search(path):
+        return True
+    parts = [part for part in path.split("/") if part not in {"", ".", ".."}]
+    return any(part in RUN_OUTPUT_DIRS for part in parts[:-1]) or (bool(parts) and parts[0] in RUN_OUTPUT_DIRS)
+
+
+def named_paths(text: str) -> list[tuple[int, str]]:
+    """Relative file paths a skill page names: link targets, path code spans, skill-local paths in code."""
+    found: list[tuple[int, str]] = []
+    for index, line, fence in markdown_lines_outside_fences(text.splitlines()):
+        if fence == "example":
+            continue
+        if fence == "code":
+            for token in re.split(r"[\s=]+", line):
+                token = clean_token(token)
+                if token and not PLACEHOLDER.search(token) and PATH_TOKEN.match(token) and is_skill_local(token):
+                    found.append((index, token))
+            continue
+        for target in MARKDOWN_LINK.findall(line):
+            target = target.split("#", 1)[0]
+            if not target or "://" in target or target.startswith(("/", "~", "mailto:", "#")) or target.endswith("/"):
+                continue
+            found.append((index, target))
+        for span in INLINE_CODE.findall(line):
+            parts = span.split()
+            word = clean_token(parts[0]) if parts else ""
+            if word and PATH_TOKEN.match(word) and is_skill_local(word):
+                found.append((index, word))
+    return found
+
+
+def check_body_size(report: LawReport, skill_dir: Path, body_text: str) -> None:
+    lines = (skill_dir / "SKILL.md").read_text(encoding="utf-8", errors="replace").splitlines()
+    if len(lines) > BODY_LINE_LIMIT:
+        report.warn("check 3 body size", f"SKILL.md has {len(lines)} lines; the limit is {BODY_LINE_LIMIT}")
+    references = skill_dir / "references"
+    if references.is_dir():
+        for reference in sorted(references.rglob("*")):
+            if not reference.is_file() or reference.suffix.casefold() not in {".md", ".txt"}:
+                continue
+            text = reference.read_text(encoding="utf-8", errors="replace")
+            nested = set()
+            for _, target in named_paths(text):
+                for base in (reference.parent, skill_dir):
+                    candidate = (base / target).resolve()
+                    if candidate != reference.resolve() and candidate.is_file() and references.resolve() in candidate.parents:
+                        nested.add(candidate.relative_to(skill_dir.resolve()).as_posix())
+            for target in sorted(nested):
+                relative = reference.relative_to(skill_dir).as_posix()
+                report.warn("check 3 body size", f"{relative} links to a further reference {target}; keep references one level deep")
+    body_lines = body_text.splitlines()
+    warned = set()
+    for index, path in named_paths(body_text):
+        if not path.lstrip("./").startswith("references/") or path in warned:
+            continue
+        near = " ".join(body_lines[max(0, index - 1) : index + 2])
+        if not WHEN_TO_READ.search(near.replace(path, "")):
+            warned.add(path)
+            report.warn("check 3 body size", f"{path} has no when-to-read line near it")
+
+
+def check_dead_links(report: LawReport, skill_dir: Path, body_text: str, *, line_offset: int = 0) -> None:
+    seen = set()
+    for index, path in named_paths(body_text):
+        if path in seen or exempt_path(path):
+            continue
+        seen.add(path)
+        if not (skill_dir / path).exists():
+            report.refuse(
+                "check 4 dead link",
+                f"SKILL.md line {index + 1 + line_offset} names {path}, which is not in the skill folder",
+            )
+
+
+def steps_without_done_check(body_text: str) -> tuple[bool, list[str]]:
+    lines = body_text.splitlines()
+    try:
+        start = next(i for i, line in enumerate(lines) if re.match(r"^##\s+Steps\s*$", line))
+    except StopIteration:
+        return False, []
+    section = []
+    for line in lines[start + 1 :]:
+        if re.match(r"^##\s", line):
+            break
+        section.append(line)
+    steps: list[tuple[str, list[str]]] = []
+    for line in section:
+        match = re.match(r"^(?:\d+[.)]\s+|###\s+)(.*)$", line)
+        if match:
+            steps.append((match.group(1).strip(), [line]))
+        elif steps:
+            steps[-1][1].append(line)
+    missing = [title for title, block in steps if not re.search(r"(?i)\bdone (?:when|check)\b", " ".join(block))]
+    return True, missing
+
+
+def check_gotchas(report: LawReport, kinds: list[str], body_text: str) -> None:
+    if not kinds:
+        return
+    has_steps, missing = steps_without_done_check(body_text)
+    if not has_steps:
+        report.warn("check 5 gotchas", f"a {', '.join(kinds)} skill needs a ## Steps section")
+    if not re.search(r"(?m)^##\s+Gotchas\s*$", body_text):
+        report.warn("check 5 gotchas", f"a {', '.join(kinds)} skill needs a ## Gotchas section")
+    for title in missing:
+        report.warn("check 5 gotchas", f"step '{title[:60]}' has no 'Done when:' check")
+
+
+def check_scripts(report: LawReport, skill_dir: Path, kinds: list[str]) -> None:
+    if "tool" not in kinds:
+        return
+    scripts = sorted(path for path in (skill_dir / "bin").glob("*") if path.is_file() and not path.name.startswith("."))
+    if not scripts:
+        report.warn("check 6 script rules", "a tool skill needs a bin/ script")
+    for script in scripts:
+        relative = script.relative_to(skill_dir).as_posix()
+        source = script.read_text(encoding="utf-8", errors="replace")
+        if not os.access(script, os.X_OK):
+            report.warn("check 6 script rules", f"{relative} is not executable")
+        elif not HELP_SUPPORT.search(source):
+            report.warn("check 6 script rules", f"{relative} shows no --help handling; not run")
+        else:
+            try:
+                helped = subprocess.run(
+                    [str(script), "--help"], cwd=skill_dir, text=True, capture_output=True,
+                    stdin=subprocess.DEVNULL, timeout=HELP_TIMEOUT_SECONDS, check=False,
+                )
+                if helped.returncode or "usage" not in (helped.stdout + helped.stderr).casefold():
+                    report.warn("check 6 script rules", f"{relative} --help exited {helped.returncode} without usage text")
+            except (OSError, subprocess.TimeoutExpired) as error:
+                report.warn("check 6 script rules", f"{relative} --help failed: {error.__class__.__name__}")
+        if any(pattern.search(source) for pattern in PROMPT_PATTERNS):
+            report.warn("check 6 script rules", f"{relative} asks for input; a script reads flags and files only")
+        if "--dry-run" not in source and any(pattern.search(source) for pattern in WRITE_PATTERNS):
+            report.warn("check 6 script rules", f"{relative} writes files but takes no --dry-run")
+
+
+def check_law(root: Path, name: str, *, changed: bool | None = None) -> None:
+    """Run the seven law checks. Refuse only a new or changed skill that is not a kit skill."""
+    skill_dir = skill_root(root) / name
+    text = (skill_dir / "SKILL.md").read_text(encoding="utf-8", errors="replace")
+    frontmatter, body = split_frontmatter(text)
+    body_text = "\n".join(body)
+    kit = KIT_MARKER in body_text
+    if changed is None:
+        changed = skill_changed(root, name)
+    report = LawReport(name, strict=changed and not kit)
+    description = skill_description(skill_dir / "SKILL.md")
+    check_trigger_opener(report, description)
+    check_catalog_budget(report, root, description)
+    check_body_size(report, skill_dir, body_text)
+    check_dead_links(report, skill_dir, body_text, line_offset=len(frontmatter) + 2 if frontmatter else 0)
+    kinds, unknown = declared_kinds(frontmatter)
+    if unknown:
+        report.warn("kind", f"unknown kind {', '.join(unknown)} counts as undeclared; checks 5 and 6 skipped")
+        kinds = []
+    elif not kinds:
+        report.warn("kind", "no kind declared; checks 5 and 6 skipped")
+    check_gotchas(report, kinds, body_text)
+    check_scripts(report, skill_dir, kinds)
+    check_replay_presence(report, skill_dir)
+    if report.refusals:
+        raise SkillifyError("\n".join(report.refusals))
+
+
+# --- Replay cases (skill law, T231 job 3) -----------------------------------
+
+REPLAY_DIR = "replays"
+REPLAY_RUNS = ("dry-run", "rehearsal", "read")
+REPLAY_MAX_CASES = 3
+REPLAY_EXPECT_KEYS = ("exit", "output_contains", "files", "sent_text")
+REPLAY_SETUP_KEYS = ("dirs", "files")
+REPLAY_TIMEOUT_SECONDS = 60
+REPLAY_AGENTS = ("claude",)
+def replay_agent_model():
+    import sys
+    from pathlib import Path
+    import os
+    home = Path(os.environ.get('FOXRUN_HOME', Path.home() / '.foxrun'))
+    sys.path.insert(0, str(home))
+    from base.agent_catalog import resolve_model
+    return resolve_model('judgment', 'claude', home)
+
+REPLAY_AGENT_TIMEOUT_SECONDS = 300
+AgentRunner = Callable[[str, str, Path], str]
+
+
+def _string_list(value: object) -> bool:
+    return isinstance(value, list) and all(isinstance(item, str) and item for item in value)
+
+
+def validate_replay_case(case: object, source: str) -> dict[str, object]:
+    """Return a replay case after a shape check; a bad case is an error for every skill."""
+    def bad(detail: str) -> SkillifyError:
+        return SkillifyError(f"replay case {source}: {detail}; see {NAME_LAW}")
+
+    if not isinstance(case, dict):
+        raise bad("the file must hold one JSON object")
+    unknown = sorted(set(case) - {"name", "run", "input", "setup", "expect", "note"})
+    if unknown:
+        raise bad(f"unknown field {', '.join(unknown)}")
+    if not isinstance(case.get("name"), str) or not NAME_PATTERN.fullmatch(str(case.get("name"))):
+        raise bad("'name' must be lowercase words joined by single dashes")
+    if case.get("run") not in REPLAY_RUNS:
+        raise bad(f"'run' must be one of {', '.join(REPLAY_RUNS)}")
+    if not isinstance(case.get("input"), str) or not str(case["input"]).strip():
+        raise bad("'input' must be a command line or a question")
+    setup = case.get("setup", {})
+    if not isinstance(setup, dict) or set(setup) - set(REPLAY_SETUP_KEYS):
+        raise bad("'setup' holds only 'dirs' (a list) and 'files' (path to text)")
+    if "dirs" in setup and not _string_list(setup["dirs"]):
+        raise bad("'setup.dirs' must be a list of relative folder paths")
+    if "files" in setup and not (
+        isinstance(setup["files"], dict) and all(isinstance(value, str) for value in setup["files"].values())
+    ):
+        raise bad("'setup.files' must map relative paths to text")
+    for relative in [*setup.get("dirs", []), *setup.get("files", {})]:
+        if Path(relative).is_absolute() or ".." in Path(relative).parts:
+            raise bad(f"setup path '{relative}' must stay inside the temporary folder")
+    expect = case.get("expect")
+    if not isinstance(expect, dict) or not expect or set(expect) - set(REPLAY_EXPECT_KEYS):
+        raise bad(f"'expect' needs at least one of {', '.join(REPLAY_EXPECT_KEYS)} and nothing else")
+    if "exit" in expect and (not isinstance(expect["exit"], int) or isinstance(expect["exit"], bool)):
+        raise bad("'expect.exit' must be a whole number")
+    for key in ("output_contains", "files"):
+        if key in expect and not _string_list(expect[key]):
+            raise bad(f"'expect.{key}' must be a list of text")
+    if "sent_text" in expect and not isinstance(expect["sent_text"], str):
+        raise bad("'expect.sent_text' must be text")
+    if case["run"] == "rehearsal" and "sent_text" not in expect:
+        raise bad("a rehearsal case needs 'expect.sent_text', the exact text that would have gone")
+    if case["run"] == "read" and not expect.get("output_contains"):
+        raise bad("a read case needs 'expect.output_contains'")
+    if case["run"] == "read" and set(expect) - {"output_contains"}:
+        raise bad("a read case checks only 'expect.output_contains'")
+    return case
+
+
+def load_replay_cases(skill_dir: Path) -> list[dict[str, object]]:
+    folder = skill_dir / REPLAY_DIR
+    if not folder.is_dir():
+        return []
+    cases = []
+    for path in sorted(folder.glob("*.json")):
+        source = f"{skill_dir.name}/{REPLAY_DIR}/{path.name}"
+        try:
+            value = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as error:
+            raise SkillifyError(f"replay case {source}: not valid JSON ({error.msg}); see {NAME_LAW}") from error
+        cases.append(validate_replay_case(value, source))
+    return cases
+
+
+def check_replay_presence(report: LawReport, skill_dir: Path) -> None:
+    """Check 8: a new or changed skill ships one to three replay cases."""
+    cases = load_replay_cases(skill_dir)
+    if not cases:
+        report.refuse("check 8 replay cases", f"no replay cases in {REPLAY_DIR}/; add one to three")
+    elif len(cases) > REPLAY_MAX_CASES:
+        report.warn("check 8 replay cases", f"{len(cases)} replay cases; keep one to three")
+
+
+def replay_command(skill_dir: Path, case: dict[str, object], temp: Path) -> list[str] | None:
+    """The argv for a script case, or None when the input does not start with a file in the skill."""
+    try:
+        argv = shlex.split(str(case["input"]))
+    except ValueError:
+        return None
+    if not argv:
+        return None
+    argv = [item.replace("{tmp}", str(temp)).replace("{skill}", str(skill_dir)) for item in argv]
+    first = Path(argv[0])
+    if first.is_absolute():
+        candidate = first.resolve()
+        inside = skill_dir.resolve() in candidate.parents
+    else:
+        candidate = (skill_dir / first).resolve()
+        inside = skill_dir.resolve() in candidate.parents
+    if not inside or not candidate.is_file():
+        return None
+    argv[0] = str(candidate)
+    return argv
+
+
+def prepare_replay_folder(case: dict[str, object], temp: Path) -> None:
+    setup = case.get("setup", {})
+    assert isinstance(setup, dict)
+    for relative in setup.get("dirs", []):
+        (temp / relative).mkdir(parents=True, exist_ok=True)
+    for relative, text in setup.get("files", {}).items():
+        target = temp / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(str(text).replace("{tmp}", str(temp)), encoding="utf-8")
+
+
+def would_send_text(stdout: str) -> str | None:
+    """Read `would_send.text` from the JSON a rehearsal prints on stdout."""
+    for candidate in (stdout, *reversed(stdout.strip().splitlines())):
+        try:
+            value = json.loads(candidate)
+        except (json.JSONDecodeError, TypeError):
+            continue
+        if isinstance(value, dict) and isinstance(value.get("would_send"), dict):
+            text = value["would_send"].get("text")
+            return text if isinstance(text, str) else None
+    return None
+
+
+def compare_end_state(case: dict[str, object], temp: Path, returncode: int, stdout: str, stderr: str) -> list[str]:
+    expect = case["expect"]
+    assert isinstance(expect, dict)
+    misses = []
+    wanted_exit = expect.get("exit", 0)
+    if returncode != wanted_exit:
+        misses.append(f"exit {returncode}, expected {wanted_exit}")
+    output = stdout + stderr
+    for text in expect.get("output_contains", []):
+        if str(text).replace("{tmp}", str(temp)) not in output:
+            misses.append(f"output lacks {text!r}")
+    for pattern in expect.get("files", []):
+        if not list(temp.glob(str(pattern))):
+            misses.append(f"no file matches {pattern!r} in the temporary folder")
+    if "sent_text" in expect:
+        sent = would_send_text(stdout)
+        if sent != expect["sent_text"]:
+            misses.append(f"would have sent {sent!r}, expected {expect['sent_text']!r}")
+    return misses
+
+
+def run_script_case(skill_dir: Path, case: dict[str, object], argv: list[str], temp: Path) -> tuple[str, str]:
+    prepare_replay_folder(case, temp)
+    env = {
+        **os.environ,
+        "HOME": str(temp),
+        "TMPDIR": str(temp),
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "SKILLIFY_REPLAY": "1",
+    }
+    try:
+        completed = subprocess.run(
+            argv, cwd=temp, env=env, text=True, capture_output=True,
+            stdin=subprocess.DEVNULL, timeout=REPLAY_TIMEOUT_SECONDS, check=False,
+        )
+    except subprocess.TimeoutExpired:
+        return "fail", f"timed out after {REPLAY_TIMEOUT_SECONDS}s"
+    except OSError as error:
+        return "fail", f"could not run: {error.__class__.__name__}"
+    misses = compare_end_state(case, temp, completed.returncode, completed.stdout, completed.stderr)
+    return ("fail", "; ".join(misses)) if misses else ("pass", "end state matches")
+
+
+def agent_prompt(skill_text: str, case: dict[str, object]) -> str:
+    if case["run"] == "rehearsal":
+        ask = (
+            "Rehearse this skill for the task below. Do every step in your head up to the send, "
+            "stop before the send, and reply with the exact text that would have gone and nothing else."
+        )
+    else:
+        ask = "Answer the question below from this skill only. Keep the answer short."
+    return (
+        f"{ask}\nYou have no tools. Never send anything.\n\n"
+        f"<skill>\n{skill_text}\n</skill>\n\n"
+        f"{'Task' if case['run'] == 'rehearsal' else 'Question'}: {case['input']}\n"
+    )
+
+
+def claude_agent_runner(agent: str, prompt: str, cwd: Path) -> str:
+    """A fresh Claude session with no tools and no MCP servers reads the skill and answers."""
+    if agent != "claude":
+        raise SkillifyError(f"unknown replay agent '{agent}'; use {', '.join(REPLAY_AGENTS)}")
+    command = [
+        "claude", "-p", "--model", replay_agent_model(), "--no-session-persistence",
+        "--strict-mcp-config", "--tools", "",
+    ]
+    completed = subprocess.run(
+        command, input=prompt, cwd=cwd, text=True, capture_output=True,
+        timeout=REPLAY_AGENT_TIMEOUT_SECONDS, check=False,
+    )
+    if completed.returncode:
+        detail = completed.stderr.strip().splitlines() or completed.stdout.strip().splitlines()
+        raise SkillifyError(f"replay agent failed: {detail[-1] if detail else completed.returncode}")
+    return completed.stdout
+
+
+def run_agent_case(
+    skill_dir: Path, case: dict[str, object], temp: Path, agent: str, runner: AgentRunner
+) -> tuple[str, str]:
+    skill_text = (skill_dir / "SKILL.md").read_text(encoding="utf-8", errors="replace")
+    try:
+        answer = runner(agent, agent_prompt(skill_text, case), temp)
+    except (OSError, subprocess.SubprocessError, SkillifyError) as error:
+        return "fail", str(error)
+    expect = case["expect"]
+    assert isinstance(expect, dict)
+    wanted = [expect["sent_text"]] if case["run"] == "rehearsal" else list(expect.get("output_contains", []))
+    folded = answer.casefold()
+    misses = [f"answer lacks {text!r}" for text in wanted if str(text).casefold() not in folded]
+    return ("fail", "; ".join(misses)) if misses else ("pass", f"{agent} answer matches")
+
+
+def run_replay_case(
+    skill_dir: Path,
+    case: dict[str, object],
+    *,
+    agent: str | None = None,
+    agent_runner: AgentRunner = claude_agent_runner,
+) -> tuple[str, str]:
+    """Run one case in a fresh temporary folder. Returns (pass|fail|listed, detail)."""
+    with tempfile.TemporaryDirectory(prefix="skillify-replay-") as temporary:
+        temp = Path(temporary).resolve()
+        argv = replay_command(skill_dir, case, temp) if case["run"] != "read" else None
+        if case["run"] == "dry-run":
+            if argv is None:
+                return "fail", "a dry-run input must start with a script in the skill folder, such as bin/<name>"
+            if "--dry-run" not in argv:
+                print(
+                    f"skillify: note: replay {skill_dir.name}/{case['name']}: no --dry-run; "
+                    "the case runs sealed in the temporary folder with HOME set to it",
+                    file=sys.stderr,
+                )
+            return run_script_case(skill_dir, case, argv, temp)
+        if case["run"] == "rehearsal" and argv is not None:
+            if "--rehearsal" not in argv:
+                return "fail", "a rehearsal command must carry --rehearsal; not run, so nothing can send"
+            return run_script_case(skill_dir, case, argv, temp)
+        if agent is None:
+            return "listed", "agent case; run with --replay-agent claude"
+        return run_agent_case(skill_dir, case, temp, agent, agent_runner)
+
+
+def run_replays(
+    root: Path,
+    name: str,
+    *,
+    agent: str | None = None,
+    agent_runner: AgentRunner = claude_agent_runner,
+) -> list[tuple[str, str, str]]:
+    """Run every replay case of a skill. Any failed case refuses the check, for new and existing skills."""
+    if agent is not None and agent not in REPLAY_AGENTS:
+        raise SkillifyError(f"unknown replay agent '{agent}'; use {', '.join(REPLAY_AGENTS)}")
+    skill_dir = skill_root(root) / name
+    results = []
+    for case in load_replay_cases(skill_dir):
+        status, detail = run_replay_case(skill_dir, case, agent=agent, agent_runner=agent_runner)
+        results.append((str(case["name"]), status, detail))
+        print(f"skillify: replay: {name}/{case['name']} ({case['run']}): {status}: {detail}", file=sys.stderr)
+    failed = [f"refuse: {name}: replay {case} failed: {detail}; see {NAME_LAW}" for case, status, detail in results if status == "fail"]
+    if failed:
+        raise SkillifyError("\n".join(failed))
+    return results
+
+
+def example_replay_cases(name: str, kinds: Iterable[str]) -> list[dict[str, object]]:
+    """One example replay case per kind, for `skillify new` to write. Replace each with a real case."""
+    cases: list[dict[str, object]] = []
+    kinds = list(kinds)
+    if "tool" in kinds:
+        cases.append(
+            {
+                "name": "dry-run-plan",
+                "run": "dry-run",
+                "input": f"bin/{name} --dry-run",
+                "expect": {"exit": 0, "output_contains": ['"dry_run": true']},
+            }
+        )
+    if "driving" in kinds:
+        cases.append(
+            {
+                "name": "rehearse-send",
+                "run": "rehearsal",
+                "input": "Send the approved text 'Hello from the replay.' to the demo chat.",
+                "expect": {"sent_text": "Hello from the replay."},
+            }
+        )
+    if not cases:
+        cases.append(
+            {
+                "name": "read-purpose",
+                "run": "read",
+                "input": f"In one line, what does the {name} skill do?",
+                "expect": {"output_contains": [name.split("-")[0]]},
+            }
+        )
+    return cases
+
+
+def write_replay_cases(destination: Path, cases: Iterable[dict[str, object]]) -> None:
+    folder = destination / REPLAY_DIR
+    folder.mkdir(exist_ok=True)
+    for case in cases:
+        (folder / f"{case['name']}.json").write_text(
+            json.dumps(case, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        )
+
+
+def check_skill(
+    root: Path,
+    name: str,
+    *,
+    tool: Path,
+    ship_runner: Callable[[Path, Path], None] = run_ship_dry_run,
+    name_override: str | None = None,
+    changed: bool | None = None,
+    replay_agent: str | None = None,
+    agent_runner: AgentRunner = claude_agent_runner,
+) -> None:
+    source = source_root(root, name)
+    validate_name(name, existing=(skill_root(source) / name / "SKILL.md").is_file(), name_override=name_override)
+    skill_dir = skill_root(source) / name
+    skill_file = skill_dir / "SKILL.md"
+    validator = load_frontmatter_validator(tool)
+    validator(skill_file)
+    duplicates = root_skill_names(source)
+    catalog_module, catalog_path = read_skill_catalog(root)
+    # The catalog reads against the repo that holds the skill, so its off and draft neighbours stay excluded.
+    policy = catalog_module.read_catalog(catalog_path, source)
+    excluded = set(policy.get("exclude", {}))
+    excluded.discard(name)
+    duplicates = {key: [folder for folder in folders if folder not in excluded] for key, folders in duplicates.items()}
+    if len(duplicates.get(name, [])) != 1 or duplicates[name][0] != name:
+        found = ", ".join(duplicates.get(name, [])) or "none"
+        raise SkillifyError(f"duplicate or mismatched skill name '{name}': {found}")
+    if changed is None:
+        changed = skill_changed(source, name)
+    check_law(source, name, changed=changed)
+    run_replays(source, name, agent=replay_agent, agent_runner=agent_runner)
+    original_skill = skill_file.read_bytes()
+    mark_active(skill_file)
+    try:
+        add_policy_entry(root, name)
+        run_skill_tests(skill_dir)
+        if ship_runner is run_ship_dry_run:
+            ship_runner(root, tool, name, changed=changed)
+        else:
+            ship_runner(root, tool)
+    except Exception:
+        skill_file.write_bytes(original_skill)
+        raise
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(prog="skillify")
+    commands = parser.add_subparsers(dest="command", required=True)
+    new = commands.add_parser("new", help="scaffold a new skill")
+    new.add_argument("name")
+    new.add_argument("--description", required=True)
+    new.add_argument(
+        "--kind",
+        default=DEFAULT_KIND,
+        metavar="KIND",
+        help=(
+            "knowledge, tool, or driving; default: knowledge. "
+            "Join kinds with a comma for a mixed skill, such as tool,driving. "
+            f"See {NAME_LAW}."
+        ),
+    )
+    new.add_argument("--from-text", type=Path)
+    new.add_argument("--with-bin", action="store_true", help="add a bin/ script; this makes the skill a tool skill")
+    new.add_argument("--with-tests", action="store_true")
+    new.add_argument("--name-override", metavar="REASON")
+    recovered = commands.add_parser("from-session")
+    recovered.add_argument("--runtime", choices=("claude", "codex", "hermes"), required=True)
+    recovered.add_argument("--id", required=True)
+    recovered.add_argument("--name", required=True)
+    recovered.add_argument("--name-override", metavar="REASON")
+    promoted = commands.add_parser("promote")
+    promoted.add_argument("name")
+    promoted.add_argument("--name-override", metavar="REASON")
+    checked = commands.add_parser("check")
+    checked.add_argument("name")
+    checked.add_argument("--name-override", metavar="REASON")
+    checked.add_argument(
+        "--replay-agent",
+        choices=REPLAY_AGENTS,
+        help=(
+            "also run agent replay cases (read, and rehearsal without a script) in a fresh "
+            "Claude session with no tools; model: judgment tier in config/models.yaml"
+        ),
+    )
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    root = dojo_root()
+    try:
+        if args.command == "new":
+            scaffold(
+                authoring_root(root),
+                args.name,
+                args.description,
+                from_text=args.from_text,
+                with_bin=args.with_bin,
+                with_tests=args.with_tests,
+                name_override=args.name_override,
+                kind=args.kind,
+            )
+            print(f"created {args.name}")
+        elif args.command == "from-session":
+            from_session(
+                authoring_root(root),
+                args.runtime,
+                args.id,
+                args.name,
+                search_bin=session_search_path(),
+                store_root=stores_root(),
+                name_override=args.name_override,
+            )
+            print(f"draft {args.name}")
+        elif args.command == "promote":
+            _, receipt = promote(authoring_root(root), hermes_skills_root(), args.name, name_override=args.name_override)
+            print(receipt)
+        else:
+            check_skill(
+                root, args.name, tool=release_tool(root), name_override=args.name_override,
+                replay_agent=args.replay_agent,
+            )
+            print(f"ready {args.name}")
+    except (OSError, RuntimeError, subprocess.SubprocessError, json.JSONDecodeError) as error:
+        print(f"skillify: {error}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+"""Check every capture row against its raw file; the file wins."""
+
+from __future__ import annotations
+
+import json
+import sqlite3
+import sys
+from pathlib import Path
+
+sys.dont_write_bytecode = True
+sys.path.insert(0, str((Path(__file__).resolve().parent)))
+from lib.common import CaptureError, line, settings
+from lib.store import check_captures
+
+
+def main():
+    try:
+        root, store = settings()
+        for change in check_captures(root, store):
+            print(change)
+    except (CaptureError, OSError, UnicodeError, json.JSONDecodeError, sqlite3.Error) as exc:
+        print(f"capture-check · error · {line(exc)}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

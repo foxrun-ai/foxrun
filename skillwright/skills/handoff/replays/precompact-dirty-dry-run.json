@@ -1,0 +1,28 @@
+{
+  "name": "precompact-dirty-dry-run",
+  "run": "dry-run",
+  "note": "A stub check reports one settlement with no row; the dry run must show Unpromoted and the warning and write nothing.",
+  "input": "bin/handoff-precompact --dry-run --vault {tmp}/vault --workspace agent-os --session s-1 --transcript {tmp}/t.jsonl --seat architect --trigger auto --check {tmp}/check.py",
+  "setup": {
+    "dirs": [
+      "vault/agent-os/history/handoffs"
+    ],
+    "files": {
+      "check.py": "import json, sys\nassert \"--settlements\" in sys.argv and \"--transcript\" in sys.argv\nprint(json.dumps({\"session\": \"s-1\", \"model\": \"fixture-model-placeholder\", \"turns\": 2, \"settlements\": 1, \"promoted\": [],\n                  \"unpromoted\": [{\"index\": 2, \"timestamp\": \"2026-09-27T23:03:00Z\", \"local_time\": \"2026-09-27 19:03:00 EDT\",\n                                  \"text\": \"From now on every seat writes its own handoff before compaction.\", \"approval\": False}],\n                  \"ids\": [\"T286\"], \"files\": []}))\n",
+      "t.jsonl": "{}\n"
+    }
+  },
+  "expect": {
+    "exit": 0,
+    "output_contains": [
+      "dry run: would write {tmp}/vault/agent-os/history/handoffs/",
+      "-001-architect-precompact.md",
+      "dry run: would warn: Pre-compaction check: 1 @Person@ settlement has no row",
+      "## Unpromoted",
+      "2026-09-27 19:03:00 EDT (U002): “From now on every seat writes its own handoff before compaction.”",
+      "check: ",
+      "--transcript {tmp}/t.jsonl --settlements",
+      "0. Boot Foxrun: `python3 ~/.foxrun/foxrun.py start --workspace agent-os --seat architect`"
+    ]
+  }
+}

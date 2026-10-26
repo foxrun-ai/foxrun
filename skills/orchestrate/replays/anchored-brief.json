@@ -1,0 +1,14 @@
+{
+  "name": "anchored-brief",
+  "run": "dry-run",
+  "input": "bin/brief-check {tmp}/brief.md",
+  "setup": {
+    "files": {
+      "brief.md": "# T289 opportunity kinds and status values\n## Decisions\nSELECT id, statement, status, subject_tags, replaces FROM decisions WHERE subject_tags LIKE '%customer-ops%';\n## Person's logged words\nPerson 9.29: use the customer-ops lifecycle agreed with the communications lead.\n## Current source of truth\nRead the customer-ops model and pipeline pages.\n## Owning-lead sources\nRead session 0d4d8625, T171 comments 343 to 350, and the Texts artifact config.\n## Chat decisions with no decisions row\nThe 9.22 chat agreement is not yet a decisions row.\n## Scope and out of scope\nJudge table shape. Do not invent business words.\n## Disk facts\nOld rows contain wholesale and partnership.\n"
+    }
+  },
+  "expect": {
+    "exit": 0,
+    "output_contains": ["brief-check: pass"]
+  }
+}

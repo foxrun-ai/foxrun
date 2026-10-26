@@ -1,0 +1,11 @@
+{
+  "name": "runs-the-installed-nightly",
+  "run": "read",
+  "input": "What does /tidy run, and where is its receipt?",
+  "expect": {
+    "output_contains": [
+      "~/.foxrun/cron/nightly.py",
+      "runs/nightly/"
+    ]
+  }
+}

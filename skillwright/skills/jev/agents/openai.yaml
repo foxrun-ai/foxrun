@@ -1,0 +1,6 @@
+interface:
+  display_name: "Jev"
+  short_description: "Run explicit typed Jev evaluations"
+  default_prompt: "Use $jev to evaluate this state with typed questions."
+policy:
+  allow_implicit_invocation: false

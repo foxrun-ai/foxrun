@@ -1,0 +1,6 @@
+check	value	source
+forbidden_phrases	unlock potential|revolutionize workflows|delve into|seamlessly leverage	Product definition: config/lint/brand.tsv
+max_table_columns	4	Product definition: config/lint/brand.tsv
+max_code_line	78	Product definition: config/lint/brand.tsv
+headings	Capitalized	Product definition: config/lint/brand.tsv
+widths	390|1440	Product definition: config/lint/brand.tsv

@@ -1,0 +1,147 @@
+{
+  "version": 1,
+  "about": "The folder model and the database checks that workspace_schematic.py lints against. Each line names the decision ids it comes from. A ruled decision beats an older document.",
+  "sources": [
+    "foxrun/docs/workspace-structure/workspace-spec.md",
+    "the decisions table",
+    "blueprint v11"
+  ],
+  "ignore": {
+    "names": [".DS_Store", ".gitkeep", "__pycache__", ".pytest_cache", ".ruff_cache"],
+    "rules": ["outside-data-db-kinds"],
+    "line": "Filesystem and tool files stay with their tool. They are not counted."
+  },
+  "no_traverse": {
+    "hidden": true,
+    "names": ["archive"],
+    "line": "Not opened. Only the name is read."
+  },
+  "groups": [
+    {"id": "contracts", "label": "Contracts"},
+    {"id": "team", "label": "Team"},
+    {"id": "business", "label": "Business"},
+    {"id": "knowledge", "label": "Knowledge"},
+    {"id": "history", "label": "History"},
+    {"id": "outside", "label": "Not in the model"}
+  ],
+  "root": {
+    "rules": ["pr-root-order"],
+    "line": "The root order has no place for this."
+  },
+  "nested": {
+    "open": "No ruling says whether this folder may hold folders.",
+    "with": "It goes with the folder above."
+  },
+  "private_names": {
+    "folder": "people",
+    "shown_as": "(private name)"
+  },
+  "model_lines": {
+    "missing": "The model needs it. It is not on disk.",
+    "arrives": "Not on disk yet. It arrives from {paths}.",
+    "no_functions": "One page per function row. No function rows are loaded for this workspace.",
+    "location_fail": "{count} of these locations fail the rule."
+  },
+  "slots": [
+    {"path": "AGENTS.md", "kind": "file", "group": "contracts", "collection": "base/rules", "rules": ["pr-base-rules"], "required": true},
+    {"path": "CLAUDE.md", "kind": "file", "group": "contracts", "collection": "base/rules", "rules": ["pr-base-rules"], "required": true},
+    {"path": "RESOLVER.md", "kind": "file", "group": "contracts", "collection": "base/rules", "rules": ["pr-base-rules"], "required": true},
+    {"path": "SCHEMA.md", "kind": "file", "group": "contracts", "collection": "base/dictionary", "rules": ["pr-schema-md-view"], "required": true},
+    {"path": "GLOSSARY.md", "kind": "file", "group": "contracts", "collection": "base/dictionary", "rules": ["glossary-md"], "required": true},
+    {"path": "DESIGN.md", "kind": "file", "group": "contracts", "collection": "design/design-rules", "rules": ["pr-design-rules", "pr-design-module-shape", "pr-brand-md"], "required": false,
+     "required_with": ["commerce"], "why": "Required for a workspace that sells."},
+    {"path": "BRAND.md", "kind": "file", "group": "contracts", "collection": "base/rules", "rules": ["pr-brand-in-base", "pr-brand-md"], "required": false,
+     "required_with": ["commerce"], "why": "Required for a workspace that sells."},
+
+    {"path": "CAPABILITIES.md", "kind": "file", "group": "team", "collection": "capabilities/runtime-setup", "rules": ["pr-capabilities-runtime-setup"], "required": true},
+    {"path": "index.md", "kind": "file", "group": "team", "collection": "base/map", "rules": ["pr-base-map"], "required": true},
+    {"path": ".agents", "kind": "folder", "group": "team", "collection": "capabilities/runtime-setup", "rules": ["pr-capabilities-runtime-setup"], "required": false},
+    {"path": ".claude", "kind": "folder", "group": "team", "collection": "capabilities/runtime-setup", "rules": ["pr-capabilities-runtime-setup"], "required": false},
+    {"path": ".codex", "kind": "folder", "group": "team", "collection": "capabilities/runtime-setup", "rules": ["pr-capabilities-runtime-setup"], "required": false},
+    {"path": ".mcp.json", "kind": "file", "group": "team", "collection": "capabilities/runtime-setup", "rules": ["pr-capabilities-runtime-setup"], "required": false},
+
+    {"path": "{workspace}.md", "kind": "file", "group": "business", "collection": "base/front-pages", "rules": ["pr-base-front-pages"], "required": true},
+    {"path": "{function-page}", "kind": "file", "group": "business", "collection": "base/front-pages", "rules": ["pr-base-front-pages"], "required": true},
+    {"path": "data", "kind": "folder", "group": "business", "collection": "export", "rules": ["one-core-database"], "required": false,
+     "holds": {"suffix": ".jsonl", "stem": "blueprint-table", "rules": ["one-core-database"], "line": "data holds one export per table and nothing else."}},
+
+    {"path": "wiki", "kind": "folder", "group": "knowledge", "collection": "wiki", "rules": ["pr-wiki-knowledge-base"], "required": true, "expand": true,
+     "closed": {"rules": ["pr-wiki-knowledge-base"], "line": "The wiki holds concepts, entities, comparisons, queries, and raw.", "files": ["SCHEMA.md", "index.md", "log.md"]}},
+    {"path": "wiki/concepts", "kind": "folder", "group": "knowledge", "collection": "wiki/knowledge-base", "rules": ["pr-wiki-knowledge-base"], "required": false},
+    {"path": "wiki/entities", "kind": "folder", "group": "knowledge", "collection": "wiki/knowledge-base", "rules": ["pr-wiki-knowledge-base"], "required": false},
+    {"path": "wiki/comparisons", "kind": "folder", "group": "knowledge", "collection": "wiki/knowledge-base", "rules": ["pr-wiki-knowledge-base"], "required": false},
+    {"path": "wiki/queries", "kind": "folder", "group": "knowledge", "collection": "wiki/knowledge-base", "rules": ["pr-wiki-knowledge-base", "pr-queries-document"], "required": false},
+    {"path": "wiki/raw", "kind": "folder", "group": "knowledge", "collection": "wiki/raw", "rules": ["pr-sources-into-raw"], "required": false, "expand": true,
+     "closed": {"rules": ["pr-sources-into-raw"], "line": "Raw sorts by type: articles, papers, transcripts, documents, exports, snapshots, handoffs, outputs, assets.", "files": []}},
+    {"path": "wiki/raw/articles", "kind": "folder", "group": "knowledge", "collection": "wiki/raw", "rules": ["pr-sources-into-raw"], "required": false},
+    {"path": "wiki/raw/papers", "kind": "folder", "group": "knowledge", "collection": "wiki/raw", "rules": ["pr-sources-into-raw"], "required": false},
+    {"path": "wiki/raw/transcripts", "kind": "folder", "group": "knowledge", "collection": "wiki/raw", "rules": ["pr-sources-into-raw"], "required": false},
+    {"path": "wiki/raw/documents", "kind": "folder", "group": "knowledge", "collection": "wiki/raw", "rules": ["pr-sources-into-raw"], "required": false},
+    {"path": "wiki/raw/exports", "kind": "folder", "group": "knowledge", "collection": "wiki/raw", "rules": ["pr-sources-into-raw"], "required": false},
+    {"path": "wiki/raw/snapshots", "kind": "folder", "group": "knowledge", "collection": "wiki/raw", "rules": ["pr-snapshots-in-raw"], "required": false},
+    {"path": "wiki/raw/handoffs", "kind": "folder", "group": "knowledge", "collection": "wiki/raw", "rules": ["pr-raw-holds-trail"], "required": false},
+    {"path": "wiki/raw/outputs", "kind": "folder", "group": "knowledge", "collection": "wiki/raw", "rules": ["pr-raw-holds-trail"], "required": false},
+    {"path": "wiki/raw/assets", "kind": "folder", "group": "knowledge", "collection": "wiki/raw", "rules": ["pr-sources-into-raw"], "required": false},
+    {"path": "docs", "kind": "folder", "group": "knowledge", "collection": "work/build", "rules": ["pr-docs-build-in-work"], "required": true, "expand": true,
+     "closed": {"rules": ["pr-docs-no-shaping"], "line": "docs holds specs, adr, and notes only.", "files": []}},
+    {"path": "docs/specs", "kind": "folder", "group": "knowledge", "collection": "work/build", "rules": ["pr-docs-no-shaping"], "required": false},
+    {"path": "docs/adr", "kind": "folder", "group": "knowledge", "collection": "work/build", "rules": ["pr-docs-no-shaping"], "required": false},
+    {"path": "docs/notes", "kind": "folder", "group": "knowledge", "collection": "work/build", "rules": ["pr-docs-no-shaping"], "required": false},
+    {"path": "design", "kind": "folder", "group": "knowledge", "collection": "design", "rules": ["pr-design-module-shape"], "required": false, "expand": true,
+     "open": {"rules": ["pr-design-module-shape", "pr-design-leftovers"], "line": "No ruling names this as a collection yet."}},
+    {"path": "design/briefs", "kind": "folder", "group": "knowledge", "collection": "design/creative", "rules": ["pr-db-collection-creative"], "required": false},
+
+    {"path": "log.md", "kind": "file", "group": "history", "collection": "base/timeline", "rules": ["pr-base-timeline"], "required": false},
+    {"path": "log.jsonl", "kind": "file", "group": "history", "collection": "base/timeline", "rules": ["pr-base-timeline"], "required": false},
+    {"path": "archive", "kind": "folder", "group": "history", "collection": "archive", "rules": ["pr-root-order"], "required": false}
+  ],
+  "moves": [
+    {"match": "CONCEPTS.md", "kind": "file", "to": "GLOSSARY.md", "rules": ["glossary-md"], "line": "The words file is named GLOSSARY.md."},
+    {"match": "HOME.md", "kind": "file", "to": "{workspace}.md", "rules": ["pr-base-front-pages"], "line": "The workspace page takes the name of the workspace."},
+    {"match": "home.md", "kind": "file", "to": "{workspace}.md", "rules": ["pr-base-front-pages"], "line": "The workspace page takes the name of the workspace."},
+    {"match": "TOOLS.md", "kind": "file", "to": "CAPABILITIES.md", "rules": ["pr-capabilities-md"], "line": "CAPABILITIES.md replaces TOOLS.md."},
+    {"match": "*.sqlite", "kind": "file", "to": "data.db", "to_outside": true, "rules": ["one-core-database", "data-db-name", "pr-db-old-files-retire-after-parity"], "line": "Its rows move into data.db. The file retires after the row count check."},
+    {"match": "notes", "kind": "folder", "to": "docs/notes", "rules": ["pr-docs-no-shaping"], "line": "Notes live in docs/notes."},
+    {"match": "snapshots", "kind": "folder", "to": "wiki/raw/snapshots", "rules": ["pr-snapshots-in-raw"], "line": "Snapshots is a type folder in wiki/raw."},
+    {"match": "handoffs", "kind": "folder", "to": "wiki/raw/handoffs", "rules": ["pr-raw-holds-trail"], "line": "Handoffs live in wiki/raw."},
+    {"match": "outputs", "kind": "folder", "to": "wiki/raw/outputs", "rules": ["pr-raw-holds-trail"], "line": "Outputs live in wiki/raw."},
+    {"match": "sources", "kind": "folder", "to": "wiki/raw", "rules": ["pr-sources-into-raw"], "line": "sources folds into wiki/raw, sorted by type."},
+    {"match": "scripts", "kind": "folder", "to": "the skill that runs the code", "to_outside": true, "rules": ["pr-scripts"], "line": "Code lives in the skill that runs it."},
+    {"match": "agreements", "kind": "folder", "to": "wiki/raw/documents", "rules": ["pr-agreement-base"], "line": "Agreement state is rows. Signed originals go to wiki/raw/documents."},
+    {"match": "{function}", "kind": "folder", "to": "{function-page}", "rules": ["no-function-folders"], "line": "A function is a row and a page, not a folder."},
+    {"match": "functions", "kind": "folder", "to": "{function-page}", "rules": ["no-function-folders"], "line": "A function is a row and a page, not a folder."},
+    {"match": "docs/plans", "kind": "folder", "to": "docs/specs", "rules": ["pr-docs-living"], "line": "A plan is a spec plus task rows."},
+    {"match": "docs/shaping", "kind": "folder", "to": "docs/notes", "rules": ["pr-docs-no-shaping"], "line": "Shaping is an activity, not a folder."},
+    {"match": "docs/solutions", "kind": "folder", "to": "work_lessons", "to_outside": true, "rules": ["pr-docs-living"], "line": "Solutions become lesson rows."},
+    {"match": "wiki/raw/captures", "kind": "folder", "to": "wiki/raw", "rules": ["pr-sources-into-raw"], "line": "No captures folder. Capturing is how a thing arrives."},
+    {"match": "wiki/raw/reports", "kind": "folder", "to": "wiki/raw/exports", "rules": ["pr-raw-types"], "line": "The folder is named exports, not reports."}
+  ],
+  "decide": [
+    {"match": "scratch", "kind": "folder", "rules": ["pr-root-order"], "line": "The root order does not list scratch. The vault contract still sends working files there."},
+    {"match": "kit", "kind": "folder", "rules": ["module-vs-collection", "pr-root-order"], "line": "A kit is used as it ships. The root order does not say where a kit folder sits."},
+    {"match": "state", "kind": "folder", "rules": ["one-core-database", "db-design-rule-r13"], "line": "Two rulings name different folders for table exports: data and state."},
+    {"match": "design/reference", "kind": "folder", "rules": ["pr-design-leftovers"], "line": "The folder is ruled. No ruling names its collection yet."}
+  ],
+  "module_tiers": {
+    "rules": ["pr-tiers", "tiers-and-organization"],
+    "base": ["base", "work", "people", "design", "wiki"],
+    "workspace-type": ["commerce"],
+    "add-on": ["amazon", "ugc", "tiktok-shop"]
+  },
+  "database": {
+    "file_name": {"value": "data.db", "rules": ["data-db-name"], "line": "The one core file is named data.db."},
+    "missing_object": {"rules": ["one-core-database"], "line": "Blueprint v11 has it. The database does not."},
+    "extra_object": {"rules": ["every-part-intentional", "modules-inside-core"], "line": "The database has it. Blueprint v11 has no row for it."},
+    "prefix": {"rules": ["module-table-prefix"], "line": "The name does not start with its module."},
+    "kind": {"rules": ["pr-database-types"], "line": "The blueprint says {model}. The database has a {db}."},
+    "extra_field": {"rules": ["every-part-intentional"], "line": "The database has fields that blueprint v11 does not list."},
+    "missing_field": {"rules": ["db-column-tests"], "line": "Blueprint v11 lists fields that the database does not have."},
+    "field_type": {"rules": ["db-column-tests"], "line": "A field's storage type differs from blueprint v11."},
+    "workspace_list": {"rules": ["one-core-database"], "line": "The table does not accept rows for this workspace."},
+    "tier": {"rules": ["pr-tiers", "tiers-and-organization"], "line": "The module row's tier differs from the ruled tier."},
+    "tier_open": {"rules": ["pr-tiers"], "line": "No ruling names this module's tier."},
+    "installs": {"rules": ["modules-inside-core", "pr-db-installed-module-word"], "line": "No installed-module row says this workspace uses the module."},
+    "not_loaded": {"rules": ["one-core-database", "pr-db-old-files-retire-after-parity"], "line": "The records are still in the old file. data.db has no rows for them."},
+    "import_only": {"rules": ["db-column-tests"], "line": "An import table. It exists only while records move, then it is dropped."}
+  }
+}

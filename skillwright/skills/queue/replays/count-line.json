@@ -1,0 +1,6 @@
+{
+  "name": "count-line",
+  "run": "read",
+  "input": "Which task status does the queue count, and does the queue accept tasks?",
+  "expect": {"output_contains": ["in-review"]}
+}

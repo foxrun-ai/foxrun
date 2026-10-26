@@ -1,0 +1,50 @@
+rule	value
+page	~/foxrun/<workspace>/team/TEAM.md
+source_folder	the folder of the page
+frontmatter_key	type
+frontmatter_key	workspace
+frontmatter_key	timestamp
+frontmatter_keys_allowed	type|workspace|timestamp
+frontmatter_value	type=index
+frontmatter_value	workspace=<the folder name of the workspace>
+frontmatter_format	timestamp=ISO 8601 with time and offset
+h1	Team: <workspace>
+block_order	h1 > lead line > go-to line > count block > table > rule line > shared line > Files > Notes
+go_to_line	required, word for word: **Go to:** [State](../STATE.md) · [Capabilities](../tools/CAPABILITIES.md) · [Index](../index.md)
+heading_order	Files > Notes
+headings_allowed	Files|Notes
+lead_line	The lead is [`<lead>`](<lead>.md). A script makes the table and the tree from the files in this folder. Write only in Notes.
+lead_rule	the lead is the seat file lead-<workspace>.md; when it is missing, the lead line says: This team has no lead file yet.
+count_block_labels	LEAD|SEATS|MADE
+count_value	SEATS=number of table rows
+count_value	MADE=local date and time, YYYY-MM-DD HH:MM, same minute as timestamp
+table_columns	Seat|What it does|Runs on
+row_source	one row for each *.md directly in the folder, without TEAM.md
+row_order	the lead first; then A to Z by file name
+cell_source	Seat=the file name without .md, in backticks, as a link to the file; the lead row adds ' · lead'
+cell_source	What it does=front matter summary; when there is no summary, front matter description; all of it, on one line; (not on disk) when both are missing
+cell_source	Runs on=front matter runtimes, with ' · ' between; (not on disk) when the key is missing
+standard_line	Each lead directs its own workers. Workers do not start other workers. This rule is in [`AGENTS.md`](<link>).
+standard_line	Shared seats work for every workspace. They are in [`<system home>/agents/`](<link>).
+standard_line_source	the two rule sentences must be in <system home>/AGENTS.md, word for word
+section	Files=one code fence with a tree of the folder: TEAM.md first, then the table rows in table order, then the folders A to Z with their files
+tree_label	TEAM.md=this page
+tree_label	a file with front matter id=seat; the lead adds ' · lead'
+tree_label	a file with front matter name and no id=Claude file, not a seat file
+tree_label	a file in claude/ or codex/=made from <seat>.md when that seat file is in the folder; else (not on disk)
+tree_form	├─ and └─ and │; labels start in one column; dot files are not shown
+section	Notes=the standard line, then the two note marks; the build keeps every line between the marks
+notes_line	A new build keeps the lines between the two note marks.
+notes_marks	<!-- notes:start -->|<!-- notes:end -->
+link_form	relative path from the page
+link_target	every link opens a file or folder that exists
+max_code_line	78
+max_table_columns	4
+forbidden_text	Source: agent_new.py|No records yet.|TODO|TBD
+emoji	none
+lint_at_source	a file in team/ with no front matter id is a finding on that file
+lint_at_source	a seat whose summary is the template line 'Lead <workspace> and keep work clear.' is a finding on that seat
+purpose	see purpose.md: the reader, the question the page answers in ten seconds, and the next page
+required_table	*=Seat|What it does|Runs on
+section_nonempty	Files
+section_fence_count	Files=1

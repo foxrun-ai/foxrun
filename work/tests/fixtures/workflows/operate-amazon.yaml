@@ -1,0 +1,43 @@
+# Synthetic runner fixture. Matches the graph used by the flow regression tests.
+version: 1
+flow: operate-amazon
+kind: workflow
+purpose: "Keep one Amazon listing correct: audit it, check the audit, then one ask."
+inputs:
+  listing: {required: true, what: "The listing to audit: its ASIN or SKU"}
+members:
+  amazon-operator: {seat: amazon-operator}
+  creative-reviewer: {seat: creative-reviewer}
+  mercer: {seat: mercer}
+graph:
+  audit:
+    member: amazon-operator
+    skill: null
+    needs: []
+    input: [listing, evidence package, account notice]
+    output: "Findings and the proposed correction. Nothing is submitted."
+    done_when: {file: audit.md}
+    return: mercer
+  check:
+    member: creative-reviewer
+    skill: null
+    needs: [audit]
+    input: [proposed correction, evidence]
+    output: "Cleared or not cleared, with the unresolved items."
+    verdict: true
+    done_when: {file: check.md}
+    return: mercer
+  decide:
+    member: mercer
+    skill: null
+    needs: [check]
+    input: [audit.md, check.md]
+    output: "One ask to the person, if the catalog changes."
+    gate: catalog
+    done_when: {file: decide.md}
+    return: person
+loop:
+  repair: {on: check, repeat: [audit, check], max_rounds: 2}
+rules:
+  - "The catalog fulfills live orders. No upload and no submission without the person's yes."
+  - "The reviewer never edits the thing it reviews."

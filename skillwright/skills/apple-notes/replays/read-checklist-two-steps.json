@@ -1,0 +1,6 @@
+{
+  "name": "read-checklist-two-steps",
+  "run": "read",
+  "input": "Can the apple-notes skill make native checklist circles with HTML alone? Answer yes or no, and name the method it uses instead.",
+  "expect": {"output_contains": ["no", "keystroke"]}
+}

@@ -1,0 +1,19 @@
+#!/bin/sh
+set -eu
+export FOXRUN_HOME="${FOXRUN_HOME:-$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)}"
+export PYTHONDONTWRITEBYTECODE=1
+payload=$(cat)
+# Auxiliary calls include titles, vision, and failures. Recover only after a successful compression.
+if ! printf '%s' "$payload" | python3 -c 'import json, sys
+try:
+    d = json.load(sys.stdin)
+except ValueError:
+    d = {}
+e = (d.get("extra") or {}) if isinstance(d, dict) else {}
+go = isinstance(d, dict) and d.get("hook_event_name") == "post_auxiliary_call" and (
+    e.get("aux_task") == "compression" and not e.get("error"))
+sys.exit(0 if go else 1)' 2>/dev/null; then
+    printf '%s\n' '{}'
+    exit 0
+fi
+printf '%s' "$payload" | python3 "$FOXRUN_HOME/memory/session_start.py" "$@"

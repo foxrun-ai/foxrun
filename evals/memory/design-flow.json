@@ -1,0 +1,625 @@
+{
+  "foxrun": {
+    "tree": [
+      [
+        "AGENTS.md",
+        "rules every agent follows",
+        "run",
+        "built"
+      ],
+      [
+        "foxrun work",
+        "the one writer of tracker rows; the seat check is new (no seat set means worker)",
+        "run",
+        "built"
+      ],
+      [
+        "foxrun table",
+        "propose, accept, reject a row",
+        "run",
+        "staged"
+      ],
+      [
+        "hooks/",
+        "session start and end hooks; they call work/tools/session_run.py",
+        "run",
+        "built"
+      ],
+      [
+        "handoff-precompact",
+        "the hook that writes a handoff from rows before a compact",
+        "run",
+        "built"
+      ],
+      [
+        "handoff-boot",
+        "the hook that prints the boot page at a session start",
+        "run",
+        "built"
+      ],
+      [
+        "foxrun night (flags)",
+        "flags his words that no row holds",
+        "run",
+        "built"
+      ],
+      [
+        "wiki/compile.py",
+        "builds wiki pages from raw sources",
+        "run",
+        "built"
+      ],
+      [
+        "foxrun decisions",
+        "lists decisions that name a replacement with no link",
+        "run",
+        "built"
+      ],
+      [
+        "foxrun backup",
+        "exports the tables to JSONL",
+        "run",
+        "built"
+      ],
+      [
+        "launchd/",
+        "the Mac's own scheduler; it calls the night command",
+        "run",
+        "new"
+      ],
+      [
+        "foxrun night",
+        "one command: the code half, then the model half",
+        "run",
+        "new"
+      ],
+      [
+        "memory/boot.py",
+        "code that builds the boot page and his readout from rows",
+        "run",
+        "new"
+      ],
+      [
+        "foxrun decisions current",
+        "gives the rulings that hold now; leaves out replaced text",
+        "run",
+        "new"
+      ],
+      [
+        "memory/check.py and memory/evals/",
+        "nightly on test data: no meaning changed without approval, replaced text stays out, a second run adds nothing",
+        "run",
+        "new"
+      ],
+      [
+        "foxrun flow",
+        "one program for every loop: who reads alone, the order, the stop rule; it stops on a rule it cannot enforce",
+        "run",
+        "new"
+      ],
+      [
+        "skills/",
+        "one folder per loop: SKILL.md, a data file, a script that calls the runner",
+        "run",
+        "new"
+      ],
+      [
+        "(tap page)",
+        "one page where he taps yes or discuss on each proposal",
+        "run",
+        "new"
+      ],
+      [
+        "health check",
+        "a second small job on its own timer; it writes health.json",
+        "run",
+        "new"
+      ],
+      [
+        "memory_sources",
+        "rows: one per raw file, with its hash, who made it, and if it is trusted",
+        "mem",
+        "new"
+      ],
+      [
+        "memory_evidence",
+        "rows: a decision or a lesson, linked to its sources",
+        "mem",
+        "new"
+      ],
+      [
+        "health.json",
+        "did the night run; read by his page",
+        "mem",
+        "new"
+      ],
+      [
+        "runtime sessions",
+        "every message, inside ~/.claude, ~/.codex, ~/.hermes",
+        "mem",
+        "built"
+      ],
+      [
+        "runtime notes",
+        "each runtime's own notes; Foxrun reads them and never writes them",
+        "mem",
+        "built"
+      ],
+      [
+        "raw/",
+        "sources and the trail of one business, never edited",
+        "mem",
+        "built"
+      ],
+      [
+        "runs/",
+        "one folder per job: manifest.json, steps.jsonl, report.md",
+        "mem",
+        "built"
+      ],
+      [
+        "events_comments",
+        "rows: his words and each agent's notes, with a time",
+        "mem",
+        "built"
+      ],
+      [
+        "events_receipts",
+        "one receipt per material moment",
+        "mem",
+        "built"
+      ],
+      [
+        "history/handoffs/",
+        "one frozen note per lead per day",
+        "mem",
+        "built"
+      ],
+      [
+        "decisions_proposals",
+        "rows that wait for his tap",
+        "mem",
+        "staged"
+      ],
+      [
+        "decisions_approvals",
+        "rows: his yes, with his real words or none",
+        "mem",
+        "built"
+      ],
+      [
+        "decisions",
+        "rows: one per ruling, with his words",
+        "mem",
+        "built"
+      ],
+      [
+        "decisions_links",
+        "rows: new ruling, old ruling, whole or clause, the clause words",
+        "mem",
+        "new"
+      ],
+      [
+        "memory_lessons",
+        "rows: one per lesson, with its source and scope",
+        "mem",
+        "staged"
+      ],
+      [
+        "data.db",
+        "the one database: rows that change, a workspace on each",
+        "mem",
+        "staged"
+      ],
+      [
+        "wiki/",
+        "pages that hold, one business each; a page is draft or accepted",
+        "mem",
+        "built"
+      ],
+      [
+        "memory_rollups",
+        "counts folded from the events of the period",
+        "mem",
+        "new"
+      ],
+      [
+        "backups/",
+        "the tables as files, versioned; a restore check passes before anything is folded",
+        "mem",
+        "built"
+      ],
+      [
+        "BOOT.md",
+        "a seat's front page: a global part and the active workspace's part, 150 lines at most",
+        "mem",
+        "new"
+      ],
+      [
+        "(his readout)",
+        "his front page: what moved, what needs him, blockers, new rulings, trends",
+        "mem",
+        "new"
+      ],
+      [
+        "night report",
+        "what the night job did, skipped, and proposes",
+        "mem",
+        "new"
+      ]
+    ],
+    "streams": [
+      [
+        "During a chat",
+        [
+          {
+            "row": "Raw record",
+            "t": "every message",
+            "say": "The runtime keeps the message as it was. Foxrun does not write it.",
+            "writes": [
+              "runtime sessions"
+            ],
+            "m": "code"
+          },
+          {
+            "row": "Raw record",
+            "t": "a source comes in",
+            "say": "A source is saved once. Code registers it with its hash, who made it, and whether it is trusted.",
+            "writes": [
+              "raw/",
+              "memory_sources"
+            ],
+            "m": "code",
+            "new": 1,
+            "rule": "Outside text never becomes an instruction or an approval."
+          },
+          {
+            "row": "Daily notes",
+            "t": "agent decides",
+            "say": "The agent that did the work writes its own record: a comment, a run, a receipt.",
+            "runs": [
+              "AGENTS.md",
+              "foxrun work"
+            ],
+            "writes": [
+              "events_comments",
+              "events_receipts"
+            ],
+            "m": "model",
+            "rule": "A record of work is written by the agent that did it."
+          },
+          {
+            "row": "Sorted store",
+            "t": "he says yes",
+            "say": "A lead writes his ruling in his words, in the same turn. If it replaces an older one, the link says all of it or which words.",
+            "runs": [
+              "foxrun work"
+            ],
+            "writes": [
+              "decisions",
+              "decisions_approvals",
+              "decisions_links",
+              "memory_evidence"
+            ],
+            "m": "model",
+            "rule": "A lead only, checked by seat; no seat set means worker. The clause words must match the old ruling exactly, once."
+          },
+          {
+            "row": "Sorted store",
+            "t": "agent decides",
+            "say": "A lesson, or any reading by an agent, is a proposal. The agent cannot accept its own.",
+            "runs": [
+              "foxrun table"
+            ],
+            "writes": [
+              "decisions_proposals"
+            ],
+            "m": "model",
+            "new": 1,
+            "rule": "Proposal only."
+          },
+          {
+            "row": "Daily notes",
+            "t": "before a compact",
+            "say": "Code writes a handoff from the rows, then the boot page is rebuilt.",
+            "runs": [
+              "handoff-precompact",
+              "memory/boot.py"
+            ],
+            "reads": [
+              "events_comments",
+              "decisions"
+            ],
+            "writes": [
+              "history/handoffs/",
+              "BOOT.md"
+            ],
+            "m": "code"
+          }
+        ]
+      ],
+      [
+        "In the background",
+        [
+          {
+            "row": "Night job",
+            "t": "schedule, nightly",
+            "say": "The scheduler starts the one command. It takes a lock, writes its own run row, and reads from where it stopped.",
+            "runs": [
+              "launchd/",
+              "foxrun night"
+            ],
+            "writes": [
+              "night report"
+            ],
+            "m": "code",
+            "new": 1,
+            "rule": "A missed night is caught up. The last good build stays until a new one passes."
+          },
+          {
+            "row": "Night job",
+            "t": "code half",
+            "say": "It exports the tables, checks the links between rulings, compares the rows with the last export to find a change made around the writer, and files bugs. It fixes nothing.",
+            "runs": [
+              "foxrun night",
+              "foxrun backup",
+              "foxrun decisions"
+            ],
+            "reads": [
+              "decisions",
+              "decisions_links",
+              "events_comments",
+              "data.db"
+            ],
+            "writes": [
+              "backups/",
+              "night report"
+            ],
+            "m": "code",
+            "new": 1,
+            "rule": "It runs with no model."
+          },
+          {
+            "row": "Sorted store",
+            "t": "code half",
+            "say": "It marks an old ruling replaced only where a link says the whole ruling. It folds the day's events into week and month rows.",
+            "runs": [
+              "foxrun night"
+            ],
+            "reads": [
+              "decisions_links",
+              "events_comments",
+              "events_receipts"
+            ],
+            "writes": [
+              "decisions",
+              "memory_rollups"
+            ],
+            "m": "code",
+            "new": 1,
+            "rule": "Each change has a tested way back: its activity line. A month is counted from events, never from weeks."
+          },
+          {
+            "row": "Sorted store",
+            "t": "code half",
+            "say": "Raw sources become wiki pages marked draft. The compile program uses no model.",
+            "runs": [
+              "foxrun night",
+              "wiki/compile.py"
+            ],
+            "reads": [
+              "raw/",
+              "decisions"
+            ],
+            "writes": [
+              "wiki/"
+            ],
+            "m": "code",
+            "new": 1,
+            "rule": "A draft is not on a front page, not cited, and out of search. The page before it is kept, so the change has a way back."
+          },
+          {
+            "row": "Night job",
+            "t": "model half",
+            "say": "It flags his words that no row holds, and reads the runtimes' own notes and the job folders.",
+            "runs": [
+              "foxrun night",
+              "foxrun night (flags)"
+            ],
+            "reads": [
+              "runtime sessions",
+              "runtime notes",
+              "runs/",
+              "events_comments",
+              "decisions"
+            ],
+            "writes": [
+              "night report"
+            ],
+            "m": "both",
+            "rule": "Skipped with a line in the report if no runtime is found."
+          },
+          {
+            "row": "Sorted store",
+            "t": "model half",
+            "say": "It proposes: a row for a flagged word, a new lesson, a merge of two lessons, a page from draft to accepted, lines to drop from a runtime's notes.",
+            "runs": [
+              "foxrun night",
+              "foxrun table"
+            ],
+            "reads": [
+              "night report",
+              "memory_lessons",
+              "wiki/"
+            ],
+            "writes": [
+              "decisions_proposals"
+            ],
+            "m": "model",
+            "new": 1,
+            "rule": "It proposes. He taps. It never writes a runtime's notes."
+          },
+          {
+            "row": "Front page",
+            "t": "night ends, or a shown row changes",
+            "say": "Code builds both front pages from rows, inside the cap. Each page shows its build time and its row counts.",
+            "runs": [
+              "memory/boot.py",
+              "foxrun decisions current"
+            ],
+            "reads": [
+              "decisions",
+              "decisions_links",
+              "memory_lessons",
+              "history/handoffs/",
+              "decisions_proposals",
+              "memory_rollups",
+              "data.db"
+            ],
+            "writes": [
+              "BOOT.md",
+              "(his readout)"
+            ],
+            "m": "code",
+            "new": 1,
+            "rule": "No agent writes a front page. A changed row marks its page stale."
+          },
+          {
+            "row": "Night job",
+            "t": "its own timer",
+            "say": "A second small job checks that the night ran and finished. If not, his page says so on line one.",
+            "runs": [
+              "launchd/",
+              "health check"
+            ],
+            "reads": [
+              "night report"
+            ],
+            "writes": [
+              "health.json"
+            ],
+            "m": "code",
+            "new": 1,
+            "rule": "It runs even when the night job is dead."
+          },
+          {
+            "row": "Night job",
+            "t": "night ends",
+            "say": "On test data, the check replaces one clause and reads the rulings that hold. The night fails if the replaced words come back, if a meaning changed with no approval, or if a second run adds a row. The same test with each runtime restarted runs at install and at each release, not at night.",
+            "runs": [
+              "memory/check.py and memory/evals/",
+              "foxrun decisions current"
+            ],
+            "reads": [
+              "decisions",
+              "decisions_links"
+            ],
+            "writes": [
+              "night report"
+            ],
+            "m": "code",
+            "new": 1
+          }
+        ]
+      ],
+      [
+        "When a loop runs",
+        [
+          {
+            "row": "Raw record",
+            "t": "a lead starts a loop",
+            "say": "The runner gives each voice only its own files, in order, and stops at the round limit. Each step lands in the job folder, with a run row and the version of the loop's definition.",
+            "runs": [
+              "skills/",
+              "foxrun flow",
+              "foxrun work"
+            ],
+            "writes": [
+              "runs/"
+            ],
+            "m": "both",
+            "new": 1,
+            "rule": "Who reads alone is held by code, not by a model."
+          },
+          {
+            "row": "Sorted store",
+            "t": "the loop ends",
+            "say": "What the voices agreed is a proposal. An open point goes to him with both sides.",
+            "runs": [
+              "foxrun flow",
+              "foxrun table"
+            ],
+            "reads": [
+              "runs/"
+            ],
+            "writes": [
+              "decisions_proposals"
+            ],
+            "m": "both",
+            "new": 1,
+            "rule": "Agreement between agents is never an approval."
+          }
+        ]
+      ],
+      [
+        "At the next start",
+        [
+          {
+            "row": "Front page",
+            "t": "session starts",
+            "say": "The agent reads the rules and its boot page: its last handoff, its open work, the rulings that hold.",
+            "runs": [
+              "handoff-boot",
+              "hooks/"
+            ],
+            "reads": [
+              "AGENTS.md",
+              "BOOT.md"
+            ],
+            "new": 1,
+            "rule": "The global part and the active workspace only."
+          },
+          {
+            "row": "Front page",
+            "t": "he opens it",
+            "say": "He reads his readout and taps yes or discuss on each proposal. A yes becomes a row, with his tap as the approval.",
+            "runs": [
+              "(tap page)",
+              "foxrun table"
+            ],
+            "reads": [
+              "(his readout)",
+              "decisions_proposals"
+            ],
+            "writes": [
+              "decisions_approvals",
+              "memory_lessons",
+              "decisions",
+              "wiki/"
+            ],
+            "new": 1,
+            "rule": "The approval holds his real words or none. The agent's reason is its own field."
+          },
+          {
+            "row": "Sorted store",
+            "t": "user asks",
+            "say": "The agent asks for the rulings that hold now, then reads rows and accepted pages. A search hit is checked against its row, or for a page against its status line, before it is used.",
+            "runs": [
+              "foxrun decisions current"
+            ],
+            "reads": [
+              "decisions",
+              "decisions_links",
+              "memory_lessons",
+              "data.db",
+              "wiki/"
+            ],
+            "m": "model",
+            "new": 1,
+            "rule": "Search does not decide what is current. A hit shows its kind."
+          }
+        ]
+      ]
+    ]
+  }
+}

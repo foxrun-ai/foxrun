@@ -1,0 +1,17 @@
+[
+  {"id":"root-file","layer":"root","question":"Where does an unclear capture go?","options":{"inbox":"inbox/","archive":"archive/","scratch":"scratch/"}},
+  {"id":"root-send","layer":"root","question":"Can these contract files alone approve sending an email?","options":{"no":"No","yes":"Yes"}},
+  {"id":"root-ask","layer":"root","question":"Who settles an ambiguous choice that changes the outcome?","options":{"@person@":"@Person@","agent":"The agent"}},
+  {"id":"root-load","layer":"root","question":"What follows the global contract in the load order?","options":{"workspace":"The workspace AGENTS.md","archive":"The archive"}},
+  {"id":"root-touch","layer":"root","question":"What must never appear in an agent response?","options":{"secret":"A secret value","path":"A file path"}},
+  {"id":"workspace-file","layer":"workspace","question":"Where does an Foxrun standard or guide go?","options":{"docs":"foxrun/docs/","business":"cedar-shop/"}},
+  {"id":"workspace-send","layer":"workspace","question":"Does Foxrun ownership itself approve an outgoing business email?","options":{"no":"No","yes":"Yes"}},
+  {"id":"workspace-ask","layer":"workspace","question":"Who approves live application of a contract change?","options":{"@person@":"@Person@","agent":"The agent that drafted it"}},
+  {"id":"workspace-load","layer":"workspace","question":"What comes after global and workspace contracts?","options":{"task":"The task context","archive":"Every archived file"}},
+  {"id":"workspace-touch","layer":"workspace","question":"Can Foxrun ownership alone authorize money or catalog changes?","options":{"no":"No","yes":"Yes"}},
+  {"id":"runtime-file","layer":"runtime","question":"Where do shared contract rules belong?","options":{"agents":"profile/AGENTS.md","claude":"A duplicate in CLAUDE.md"}},
+  {"id":"runtime-send","layer":"runtime","question":"Does the Claude adapter itself grant approval to send?","options":{"no":"No","yes":"Yes"}},
+  {"id":"runtime-ask","layer":"runtime","question":"Who decides a business choice the contracts leave open?","options":{"@person@":"@Person@","runtime":"The runtime"}},
+  {"id":"runtime-load","layer":"runtime","question":"Which shared contract does CLAUDE.md point to?","options":{"agents":"AGENTS.md","archive":"archive/"}},
+  {"id":"runtime-touch","layer":"runtime","question":"Can the adapter override the shared secret refusal?","options":{"no":"No","yes":"Yes"}}
+]

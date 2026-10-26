@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+"""capture-read <url> [--out <dir>]: print one reader JSON object."""
+
+from __future__ import annotations
+import argparse
+import hashlib
+import importlib
+import json
+import sys
+
+sys.dont_write_bytecode = True
+from readers import common
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("url")
+    parser.add_argument("--out")
+    args = parser.parse_args()
+    # The envelope holds a redacted URL. The unredacted URL stays in memory for the fetch.
+    result = common.envelope(args.url)
+    try:
+        result["canonical_url"] = common.canonicalize(args.url)
+        result["id"] = hashlib.sha256(common.redact_url(result["canonical_url"]).encode()).hexdigest()[:16]
+        directory = common.workspace(args.out)
+        # capture-write copies media only from this marked directory.
+        result["media_dir"], result["media_token"] = str(directory), common.claim(directory)
+        with common.reader_lock(result["source"]):
+            module = importlib.import_module("readers." + result["source"])
+            module.read(result, directory)
+        if result["status"] == "ok" and not result["text"].strip():
+            raise common.ReaderError("The source returned no body text.")
+    except common.ReaderError as error:
+        result["status"], result["error"] = error.status, str(error)
+    except Exception as error:
+        result["status"], result["error"] = "error", f"{type(error).__name__}: {error}"
+    common.redact_result(result)
+    print(json.dumps(result, ensure_ascii=False, allow_nan=False))
+    return 0 if result["status"] == "ok" else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

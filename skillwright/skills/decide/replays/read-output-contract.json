@@ -1,0 +1,6 @@
+{
+  "name": "read-output-contract",
+  "run": "read",
+  "input": "List the fields of the output contract every decision ends with.",
+  "expect": {"output_contains": ["Door", "Resolver", "Next step"]}
+}

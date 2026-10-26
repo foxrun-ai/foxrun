@@ -1,0 +1,22 @@
+{
+  "name": "hooks-missing-in-fresh-home",
+  "run": "dry-run",
+  "note": "A fresh runtime home has no Foxrun hooks, so the hooks part asks the automatic memory question.",
+  "input": "bin/setup status --part hooks",
+  "setup": {
+    "files": {
+      ".foxrun/config/person.json": "{\"name\": \"fake-person\", \"runtime\": \"claude\", \"default_workspace\": \"fake-hq\", \"workspaces\": [\"fake-hq\", \"fake-shop\"], \"portfolio\": \"../foxrun\"}",
+      "foxrun/fake-hq/AGENTS.md": "# fake-hq (labeled fake)\n",
+      "foxrun/fake-shop/AGENTS.md": "# fake-shop (labeled fake)\n"
+    }
+  },
+  "expect": {
+    "exit": 0,
+    "output_contains": [
+      "\"part\": \"hooks\"",
+      "{tmp}/.claude/settings.json",
+      "{tmp}/.foxrun/hooks/claude/session-start",
+      "Turn on automatic memory? Your agent loads your open work at the start of every chat, and saves where it left off before a long chat gets trimmed. Recommended."
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "workspace": "cedar-shop",
+  "workspaces": ["cedar-shop"],
+  "name": "Cedar Shop",
+  "workspace_type": "ecom",
+  "made_up": true,
+  "timestamp": "2026-10-05T00:00:00Z",
+  "modules": ["base", "work", "people", "wiki", "commerce"],
+  "tables": {
+    "commerce_accounts": [{"id": 1, "source_system": "shopify", "label": "Made-up shop", "source_account_id": "sample-store", "status": "active"}],
+    "commerce_products": [
+      {"id": 1, "account": 1, "source_id": "sample-product-1", "title": "Garden trowel", "product_type": "Garden tools", "vendor": "Cedar Shop"},
+      {"id": 2, "account": 1, "source_id": "sample-product-2", "title": "Seed tray", "product_type": "Garden tools", "vendor": "Cedar Shop"}
+    ],
+    "commerce_skus": [
+      {"id": 1, "account": 1, "source_id": "sample-sku-1", "product": 1, "sku": "CEDAR-TROWEL", "title": "Garden trowel"},
+      {"id": 2, "account": 1, "source_id": "sample-sku-2", "product": 2, "sku": "CEDAR-TRAY", "title": "Seed tray"}
+    ],
+    "work_functions": [{"id": 1, "number": "F1", "name": "commerce", "job": "Keep the made-up shop ready.", "owner": "sample-owner", "page": "commerce.md"}],
+    "work_projects": [{"id": 1, "number": "P1", "title": "Prepare the sample shop", "status": "todo", "function": 1, "owner": "sample-owner"}],
+    "work_tasks": [
+      {"id": 1, "number": "T1", "title": "Check the garden trowel image", "status": "todo", "project": 1, "function": 1, "owner": "sample-owner", "reviewer": "lead", "reviewed_by": "sample-lead", "flag": 0, "important": 1, "urgent": 0, "version": 1},
+      {"id": 2, "number": "T2", "title": "Check the seed tray description", "status": "backlog", "project": 1, "function": 1, "owner": "sample-owner", "reviewer": "lead", "reviewed_by": "sample-lead", "flag": 0, "important": 0, "urgent": 0, "version": 1}
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "plan-reader",
+  "run": "read",
+  "input": "Which script reads the program plan, and which script writes a new program?",
+  "expect": {"output_contains": ["program.py", "work.py"]}
+}

@@ -1,0 +1,36 @@
+{
+  "files": [],
+  "blueprint": true,
+  "needs": [
+    {
+      "program": "defuddle",
+      "why": "Turns a saved web page into article text.",
+      "get": "npm install -g defuddle",
+      "reader": "web"
+    },
+    {
+      "program": "yt-dlp",
+      "why": "Reads a YouTube video's details and its transcript.",
+      "get": "brew install yt-dlp",
+      "reader": "youtube"
+    },
+    {
+      "program": "instaloader",
+      "why": "Reads a public Instagram post and its media.",
+      "get": "uv tool install instaloader",
+      "reader": "instagram"
+    },
+    {
+      "program": "gh",
+      "why": "Reads a public GitHub project's README, details, and files. Sign in once with `gh auth login`.",
+      "get": "brew install gh",
+      "reader": "github"
+    },
+    {
+      "program": "pdftotext",
+      "why": "Reads the text of a PDF. It comes with poppler.",
+      "get": "brew install poppler",
+      "reader": "pdf"
+    }
+  ]
+}

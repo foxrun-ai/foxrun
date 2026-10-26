@@ -1,0 +1,21 @@
+/* Sources: Foxrun Brand Guidelines.md, Typography and Palette; Design QA Checklist, Layout. */
+:root { --paper:#fbfbf7; --ink:#101010; --line:#d6d2c8; --signal:#004225;
+ --sans:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
+ --mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace; }
+* { box-sizing:border-box; }
+html { color:var(--ink); background:var(--paper); font-family:var(--sans); line-height:1.6; }
+body { margin:0; }
+main { width:min(100%,76ch); margin:auto; padding:clamp(20px,4vw,56px); overflow-wrap:anywhere; }
+h1 { font-size:clamp(2rem,5vw,3.5rem); line-height:1.08; font-weight:750; }
+h2 { margin-top:2.5rem; font-size:1.4rem; }
+h3 { margin-top:1.8rem; font-size:1.15rem; }
+a { color:var(--signal); text-underline-offset:.18em; }
+a:focus-visible, .table-scroll:focus-visible { outline:3px solid var(--signal); outline-offset:3px; }
+p,li { max-width:68ch; }
+pre { padding:16px; border:1px solid var(--line); white-space:pre-wrap; overflow-wrap:anywhere; }
+code { font-family:var(--mono); font-size:.9em; }
+.table-scroll { max-width:100%; overflow-x:auto; }
+table { width:100%; border-collapse:collapse; text-align:left; font-size:.92rem; }
+th,td { padding:10px; border-bottom:1px solid var(--line); vertical-align:top; overflow-wrap:anywhere; }
+th { font-weight:700; }
+@media (max-width:480px) { main { padding:20px; } th,td { padding:8px 5px; } }

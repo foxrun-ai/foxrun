@@ -1,0 +1,31 @@
+{
+  "execution/bindings/claude.yaml": {
+    "managed_by": "agent-new",
+    "runtime": "claude",
+    "model_role": "tier",
+    "defaults": "config/models.yaml",
+    "overrides": "config/models.yaml",
+    "availability": "core"
+  },
+  "execution/bindings/codex.yaml": {
+    "managed_by": "agent-new",
+    "runtime": "codex",
+    "model_role": "tier",
+    "defaults": "config/models.yaml",
+    "overrides": "config/models.yaml",
+    "availability": "core"
+  },
+  "execution/bindings/hermes.yaml": {
+    "managed_by": "agent-new",
+    "runtime": "hermes",
+    "model_role": "tier",
+    "defaults": "config/models.yaml",
+    "overrides": "config/models.yaml",
+    "availability": "add-on",
+    "legacy_auxiliary_model_tags_from": "config/models.yaml:legacy_auxiliary_model_tags"
+  },
+  "execution/skills.yaml": {
+    "gaps": [],
+    "release": "20261019T211500242910Z-83ee3ebf9193"
+  }
+}

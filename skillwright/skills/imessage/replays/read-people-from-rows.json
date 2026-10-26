@@ -1,0 +1,6 @@
+{
+  "name": "read-people-from-rows",
+  "run": "read",
+  "input": "The person says 'text my sister'. Where does the imessage skill look up her address first? Name the tables.",
+  "expect": {"output_contains": ["persons", "handles"]}
+}

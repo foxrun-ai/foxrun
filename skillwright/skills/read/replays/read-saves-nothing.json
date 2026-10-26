@@ -1,0 +1,6 @@
+{
+  "name": "read-saves-nothing",
+  "run": "read",
+  "input": "The person says /read on a web page. Which reader command do you run, and which capture command must you never run?",
+  "expect": {"output_contains": ["capture-read", "capture-write"]}
+}

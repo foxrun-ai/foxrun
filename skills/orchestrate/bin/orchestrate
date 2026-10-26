@@ -1,0 +1,1339 @@
+#!/usr/bin/env python3
+"""orchestrate — the one menu for cross-runtime work.
+
+Input: where I am (claude / codex / hermes), what I want (one of eight rows),
+optional native session id. Output: the one command, what it returns, and the
+escalation ladder (more work → steer → done).
+
+Rows 1–4 are native one-shots and NEVER open a window.
+Claude-to-Codex parallel workers use tracked one-shots unless --hosted is set.
+Hosted rows go through the herdr skill (a Herdr pane, numbered close).
+
+Deterministic: no network, no subprocess. Standard library only.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+from pathlib import Path
+import queue
+import re
+import shlex
+import shutil
+import subprocess
+import sys
+import threading
+import time
+
+RUNTIMES = ("claude", "codex", "hermes")
+
+ROWS: tuple[tuple[str, str, str], ...] = (
+    # key, number, plain-English row name
+    ("quick", "1", "quick one-hitter"),
+    ("advise", "2", "advise / second opinion"),
+    ("review", "3", "review what we just did (token-cheap)"),
+    ("fix", "4", "fix what we just ran"),
+    ("grill", "5", "grill / back-and-forth"),
+    ("converse", "6", "real-time conversation between two runtimes"),
+    ("steer", "7", "steer the other runtime through this one"),
+    ("parallel", "8", "parallel workers"),
+)
+ROW_BY_KEY = {key: (number, name) for key, number, name in ROWS}
+ROW_ALIASES = {number: key for key, number, _ in ROWS}
+ONE_SHOT_ROWS = ("quick", "advise", "review", "fix")
+HERDR_ROWS = ("grill", "converse", "steer", "parallel")
+CODE_ROWS = ("fix", "parallel")  # code work: never a Hermes child
+# Codex sandboxes. Readers, reviewers, and graders (rows 1-3) always read; no caller flag widens them.
+# Builders (rows 4 and 8) get full access in the repo they build, so they commit their own work.
+READER_SANDBOX = "read-only"
+BUILDER_SANDBOX = "danger-full-access"  # g-builders-full-access-readers-read-only
+
+SHELF = Path(os.path.abspath(__file__)).parents[2]
+HERDR_BIN = "~/.foxrun/skills/herdr/bin/herdr"
+SEARCH_BIN = "~/.foxrun/skills/runtime-session-search/bin/runtime-session-search"
+
+
+def herdr_installed() -> bool:
+    """Use Herdr only when its command exists beside this skill."""
+    return Path(HERDR_BIN).expanduser().is_file() and os.access(Path(HERDR_BIN).expanduser(), os.X_OK)
+READ_ONLY_CLAUDE_TOOLS = "Read,Glob,Grep"
+WRITE_CLAUDE_TOOLS = "Read,Edit,Write,Bash"
+
+CONVERSATION_HINT = {
+    "claude": "claude:$CLAUDE_CODE_SESSION_ID",
+    "codex": "codex:<stable-thread-id> (in a Herdr pane: herdr:$HERDR_PANE_ID)",
+    "hermes": "hermes:<session-id> (the gateway shell has no HERMES_SESSION_ID; pass it explicitly; Telegram: telegram:<chat>:<thread>)",
+}
+
+# ~10 lines that matter from the Nous-bundled Hermes `codex` and `claude-code`
+# skills, so those bundled skills can stay disabled. Keep these true.
+HERMES_CODEX_NOTES = (
+    "Always pty=true: Codex is an interactive terminal app and hangs without a PTY.",
+    "From a Hermes gateway/service context the Codex sandbox (bubblewrap) can fail; build rows use -s danger-full-access and keep safety in the prompt, workdir, and git diff review. Readers, reviewers, and graders stay -s read-only.",
+    "Long task: background=true, then process(action=\"poll\"|\"log\"|\"submit\"|\"kill\", session_id=<hermes process id>).",
+    "The Codex thread id is the thread_id in the first --json event line (thread.started); -o writes the last message to a file.",
+    "Codex refuses to run outside a git repository; use --skip-git-repo-check for .git-data checkouts or mktemp -d && git init for scratch.",
+)
+HERMES_CLAUDE_NOTES = (
+    "Never call bare `claude` from a gateway; it opens a TUI and hangs. Always -p.",
+    "No PTY needed for -p; set a terminal timeout (300 s default, longer for builds).",
+    "--output-format json returns session_id, num_turns, total_cost_usd; keep the session_id.",
+    "401 Invalid authentication credentials on -p while `claude auth status` says Max means the Keychain and ~/.claude/.credentials.json disagree; repair that login before a retry, and never print tokens.",
+    "Print mode skips trust and permission dialogs; --allowedTools is the write gate.",
+)
+CODEX_DESKTOP_NOTE = (
+    "CLI or Herdr access to a Codex Desktop-owned thread must fork, never resume. "
+    "Native desktop messaging may steer the existing thread."
+)
+NATIVE_ROUTES = ("A1", "A2", "B", "C", "D", "E")
+NATIVE_ROUTE_DETAILS = {
+    "A1": {
+        "plain_name": "Background helper",
+        "worker_type": "native subagent",
+        "context": "native subagent",
+        "waiting": "none; the lead releases its turn",
+        "notification": "native completion only; it did not restart the ended lead turn in the test",
+        "command": "collaboration.spawn_agent; release the lead turn",
+        "tested": "Two native subagents completed; native subagent completion did not restart the ended lead turn.",
+        "unverified": "Why the lead did not resume, and whether all native subagent notifications behave this way.",
+    },
+    "A2": {
+        "plain_name": "Wait for helper",
+        "worker_type": "native subagent",
+        "context": "native subagent",
+        "waiting": "collaboration.wait_agent keeps the lead turn active; new user input can interrupt",
+        "notification": "the result returns through the native completion wait",
+        "command": "collaboration.spawn_agent; collaboration.wait_agent",
+        "tested": "Native wait is available.",
+        "unverified": "This exact A2 path was not tested in the evidence session.",
+    },
+    "B": {
+        "plain_name": "Worker thread with wait",
+        "worker_type": "visible desktop worker thread",
+        "context": "existing thread when its context fits; otherwise a requested new thread",
+        "waiting": "mcp__codex_app__wait_threads keeps the lead turn active; new user input ends the wait early",
+        "notification": "the result returns through the wait tool, not as a worker message",
+        "command": "mcp__codex_app__create_thread or mcp__codex_app__send_message_to_thread; mcp__codex_app__wait_threads",
+        "tested": "wait_threads returned wake.reason=turnCompleted without another Person message.",
+        "unverified": "An active wait does not prove an ended lead turn will restart.",
+    },
+    "C": {
+        "plain_name": "Worker thread with reply",
+        "worker_type": "visible desktop worker thread",
+        "context": "existing thread when its context fits; otherwise a requested new thread",
+        "waiting": "none; the lead turn stays free for conversation",
+        "notification": "one completion message from the worker to the lead thread",
+        "command": "mcp__codex_app__create_thread or mcp__codex_app__send_message_to_thread with the C brief",
+        "tested": "One thread callback arrived visibly and resumed the lead after its final response.",
+        "unverified": "Every delivery, simultaneous conflicting instructions, and the exact UI label.",
+    },
+    "D": {
+        "plain_name": "Scheduled check",
+        "worker_type": "native scheduled follow-up",
+        "context": "existing worker or outside condition; no new worker thread is required",
+        "waiting": "none between scheduled checks",
+        "notification": "the scheduled run reports the defined condition and stops at the stated rule",
+        "command": "mcp__codex_app__automation_update with timing, evidence, and a stop rule",
+        "tested": "Person reported prior success; native automation tools support scheduled follow-ups.",
+        "unverified": "No new schedule was created or tested in the evidence session.",
+    },
+    "E": {
+        "plain_name": "Short pause",
+        "worker_type": "active lead turn timer",
+        "context": "existing lead turn",
+        "waiting": "clock.sleep pauses the active turn; new user input can interrupt",
+        "notification": "none; the lead continues after the pause",
+        "command": "clock.sleep",
+        "tested": "A single 45-second pause ran before the tested callback.",
+        "unverified": "Lead interruption during the timer was not tested.",
+    },
+}
+HERMES_CHILD_RULE = "Code never goes to a Hermes child (delegate_task). Code goes out to Codex or Claude."
+HERMES_PROFILE_PATTERN = re.compile(r"[a-z][a-z0-9_-]{0,31}\Z")
+
+
+class ResolveError(ValueError):
+    pass
+
+
+def _q(value: str) -> str:
+    return shlex.quote(value)
+
+
+def _dq(value: str) -> str:
+    """Quote one shell argument with double quotes, including shell expansions."""
+    return '"' + value.replace('\\', '\\\\').replace('"', '\\"').replace('$', '\\$').replace('`', '\\`') + '"'
+
+
+def code_model() -> str:
+    """Read the code tier from the owning system, including an unpublished source tree."""
+    configured = os.environ.get("FOXRUN_HOME")
+    candidates = [Path(configured)] if configured else []
+    candidates += [parent for parent in Path(__file__).resolve().parents
+                   if (parent / "base/agent_catalog.py").is_file()]
+    candidates.append(Path.home() / ".foxrun")
+    home = Path(configured) if configured else next((p for p in candidates if (p / "config/models.yaml").is_file()), candidates[0])
+    sys.path.insert(0, str(home))
+    from base.agent_catalog import resolve_model
+    return resolve_model("code", "codex", home)
+
+
+def _claude_codex_exec(want: str, task: str, cwd: str | None, run_dir: str | None) -> str:
+    sandbox = f"--sandbox {BUILDER_SANDBOX}" if want in CODE_ROWS else f"-s {READER_SANDBOX}"
+    directory = run_dir or "<run dir>"
+    return (
+        f"codex exec -m {_q(code_model())} -c model_reasoning_effort=high -c service_tier=priority "
+        f"{sandbox} -C {_dq(cwd or '<git repo>')} --json "
+        f"-o {_dq(directory + '/result.md')} {_dq(task)} </dev/null "
+        f"> {_dq(directory + '/events.jsonl')} 2>&1"
+    )
+
+
+def _claude_codex_watcher(thread: str) -> str:
+    # A thread ID is checked before it reaches this SQL string.
+    return (
+        'state_db=${ORCHESTRATE_CODEX_STATE_DB:-$HOME/.codex/state_5.sqlite}; '
+        'queue_db=${ORCHESTRATE_CODEX_QUEUE_DB:-$HOME/.codex/queue_1.sqlite}; '
+        f"rollout_path=$(sqlite3 -readonly \"$state_db\" "
+        f"\"select rollout_path from threads where id='{thread}'\") || exit 1; "
+        '[ -n "$rollout_path" ] && [ -f "$rollout_path" ] || exit 1; '
+        'before=$(grep -c \'"task_complete"\' "$rollout_path" || true); '
+        'deadline=$(( $(date +%s) + 1800 )); '
+        'while :; do '
+        'after=$(grep -c \'"task_complete"\' "$rollout_path" || true); '
+        'if [ "$after" -gt "$before" ]; then '
+        f"pending=$(sqlite3 -readonly \"$queue_db\" \"select count(*) from queued_items where thread_id='{thread}'\") || exit 1; "
+        '[ "$pending" -eq 0 ] && exit 0; fi; '
+        '[ "$(date +%s)" -ge "$deadline" ] && exit 1; '
+        'sleep 2; done'
+    )
+
+
+def _resolve_claude_thread(result: dict[str, object], caveats: list[str], *,
+                           task: str, thread: str | None, new_thread: str | None,
+                           cwd: str | None) -> None:
+    result["mode"] = "codex-desktop-thread"
+    result["opens_window"] = False
+    if thread:
+        result["command"] = f"codex queue --thread {_q(thread)} --message {_dq(task)}"
+        result["watcher"] = _claude_codex_watcher(thread)
+        result["start"] = "tracked-background"
+        result["returns"] = "queued message; watcher exits after a completed turn with no queued rows for this thread"
+        caveats.append("Start the watcher as a tracked Claude background task before the send. A plain shell & is untracked and silent.")
+        caveats.append("A queued message waits for the busy turn to end. No outside route steers a running turn.")
+    elif new_thread is not None:
+        result["command"] = (
+            f"~/.foxrun/skills/orchestrate/bin/orchestrate codex-thread --name {_dq(new_thread)} "
+            f"--cwd {_dq(cwd or '<git repo>')} --prompt {_dq(task)}"
+        )
+        result["next_command"] = 'codex queue --thread <new-thread-id> --message "<follow-up message>"'
+        result["watcher"] = _claude_codex_watcher("<new-thread-id>")
+        result["start"] = "tracked-background"
+        result["returns"] = "JSON thread_id, name, cwd, and rollout_path; use thread_id in the watcher and queue command"
+        caveats.append("The helper already sends the first prompt. For a follow-up, replace <new-thread-id> with the returned thread_id; start the watcher as a tracked Claude background task before the queue send.")
+    else:
+        result["command"] = (
+            "Find the standing Codex thread ID in the tracker or identity file; "
+            "then rerun orchestrate resolve with --thread <id>."
+        )
+        result["returns"] = "thread ID needed before sending or starting a watcher"
+    if thread or new_thread is not None:
+        caveats.append("codex queue starts a turn only if Codex Desktop loaded this thread since launch; otherwise it waits until Person opens the thread.")
+    caveats.append("Codex exec threads are hidden from the sidebar and never drain queued messages. Plugin threads are locked while its broker runs.")
+    result["ladder"] = ({
+        "more_work": "send a new codex queue message to the same standing thread as a new run",
+        "steer": "queue the next message; it waits until the busy turn ends",
+        "done": "watcher exits after a completed turn with no queued rows or times out; the desktop thread stays open",
+    } if thread or new_thread is not None else {
+        "more_work": "rerun with --thread <id> after the thread ID is known",
+        "steer": "wait for the thread ID before sending",
+        "done": "no worker or watcher started",
+    })
+
+
+def default_target(source: str, want: str) -> tuple[str, str]:
+    """Pick --to when the caller did not. Returns (runtime, reason)."""
+    if want in CODE_ROWS:
+        return "codex", "code work goes to Codex (execution after a plan, repo work)"
+    if source == "claude":
+        return "codex", "second pair of eyes from the other runtime"
+    if source == "codex":
+        return "claude", "judgement, writing, and review live with Claude"
+    return "claude", "Hermes asks Claude for judgement; ask Codex for code"
+
+
+def _claude_one_shot(want: str, task: str, cwd: str | None, session_id: str | None) -> str:
+    tools = WRITE_CLAUDE_TOOLS if want == "fix" else READ_ONLY_CLAUDE_TOOLS
+    parts = ["claude", "-p", _q(task), "--output-format", "json", "--allowedTools", tools]
+    if session_id:
+        parts += ["--resume", _q(session_id)]
+    command = " ".join(parts)
+    if cwd:
+        command = f"cd {_q(cwd)} && {command}"
+    return command
+
+
+def _codex_one_shot(
+    want: str, task: str, cwd: str | None, session_id: str | None, *, desktop_owned: bool,
+    builder_access: bool = False, run_dir: str | None = None,
+) -> str:
+    """`codex exec` grammar: global flags (-s, -C) before the subcommand, then
+    resume/fork <id>, then --json / -o / prompt (the subcommands accept those).
+
+    A reader row is read-only whatever the caller asks. builder_access widens only a build row.
+    The last message goes to the run folder, never a shared fixed path such as /tmp."""
+    if want not in CODE_ROWS:
+        sandbox = READER_SANDBOX
+    else:
+        sandbox = BUILDER_SANDBOX if builder_access else "workspace-write"
+    out = (run_dir or "<run dir>") + "/result.md"
+    head = ["codex", "exec", "-s", sandbox]
+    if cwd:
+        head += ["-C", _q(cwd)]
+    if session_id:
+        head += ["fork" if desktop_owned else "resume", _q(session_id)]
+    return " ".join([*head, "--json", "-o", _q(out), _q(task)])
+
+
+def _hermes_one_shot(task: str, profile: str | None, session_id: str | None) -> str:
+    binary = profile if profile and profile not in {"default", "main", "hermes"} else "hermes"
+    if session_id:
+        return f"{binary} chat -Q --resume {_q(session_id)} -q {_q(task)}"
+    return f"{binary} -z {_q(task)}"
+
+
+def _hermes_resume_one_shot(task: str, profile: str, session_id: str) -> str:
+    binary = profile if shutil.which(profile) else f"hermes -p {_q(profile)}"
+    return f"{binary} chat -Q --resume {_q(session_id)} -q {_q(task)}"
+
+
+def _herdr(verb: str, *args: str, conversation: str | None) -> str:
+    """herdr grammar: options first, `--` then the agent's own arguments."""
+    parts = [HERDR_BIN, verb]
+    values = list(args)
+    tail: list[str] = []
+    if "--" in values:
+        split = values.index("--")
+        tail = values[split:]
+        values = values[:split]
+    parts += values
+    if conversation:
+        parts += ["--conversation", _q(conversation)]
+    parts += tail
+    return " ".join(parts)
+
+
+def _resolve_codex_native(result: dict[str, object], route: str, session_id: str | None) -> dict[str, object]:
+    details = dict(NATIVE_ROUTE_DETAILS[route])
+    if route in {"B", "C"} and session_id:
+        details["context"] = f"existing desktop thread {session_id}; native desktop steering is allowed"
+    result.update(details)
+    result.update({
+        "native_route": route,
+        "mode": "codex-desktop-native",
+        "opens_window": route in {"B", "C"},
+        "lead_turn": "active" if route in {"A2", "B", "E"} else "free or ended",
+        "fast_mode": "unverified on native threads; a prompt cannot set it",
+        "ladder": {
+            "more_work": "use native follow-up messaging while the worker is available",
+            "steer": "native desktop messaging may steer an existing desktop thread",
+            "done": "stop at the route's completion or stop rule; do not start a reply loop",
+        },
+        "status": "resolved",
+        "caveats": ["Tool names and availability are runtime-specific; check the actual desktop surface."],
+    })
+    if route == "C":
+        result["brief_template"] = [
+            "Task, workspace, expected result, evidence, and allowed changes.",
+            "Worker thread ID: <worker-thread-id>.",
+            "Lead return thread ID: <lead-thread-id>.",
+            "Model: <model>. Effort: <effort>. Service tier: <only when verified>.",
+            "Failure boundary: <boundary>. Allowed fix rounds: <count>.",
+            "Send one completion message to the lead with outcome, evidence, and any blocker.",
+            "Stop after that message. No reply loop and no new job without direction.",
+        ]
+    return result
+
+
+# The run rules every worker brief carries.
+RUN_RULES = [
+    "Make the run folder first: python3 ~/.foxrun/memory/runs.py new --task <id> --seat <seat> --what <short-name>. If that command is missing, make the folder by hand with brief.md and heavy/.",
+    "Write only in that folder: ~/.foxrun/runs/<YYYY-MM-DD>/<task>-<seat>-<what>/. Never in <workspace>/history/runs/ or ~/.local/state/foxrun/runs/.",
+    "Shape: brief.md (this brief), result.md (what you found and where the proof is), heavy/ (everything else: logs, copies, data, practice repositories).",
+    "Budget: the run check warns above 200 MB. heavy/ may pass 1 GB only when brief.md has a line 'Heavy reason: <why>'. Whole-repository practice copies count.",
+    "Never clear brief.md or result.md. Keep heavy/ until its findings are copied into rows or pages. Nothing is deleted.",
+]
+
+
+def resolve(
+    *,
+    source: str,
+    want: str,
+    to: str | None = None,
+    task: str = "<task>",
+    session_id: str | None = None,
+    desktop_owned: bool = False,
+    cwd: str | None = None,
+    room: str | None = None,
+    conversation: str | None = None,
+    profile: str | None = None,
+    workers: int = 2,
+    desktop_native: bool = False,
+    native_route: str | None = None,
+    check: bool = False,
+    hosted: bool = False,
+    thread: str | None = None,
+    watch: bool = False,
+    new_thread: str | None = None,
+    design: bool = False,
+    run_dir: str | None = None,
+) -> dict[str, object]:
+    want = ROW_ALIASES.get(want, want)
+    if source not in RUNTIMES:
+        raise ResolveError(f"--from must be one of {', '.join(RUNTIMES)}")
+    if want not in ROW_BY_KEY:
+        raise ResolveError(f"--want must be one of {', '.join(ROW_BY_KEY)}")
+    if to is not None and to not in RUNTIMES:
+        raise ResolveError(f"--to must be one of {', '.join(RUNTIMES)}")
+    if desktop_native and source != "codex":
+        raise ResolveError("--desktop-native requires --from codex")
+    if (native_route or check) and not desktop_native:
+        raise ResolveError("--native-route and --check require --desktop-native")
+    if native_route and native_route not in NATIVE_ROUTES:
+        raise ResolveError(f"--native-route must be one of {', '.join(NATIVE_ROUTES)}")
+    if check and native_route and native_route != "D":
+        raise ResolveError("--check selects native route D")
+    if source == "claude" and thread and not re.fullmatch(r"[A-Za-z0-9-]+", thread):
+        raise ResolveError("--thread must be a Codex thread ID (letters, digits, hyphens)")
+    if thread and (watch or new_thread is not None):
+        raise ResolveError("--thread cannot be combined with --watch or --new-thread")
+    if new_thread is not None and watch:
+        raise ResolveError("--watch and --new-thread are alternatives")
+    if new_thread is not None and not new_thread.strip():
+        raise ResolveError("--new-thread needs a name")
+    if source == "claude" and design and want != "review":
+        raise ResolveError("--design requires --want review")
+    to_reason = "named by the caller"
+    if desktop_native and not hosted and to is None:
+        to, to_reason = "codex", "Codex Desktop uses native delegation when desktop tools are available"
+    elif to is None:
+        to, to_reason = default_target(source, want)
+    if to == "hermes" and profile is not None and not HERMES_PROFILE_PATTERN.fullmatch(profile):
+        raise ResolveError("--profile must match [a-z][a-z0-9_-]{0,31}")
+    number, row_name = ROW_BY_KEY[want]
+    caveats: list[str] = []
+    result: dict[str, object] = {
+        "row": int(number),
+        "row_name": row_name,
+        "from": source,
+        "to": to,
+        "to_reason": to_reason,
+        "mode": "one-shot" if want in ONE_SHOT_ROWS else "herdr",
+        "opens_window": want in HERDR_ROWS,
+        "conversation_id": conversation or CONVERSATION_HINT[source],
+    }
+
+    if desktop_native and not hosted and to == "codex":
+        route = "D" if check else (native_route or "C")
+        return _resolve_codex_native(result, route, session_id)
+
+    if to == "hermes" and want in CODE_ROWS and not (want == "parallel" and profile):
+        result.update({"status": "refused", "reason": HERMES_CHILD_RULE,
+                       "use_instead": resolve(source=source, want=want, to="codex", task=task,
+                                              session_id=session_id, cwd=cwd, room=room,
+                                              conversation=conversation, workers=workers,
+                                              desktop_native=desktop_native, native_route=native_route,
+                                              check=check, hosted=hosted)["command"]})
+        return result
+
+    if to == "hermes" and want in HERDR_ROWS and not profile:
+        result.update({"status": "profile_required", "reason": "Hermes hosted routes need --profile <name>."})
+        return result
+
+    if source == "claude" and to == "codex" and not hosted and (thread or watch or new_thread is not None or want == "steer"):
+        _resolve_claude_thread(result, caveats, task=task, thread=thread,
+                               new_thread=task if watch else new_thread, cwd=cwd)
+        result["caveats"] = caveats
+        result["status"] = "resolved"
+        return result
+
+    if source == "claude" and to == "codex" and not hosted and want == "parallel":
+        count = max(1, workers)
+        result["command"] = " ; ".join(
+            _claude_codex_exec(want, f"<brief {index}: disjoint file scope>", cwd,
+                               f"{run_dir}/worker-{index}" if run_dir else f"<run dir>/worker-{index}")
+            for index in range(1, count + 1)
+        )
+        result["mode"] = "one-shot"
+        result["opens_window"] = False
+        result["returns"] = "one result.md and events.jsonl per worker; one tracked completion notice per worker"
+        result["start"] = "tracked-background"
+        result["ladder"] = {
+            "more_work": "new run and new brief for each fix round",
+            "steer": "no outside route steers a running turn",
+            "done": "each worker self-closes; no Herdr window",
+        }
+        caveats.append("Start each command as a separate tracked Claude background task. A plain shell & is untracked and silent.")
+        result["caveats"] = caveats
+        result["status"] = "resolved"
+        return result
+
+    if want in HERDR_ROWS and not herdr_installed():
+        result.update({"status": "unavailable",
+                       "reason": "Hosted rows need the herdr skill at " + HERDR_BIN + "; it is not installed. Use a one-shot row (1-4)."})
+        return result
+
+    if want in ONE_SHOT_ROWS:
+        _resolve_one_shot(result, caveats, source=source, want=want, to=to, task=task,
+                          session_id=session_id, desktop_owned=desktop_owned, cwd=cwd,
+                          profile=profile, design=design, run_dir=run_dir)
+    else:
+        _resolve_herdr(result, caveats, source=source, want=want, to=to, task=task,
+                       session_id=session_id, desktop_owned=desktop_owned, cwd=cwd, room=room,
+                       conversation=conversation, workers=workers, profile=profile)
+    result["caveats"] = caveats
+    result.setdefault("status", "resolved")
+    return result
+
+
+def _resolve_one_shot(result: dict[str, object], caveats: list[str], *, source: str, want: str,
+                      to: str, task: str, session_id: str | None, desktop_owned: bool,
+                      cwd: str | None, profile: str | None, design: bool,
+                      run_dir: str | None) -> None:
+    result["never"] = "never opens a window; never counted against the Herdr budget"
+    workdir = cwd or "<dir>"
+    if to == "claude":
+        if source == "claude" and not session_id:
+            result["command"] = (
+                f'Agent(subagent_type="general-purpose", prompt={_q(task)})'
+                + ("  # or /code-review for a diff" if want == "review" else "")
+            )
+            result["returns"] = "the reply only; in-process, no native session id"
+            result["fallback"] = _claude_one_shot(want, task, cwd, None) + "  # when the job must survive an app interrupt or needs a resumable id"
+        elif source == "hermes":
+            tools = WRITE_CLAUDE_TOOLS if want == "fix" else READ_ONLY_CLAUDE_TOOLS
+            resume = f" --resume {_q(session_id)}" if session_id else ""
+            result["command"] = (
+                f'terminal(command="claude -p {_q(task)} --output-format json --allowedTools {tools}'
+                f'{resume} --max-turns 20", workdir="{workdir}", timeout=300)'
+            )
+            result["returns"] = "session_id in the JSON result; keep it"
+            caveats.extend(HERMES_CLAUDE_NOTES)
+        else:
+            result["command"] = _claude_one_shot(want, task, cwd, session_id)
+            result["returns"] = "session_id in the JSON result; keep it"
+        more = "claude -p <follow-up> --output-format json --resume <session_id>"
+    elif to == "codex":
+        if source == "claude":
+            if want == "review":
+                result["command"] = "/codex:adversarial-review" if design else "codex exec -s read-only review"
+                result["fallback"] = "codex exec -s read-only review" if design else "/codex:review"
+                result["returns"] = "review result; record one run row and the reviewer model"
+                if not design:
+                    result["start"] = "tracked-background"
+            else:
+                result["command"] = _claude_codex_exec(want, task, cwd, run_dir)
+                result["returns"] = "result.md and events.jsonl in the run directory; tracked completion notice"
+                result["fallback"] = f"/codex:rescue --background --fresh {task}"
+                result["start"] = "tracked-background"
+                caveats.append("Start with Claude Bash run_in_background. A plain shell & is untracked and silent.")
+        elif source == "hermes":
+            inner = _codex_one_shot(want, task, None, session_id, desktop_owned=desktop_owned,
+                                    builder_access=True, run_dir=run_dir)
+            background = ", background=true" if want == "fix" else ""
+            result["command"] = f'terminal(command="{inner}", workdir="{workdir}", pty=true{background})'
+            result["returns"] = "thread_id from the thread.started --json line; last message in the -o file"
+            caveats.extend(HERMES_CODEX_NOTES)
+        else:
+            result["command"] = _codex_one_shot(want, task, cwd, session_id, desktop_owned=desktop_owned,
+                                                run_dir=run_dir)
+            result["returns"] = "thread_id from the thread.started --json line; last message in the -o file"
+        if desktop_owned or session_id:
+            caveats.append(CODEX_DESKTOP_NOTE)
+        more = "codex exec resume <thread_id> <follow-up>   (Desktop-owned: codex exec fork <thread_id>)"
+    else:  # to == hermes, non-code rows only
+        if source == "hermes":
+            result["command"] = f'delegate_task(goal={_q(task)}, background={"true" if want == "fix" else "false"})'
+            result["returns"] = "delegation_id; the reply re-enters the conversation as a new turn"
+            caveats.append("delegate_task is a Hermes-internal child, not durable, dies with the parent. " + HERMES_CHILD_RULE)
+        else:
+            result["command"] = _hermes_one_shot(task, profile, session_id)
+            result["returns"] = "-z prints only the final reply; get the id right after with `hermes sessions list --limit 1` (ID column; add -p <profile> for a profile)"
+        more = "hermes chat -Q --resume <session_id> -q <follow-up>"
+    result["ladder"] = {
+        "more_work": more,
+        "steer": (f"{HERDR_BIN} resume <native-id> --conversation <id>   # promotes the one-shot into a Herdr window"
+                  if herdr_installed() else "no session host is installed (the herdr skill); resume the native id with another one-shot"),
+        "done": "self-closes; nothing to close because no window was opened",
+    }
+    if source == "claude" and to == "codex":
+        result["ladder"]["more_work"] = "new run and new brief for each fix round; never resume"
+        if want == "review":
+            result["ladder"]["steer"] = "no outside route steers a running turn"
+    if source == "claude" and to != "codex":
+        result["start"] = "tracked-background"
+
+
+def _resolve_herdr(result: dict[str, object], caveats: list[str], *, source: str, want: str, to: str,
+                   task: str, session_id: str | None, desktop_owned: bool, cwd: str | None,
+                   room: str | None, conversation: str | None, workers: int,
+                   profile: str | None) -> None:
+    room_args = ["--room", _q(room)] if room else []
+    cwd_args = ["--cwd", _q(cwd)] if cwd else []
+    conv = conversation or CONVERSATION_HINT[source].split(" ", 1)[0]
+    hermes_role = ["--role", _q(profile)] if to == "hermes" and profile else []
+    hermes_args = ["-p", _q(profile)] if to == "hermes" and profile else []
+    if want == "grill":
+        result["command"] = _herdr("spawn", "--kind", to, *hermes_role, "--disposable", "--ttl", "2h", *room_args,
+                                   *cwd_args, "--", *hermes_args, _q(task), conversation=conv)
+        result["loop"] = [
+            _herdr("tell", "<target>", "<question>", "--wait", conversation=conv),
+            _herdr("read", "<target>", "--since-last", conversation=conv),
+        ]
+    elif want == "converse":
+        result["command"] = _herdr("spawn", "--kind", to, *hermes_role, "--durable", *room_args, *cwd_args, "--",
+                                   *hermes_args, _q(task), conversation=conv)
+        result["loop"] = [
+            _herdr("tell", "<target>", "<message>", "--wait", conversation=conv),
+            _herdr("wait", "<target>", "--until", "idle", conversation=conv),
+            _herdr("read", "<target>", "--since-last", "--transcript", conversation=conv),
+        ]
+        if to == "claude":
+            result["person_phone"] = "the spawn JSON carries remote_url (Remote Control on at birth)"
+    elif want == "steer":
+        if to == "hermes" and profile:
+            resume_id = session_id or "<native-id>"
+            hosted_resume = _herdr("spawn", "--kind", "hermes", *hermes_role, "--durable",
+                                   *room_args, *cwd_args, "--", *hermes_args, "--resume",
+                                   _q(resume_id), conversation=conv)
+            result["command"] = hosted_resume if session_id else (
+                f"{SEARCH_BIN} find {_q(task)}   # then: {hosted_resume}"
+            )
+            if session_id:
+                result["fallback"] = _hermes_resume_one_shot(task, profile, session_id)
+            caveats.append("Herdr resume cannot pass Hermes -p. Herdr spawn with --resume opens the profile session.")
+        elif session_id:
+            fork = ["--fork"] if desktop_owned else []
+            result["command"] = _herdr("resume", _q(session_id), *fork, *room_args, conversation=conv)
+        else:
+            result["command"] = f"{SEARCH_BIN} find {_q(task)}   # then: {_herdr('resume', '<native-id>', conversation=conv)}"
+        result["loop"] = [
+            _herdr("tell", "<target>", "<instruction>", "--wait", conversation=conv),
+            _herdr("wait", "<target>", "--until", "idle", "--timeout", "10m", conversation=conv),
+            _herdr("read", "<target>", "--since-last", conversation=conv),
+        ]
+        result["person_takes_wheel"] = (
+            _herdr("who-owns", "<target>", conversation=conv) + " → "
+            + _herdr("takeover", "<target>", "--expect-controller", "<observed>", "--by", "person:<surface>", conversation=conv)
+            + " → " + _herdr("return", "<target>", "--expect-controller", "<observed>", conversation=conv)
+        )
+        if desktop_owned:
+            caveats.append(CODEX_DESKTOP_NOTE)
+    else:  # parallel
+        count = max(1, workers)
+        result["command"] = " ; ".join(
+            _herdr("spawn", "--kind", to, "--role",
+                   (profile if index == 1 else f"{profile[:31-len(str(index))]}-{index}")
+                   if to == "hermes" and profile else f"worker-{index}",
+                   *room_args, *cwd_args, "--", *hermes_args,
+                   f"<brief {index}: disjoint file scope>", conversation=conv)
+            for index in range(1, count + 1)
+        )
+        result["loop"] = [
+            _herdr("list", "--cost", conversation=conv),
+            _herdr("wait", "<target>", "--until", "done", conversation=conv),
+        ]
+        result["one_shot_alternative"] = (
+            "N background one-shots with disjoint file scopes (from Hermes: background=true); never a Hermes child for code"
+        )
+        caveats.append("Budget: spawn stops and asks at 8 live sessions or on the memory guard; reply anyway / close N / none.")
+    if to == "hermes":
+        caveats.append("herdr spawn --kind hermes has no live receipt yet; verify the first run.")
+    result["returns"] = "JSON row with pane_id, native session_id, room, controller (and remote_url for Claude)"
+    result["ladder"] = {
+        "more_work": _herdr("tell", "<target>", "<follow-up>", "--wait", conversation=conv),
+        "steer": "you are already steering; Person attaches with `herdr agent attach <name>` or the remote_url",
+        "done": f"{HERDR_BIN} list → close <numbers> → preview → y   (durable rows get a baton first; never close without Person's numbers)",
+    }
+    caveats.append("Closing a room's last pane deletes the room; the preview names it in required_room_confirmations[].")
+
+
+def grid(source: str | None = None) -> str:
+    columns = [source] if source else list(RUNTIMES)
+    header = "| # | Want | " + " | ".join(f"from {column}" for column in columns) + " |"
+    lines = [header, "|" + "---|" * (2 + len(columns))]
+    for key, number, name in ROWS:
+        cells = []
+        for column in columns:
+            entry = resolve(source=column, want=key)
+            cells.append(str(entry.get("command", entry.get("reason"))).replace("|", "\\|"))
+        lines.append(f"| {number} | {name} | " + " | ".join(cells) + " |")
+    return "\n".join(lines)
+
+
+# herdr-help is the vendor reference, not an executable dispatch door.
+DOORS = ("orchestrate", "herdr", "runtime-session-search", "herdr-help")
+CODEX_INDEX_DOORS = ("orchestrate", "runtime-session-search", "herdr-help")
+RETIRED = (
+    "fleet", "foxy", "dex", "herd", "claude-delegate", "claude-code", "codex",
+    "kanban-codex-lane", "cross-runtime-agent-orchestration",
+    "coding-agent-delegation", "ce-sessions",
+)
+HERMES_DISABLED = (
+    "fleet", "foxy", "dex", "codex", "claude-code", "claude-delegate",
+    "kanban-codex-lane", "cross-runtime-agent-orchestration", "coding-agent-delegation",
+)
+ARCHIVE_DIRS = {".archive", "archive", "retired"}
+DEFAULT_HERMES_PROFILES = ("main",)
+
+
+def configured_hermes_profiles(home: Path) -> tuple[str, ...]:
+    """Read extra Hermes profiles from this installation's local settings."""
+    path = home.expanduser().absolute() / ".foxrun/config/orchestrate.local.json"
+    if not path.is_file():
+        return DEFAULT_HERMES_PROFILES
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict) or not isinstance(data.get("hermes_profiles"), list):
+        raise ValueError("config/orchestrate.local.json needs hermes_profiles list")
+    names = data["hermes_profiles"]
+    if not names or any(not isinstance(name, str) or not re.fullmatch(r"[A-Za-z0-9_-]+", name) for name in names):
+        raise ValueError("config/orchestrate.local.json has an invalid Hermes profile")
+    return tuple(dict.fromkeys(names))
+
+
+def configured_portfolio_paths(home: Path) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    """Read optional portfolio checks from local settings; product defaults to none."""
+    path = home.expanduser().absolute() / ".foxrun/config/orchestrate.local.json"
+    if not path.is_file():
+        return (), ()
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise ValueError("config/orchestrate.local.json needs an object")
+    result = []
+    for key in ("portfolio_reference_files", "portfolio_tool_dirs"):
+        values = data.get(key, [])
+        if not isinstance(values, list) or any(not isinstance(value, str) or not value or
+           value.startswith("/") or any(part in ("", ".", "..") for part in value.split("/"))
+           for value in values):
+            raise ValueError("config/orchestrate.local.json has invalid " + key)
+        result.append(tuple(dict.fromkeys(values)))
+    return result[0], result[1]
+
+
+LIVE_FLEET_PATTERNS = (
+    re.compile(r"(?<![\w-])(?:~?/)?(?:\.agents/)?skills/fleet(?:/|\b)", re.IGNORECASE),
+    re.compile(r"(?<![\w-])(?:[\w.~/-]+/)?bin/fleet\b", re.IGNORECASE),
+    re.compile(r"\bthe\s+`?fleet`?\s+skill\b", re.IGNORECASE),
+    re.compile(
+        r"(?<![\w-])`?fleet`?\s+(?:spawn|tell|wait|read|find|resume|list|status|trail|"
+        r"takeover|return|recover|handoff|check|watch|close|keep)\b",
+        re.IGNORECASE,
+    ),
+)
+HISTORICAL_FLEET_PATTERNS = (
+    re.compile(r"\b(?:was|were|formerly|previously)\s+`?fleet`?\b", re.IGNORECASE),
+    re.compile(r"\breplaces?\b[^\n]*`?fleet`?\b", re.IGNORECASE),
+    re.compile(r"\b(?:retired|renamed|migrated)\b[^\n]*`?fleet`?\b", re.IGNORECASE),
+    re.compile(r"\b`?fleet`?\b[^\n]*\b(?:was|is)\s+(?:retired|renamed|replaced|archived)\b", re.IGNORECASE),
+    re.compile(r"\b(?:old|legacy|former)\s+`?fleet`?\b", re.IGNORECASE),
+    re.compile(r"\bfleet\s+era\b", re.IGNORECASE),
+)
+
+
+def _live_retired(root: Path) -> list[str]:
+    """Follow live category links, but never loop or enter an archive."""
+    if not root.is_dir():
+        return ["skills directory missing or unresolved"]
+    found = []
+    visited = set()
+
+    def onerror(error: OSError) -> None:
+        raise error
+
+    for directory, dirs, files in os.walk(root, followlinks=True, onerror=onerror):
+        path = Path(directory)
+        stat = path.stat()
+        identity = (stat.st_dev, stat.st_ino)
+        if identity in visited:
+            dirs[:] = []
+            continue
+        visited.add(identity)
+        # Broken symlinks appear in files; they are still live retired entries.
+        for name in sorted(set(dirs + files) & set(RETIRED)):
+            entry = path / name
+            if entry.is_dir() or entry.is_symlink():
+                found.append(str(entry.relative_to(root)))
+        dirs[:] = sorted(name for name in dirs if name not in ARCHIVE_DIRS | {".git"} | set(RETIRED))
+    return ["live retired entries: " + ", ".join(sorted(found))] if found else []
+
+
+def _yaml_uncomment(line: str) -> str:
+    """Remove YAML comments without treating quoted # characters as comments."""
+    quote = None
+    escaped = False
+    for index, char in enumerate(line):
+        if escaped:
+            escaped = False
+        elif char == "\\" and quote == '"':
+            escaped = True
+        elif char == quote:
+            quote = None
+        elif char in "\"'" and quote is None:
+            quote = char
+        elif char == "#" and quote is None and (index == 0 or line[index - 1].isspace()):
+            return line[:index].rstrip()
+    return line.rstrip()
+
+
+def _yaml_skill_name(value: str) -> str:
+    value = value.strip()
+    if value.startswith('"'):
+        result = json.loads(value)
+    elif value.startswith("'") and value.endswith("'"):
+        result = value[1:-1].replace("''", "'")
+    else:
+        if value.startswith(("*", "&", "!")):
+            raise ValueError("YAML aliases, anchors and tags need a full YAML parser")
+        result = value
+    if not isinstance(result, str) or not re.fullmatch(r"[\w./:@*&+-]+", result):
+        raise ValueError("unknown YAML skill name")
+    return result
+
+
+def _disabled_skills(text: str) -> set[str]:
+    """Read the skills.disabled subset, not arbitrary YAML.
+
+    Supports block lists (including indentless lists), flow lists, quotes and
+    comments. Ambiguous shapes, aliases and duplicate keys become findings;
+    never infer a clean configuration from YAML we cannot understand.
+    """
+    lines = [_yaml_uncomment(line) for line in text.splitlines()]
+    lines = [line for line in lines if line.strip() and line.strip() not in {"---", "..."}]
+    skills = [i for i, line in enumerate(lines) if re.match(r"^(?:skills|'skills'|\"skills\")\s*:", line)]
+    if not skills:
+        return set()
+    if len(skills) != 1 or lines[skills[0]].split(":", 1)[1].strip():
+        raise ValueError("unknown skills mapping")
+    start = skills[0] + 1
+    end = next((i for i in range(start, len(lines)) if not lines[i][0].isspace()), len(lines))
+    block = lines[start:end]
+    if not block:
+        return set()
+    indent = len(block[0]) - len(block[0].lstrip())
+    fields = [i for i, line in enumerate(block)
+              if re.match(r"^ {%d}(?:disabled|'disabled'|\"disabled\")\s*:" % indent, line)]
+    if not fields:
+        return set()
+    if len(fields) != 1:
+        raise ValueError("duplicate disabled key")
+    pos = fields[0]
+    value = block[pos].split(":", 1)[1].strip()
+    tail = []
+    for line in block[pos + 1:]:
+        depth = len(line) - len(line.lstrip())
+        if depth < indent or (depth == indent and not line.lstrip().startswith(("-", "]"))):
+            break
+        tail.append(line.strip())
+    if value.startswith("["):
+        flow = " ".join([value, *tail]).strip()
+        if not flow.endswith("]"):
+            raise ValueError("incomplete disabled list")
+        entries = flow[1:-1].strip()
+        return {_yaml_skill_name(item) for item in entries.rstrip(",").split(",")} if entries else set()
+    if value in {"null", "~"} and not tail:
+        return set()
+    if value:
+        raise ValueError("unknown disabled list")
+    names = set()
+    for line in tail:
+        if not line.startswith("- "):
+            raise ValueError("unknown disabled list item")
+        names.add(_yaml_skill_name(line[2:]))
+    return names
+
+
+def _permissions(path: Path, kind: str) -> list[str]:
+    config = json.loads(path.read_text(encoding="utf-8"))
+    permissions = config.get("permissions", {}) if isinstance(config, dict) else None
+    rules = permissions.get(kind, []) if isinstance(permissions, dict) else None
+    if not isinstance(rules, list) or any(not isinstance(rule, str) for rule in rules):
+        raise ValueError("unknown permission rule shape")
+    return rules
+
+
+def _claude_allow(path: Path) -> list[str]:
+    return ["remove Skill(codex) allow"] if "Skill(codex)" in _permissions(path, "allow") else []
+
+
+def _claude_deny(path: Path) -> list[str]:
+    rules = _permissions(path, "deny")
+    targets = ("compound-engineering:ce-sessions", "ce-sessions")
+    for rule in rules:
+        match = re.fullmatch(r"Skill\(([^()]+)\)", rule)
+        if match and any(re.fullmatch(re.escape(match[1]).replace(r"\*", ".*"), target) for target in targets):
+            return []
+        if rule == "Skill":
+            return []  # Denying the whole tool also denies ce-sessions.
+    return ["ce-sessions deny missing or rule shape unknown"]
+
+
+_TOML_KEY = re.compile(r"""[ \t]*(?:"((?:[^"\\\n]|\\.)*)"|'([^'\n]*)'|([A-Za-z0-9_-]+))[ \t]*""")
+_TOML_STRING = re.compile(r""""(?:[^"\\\n]|\\.)*"|'[^'\n]*'""")
+_TOML_LONG = ('"' * 3, "'" * 3)
+
+
+def _toml_key(text: str, at: int = 0) -> tuple[list[str], int]:
+    """Read a TOML dotted key at text[at:]. Return its parts and the index after it, or raise ValueError."""
+    parts = []
+    while True:
+        match = _TOML_KEY.match(text, at)
+        if not match or match.end() == at:
+            raise ValueError("unknown TOML key")
+        basic, literal, bare = match.groups()
+        parts.append(json.loads('"' + basic + '"') if basic is not None else literal if literal is not None else bare)
+        at = match.end()
+        if not text.startswith(".", at):
+            return parts, at
+        at += 1
+
+
+def _toml_rest(text: str) -> str:
+    """The text with its strings blanked and its comment cut, for bracket counts."""
+    return _TOML_STRING.sub('""', text).split("#", 1)[0]
+
+
+def _toml_projects(text: str) -> dict[str, dict[str, str]]:
+    """Read the projects tables of a Codex config.toml where Python has no tomllib (3.9 and 3.10).
+
+    It reads [projects."<path>"] tables and their one-line string trust_level. It skips other keys,
+    with their multi-line strings and arrays. Any other form that could hold a project raises
+    ValueError, so the check reports that it cannot verify."""
+    projects: dict[str, dict[str, str]] = {}
+    current, root, closing, depth = None, True, None, 0
+    for raw in text.splitlines():
+        if closing:  # inside a multi-line string value
+            if closing in raw:
+                closing = None
+            continue
+        if depth:  # inside a multi-line array value
+            rest = _toml_rest(raw)
+            depth += rest.count("[") - rest.count("]")
+            continue
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.startswith("["):
+            array = line.startswith("[[")
+            parts, at = _toml_key(line, 2 if array else 1)
+            close = "]]" if array else "]"
+            if not line.startswith(close, at) or line[at + len(close):].strip()[:1] not in ("", "#"):
+                raise ValueError("unknown TOML table")
+            root = False
+            if parts[0] == "projects" and (array or len(parts) == 1):
+                raise ValueError("unknown projects form")
+            current = None
+            if not array and parts[0] == "projects" and len(parts) == 2:
+                if parts[1] in projects:
+                    raise ValueError("duplicate project table")
+                current = parts[1]
+                projects[current] = {}
+            continue
+        parts, at = _toml_key(line)
+        if not line.startswith("=", at):
+            raise ValueError("unknown TOML line")
+        value = line[at + 1:].strip()
+        if (root and parts[0] == "projects") or (current is not None and len(parts) > 1):
+            raise ValueError("unknown projects form")
+        if current is not None and parts == ["trust_level"]:
+            match = _TOML_STRING.match(value)
+            if not match or value.startswith(_TOML_LONG) or value[match.end():].strip()[:1] not in ("", "#"):
+                raise ValueError("unknown trust_level value")
+            token = match.group(0)
+            projects[current]["trust_level"] = json.loads(token) if token.startswith('"') else token[1:-1]
+            continue
+        for quote in _TOML_LONG:
+            if value.startswith(quote) and value.count(quote) == 1:
+                closing = quote
+        if not closing:
+            rest = _toml_rest(value)
+            depth = max(0, rest.count("[") - rest.count("]"))
+    if closing or depth:
+        raise ValueError("unclosed TOML value")
+    return projects
+
+
+def _codex_trust(path: Path) -> list[str]:
+    text = path.read_text(encoding="utf-8")
+    try:
+        import tomllib
+    except ImportError:  # Python 3.9 and 3.10: read the few keys this check needs.
+        projects = _toml_projects(text)
+    else:
+        projects = tomllib.loads(text).get("projects", {})
+    if not isinstance(projects, dict):
+        raise ValueError("unknown projects mapping")
+    stale = []
+    for name, settings in projects.items():
+        if "/fleet" not in name:
+            continue
+        if not isinstance(settings, dict):
+            raise ValueError("unknown project trust entry")
+        if settings.get("trust_level") == "trusted":
+            stale.append(name)
+    return ["retired trust entries: " + ", ".join(sorted(stale))] if stale else []
+
+
+def _hermes_profiles(value: str) -> tuple[str, ...]:
+    profiles = tuple(name.strip() for name in value.split(",") if name.strip())
+    if not profiles or any(not re.fullmatch(r"[A-Za-z0-9_-]+", name) for name in profiles):
+        raise argparse.ArgumentTypeError("use a comma-separated list of profile names")
+    return tuple(dict.fromkeys(profiles))
+
+
+def _is_live_fleet_reference(line: str) -> bool:
+    if any(pattern.search(line) for pattern in HISTORICAL_FLEET_PATTERNS):
+        return False
+    return any(pattern.search(line) for pattern in LIVE_FLEET_PATTERNS)
+
+
+def doctor(home: Path, vault: Path | None = None,
+           hermes_profiles: tuple[str, ...] | None = None) -> dict[str, object]:
+    """Read only the requested local surfaces. Never execute a checked binary."""
+    home = home.expanduser().absolute()
+    hermes_profiles = hermes_profiles if hermes_profiles is not None else configured_hermes_profiles(home)
+    vault = vault.expanduser().absolute() if vault is not None else home / "foxrun"
+    checks = []
+
+    def check(runtime: str, name: str, path: Path, inspect) -> None:
+        try:
+            findings = inspect(path)
+        except (OSError, UnicodeError, ValueError, ImportError) as error:
+            # Parser errors can contain config values. Do not print their text.
+            findings = [f"cannot verify ({type(error).__name__}); missing, unreadable, or unknown format"]
+        checks.append({"runtime": runtime, "check": name, "path": str(path),
+                       "status": "finding" if findings else "pass", "findings": findings})
+
+    system = home / ".foxrun"
+    shelf = system / "skills"
+    for name in DOORS:
+        def door(path: Path, name: str = name) -> list[str]:
+            findings = []
+            if not (path / "SKILL.md").is_file():
+                findings.append("SKILL.md missing or unresolved")
+            if name != "herdr-help":
+                binary = path / "bin" / name
+                if not binary.is_file() or not os.access(binary, os.X_OK):
+                    findings.append(f"bin/{name} missing, unresolved, or not executable")
+            return findings
+        check("Claude/Codex", name, shelf / name, door)
+    check("Claude/Codex", "retired doors", shelf, _live_retired)
+    codex_skills = home / ".codex/skills"
+    for name in CODEX_INDEX_DOORS:
+        expected = shelf / name
+
+        def codex_index_link(path: Path, expected: Path = expected) -> list[str]:
+            if not path.is_symlink():
+                return [f"missing symlink to {expected}"]
+            if not path.is_dir():
+                return [f"dangling symlink to {expected}"]
+            target = Path(os.readlink(path))
+            if not target.is_absolute():
+                target = path.parent / target
+            if Path(os.path.abspath(target)) != Path(os.path.abspath(expected)):
+                return [f"symlink does not point to {expected}"]
+            return []
+
+        check("Codex", name, codex_skills / name, codex_index_link)
+    hermes = home / ".hermes"
+    check("Hermes", "retired doors", hermes / "skills", _live_retired)
+
+    def disabled(path: Path) -> list[str]:
+        names = _disabled_skills(path.read_text(encoding="utf-8"))
+        missing = [name for name in HERMES_DISABLED if name not in names]
+        return ["missing disabled: " + ", ".join(missing)] if missing else []
+
+    selected_profiles = set(hermes_profiles)
+    if "main" in selected_profiles:
+        check("Hermes", "main disabled", hermes / "config.yaml", disabled)
+    else:
+        checks.append({"runtime": "Hermes", "check": "main disabled", "path": str(hermes / "config.yaml"),
+                       "status": "info", "findings": ["skipped; not selected by --hermes-profiles"]})
+    profiles = hermes / "profiles"
+    try:
+        entries = {profile.name: profile for profile in profiles.iterdir()
+                   if profile.name not in ARCHIVE_DIRS and (profile.is_dir() or profile.is_symlink())} \
+                  if profiles.exists() else {}
+        for name in hermes_profiles:
+            if name != "main":
+                check("Hermes", f"{name} disabled", profiles / name / "config.yaml", disabled)
+        for name, profile in sorted(entries.items()):
+            if name not in selected_profiles:
+                checks.append({"runtime": "Hermes", "check": f"{name} disabled",
+                               "path": str(profile / "config.yaml"), "status": "info",
+                               "findings": ["skipped; not selected by --hermes-profiles"]})
+    except OSError as error:
+        checks.append({"runtime": "Hermes", "check": "profiles", "path": str(profiles),
+                       "status": "finding", "findings": [f"cannot list profiles ({type(error).__name__})"]})
+    check("Claude", "codex allow", home / ".claude/settings.local.json", _claude_allow)
+    check("Claude", "ce-sessions deny", home / ".claude/settings.json", _claude_deny)
+    check("Codex", "fleet trust", home / ".codex/config.toml", _codex_trust)
+
+    def references(path: Path) -> list[str]:
+        lines = [str(i) for i, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1)
+                 if _is_live_fleet_reference(line)]
+        return ["live fleet reference at lines " + ", ".join(lines)] if lines else []
+
+    check("System", "fleet references", system / "AGENTS.md", references)
+    reference_files, portfolio_tool_dirs = configured_portfolio_paths(home)
+    for relative in reference_files:
+        check("Portfolio", "fleet references", vault / relative, references)
+    tool_dirs = ((system, system / "tools/cli"),
+                 (system, system / "tools/mcp"),
+                 *((vault, vault / relative) for relative in portfolio_tool_dirs))
+    for owner, tool_dir in tool_dirs:
+        try:
+            if not tool_dir.is_dir():
+                raise FileNotFoundError()
+            for path in sorted(tool_dir.iterdir()):
+                if path.suffix != ".md" or re.match(r"\d{4}-\d{2}-\d{2}", path.name):
+                    continue
+                target = path.resolve()
+                owner_root = owner.resolve()
+                if target.is_relative_to(owner_root) and ARCHIVE_DIRS.intersection(target.relative_to(owner_root).parts):
+                    continue
+                check("System/Portfolio", "fleet references", path, references)
+        except (OSError, RuntimeError) as error:
+            checks.append({"runtime": "System/Portfolio", "check": "tool guides", "path": str(tool_dir),
+                           "status": "finding", "findings": [f"cannot list guides ({type(error).__name__})"]})
+    count = sum(entry["status"] == "finding" for entry in checks)
+    return {"status": "findings" if count else "clean", "finding_count": count, "checks": checks}
+
+
+def doctor_table(payload: dict[str, object]) -> str:
+    def cell(value: str) -> str:
+        return value.replace("|", "\\|").replace("\n", " ").replace("\r", " ")
+
+    lines = ["| Runtime | Status | Check | Path | Details |", "|---|---|---|---|---|"]
+    for entry in payload["checks"]:
+        values = [entry["runtime"], entry["status"], entry["check"], entry["path"],
+                  "; ".join(entry["findings"]) or "OK"]
+        lines.append("| " + " | ".join(cell(value) for value in values) + " |")
+    lines.append(f"{payload['finding_count']} finding checks / {len(payload['checks'])} checks")
+    return "\n".join(lines)
+
+
+class CodexThreadError(RuntimeError):
+    pass
+
+
+def _codex_app_running() -> bool:
+    processes = subprocess.run(["ps", "-axo", "command="], capture_output=True,
+                               text=True, check=True).stdout
+    return any(line.strip().startswith("/Applications/Codex.app/") for line in processes.splitlines())
+
+
+def _registered_thread(thread_id: str, name: str, state_db: Path) -> str | None:
+    # The sqlite CLI opens the state store read-only. The server supplies a UUID-like id.
+    if not re.fullmatch(r"[A-Za-z0-9-]+", thread_id):
+        return None
+    sql = f"select name, source, rollout_path from threads where id='{thread_id}'"
+    result = subprocess.run(["sqlite3", "-readonly", "-json", str(state_db), sql],
+                            capture_output=True, text=True)
+    if result.returncode:
+        return None
+    try:
+        rows = json.loads(result.stdout or "[]")
+    except json.JSONDecodeError:
+        return None
+    if len(rows) != 1 or rows[0].get("name") != name or rows[0].get("source") != "vscode":
+        return None
+    return rows[0].get("rollout_path")
+
+
+def codex_thread(*, name: str, cwd: str, prompt: str, model: str | None = None,
+                 sandbox: str = "read-only", timeout: float = 180,
+                 state_db: Path | None = None, app_running=None) -> dict[str, str]:
+    """Create one desktop-owned thread, then release the app-server process."""
+    if not (app_running or _codex_app_running)():
+        raise CodexThreadError("Codex app is not running; open Codex and retry.")
+    default_model = code_model()
+    if model is None:
+        model = default_model
+    else:
+        from base.agent_catalog import model_policy
+        if model not in model_policy()["allowed"]:
+            raise CodexThreadError("model is outside config/models.yaml allowed list")
+    state_db = state_db or Path.home() / ".codex" / "state_5.sqlite"
+    child = subprocess.Popen(["codex", "app-server"], cwd=cwd, stdin=subprocess.PIPE,
+                             stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                             text=True, bufsize=1)
+    messages: queue.Queue[dict | None] = queue.Queue()
+
+    def read_messages() -> None:
+        assert child.stdout is not None
+        for line in child.stdout:
+            try:
+                messages.put(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+        messages.put(None)
+
+    reader = threading.Thread(target=read_messages, daemon=True)
+    reader.start()
+    deadline = time.monotonic() + timeout
+    request_id = 0
+
+    def send(method: str, params: dict, *, notify: bool = False) -> int:
+        nonlocal request_id
+        request_id += 1
+        message = {"method": method, "params": params}
+        if not notify:
+            message["id"] = request_id
+        assert child.stdin is not None
+        child.stdin.write(json.dumps(message) + "\n")
+        child.stdin.flush()
+        return request_id
+
+    def receive(predicate) -> dict:
+        while True:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise CodexThreadError(f"Codex turn timed out after {timeout:g} seconds.")
+            try:
+                message = messages.get(timeout=remaining)
+            except queue.Empty:
+                raise CodexThreadError(f"Codex turn timed out after {timeout:g} seconds.") from None
+            if message is None:
+                raise CodexThreadError("Codex app-server closed before the turn completed.")
+            if predicate(message):
+                if message.get("error"):
+                    raise CodexThreadError(f"Codex app-server error: {message['error']}")
+                return message
+
+    try:
+        init = send("initialize", {"clientInfo": {"title": "Codex Plugin", "name": "Claude Code",
+                                                   "version": "t167"},
+                                   "capabilities": {"experimentalApi": False}})
+        receive(lambda message: message.get("id") == init)
+        send("initialized", {}, notify=True)
+        params = {"cwd": cwd, "model": model, "approvalPolicy": "never",
+                  "sandbox": sandbox, "ephemeral": False}
+        started = send("thread/start", params)
+        thread_id = receive(lambda message: message.get("id") == started)["result"]["thread"]["id"]
+        named = send("thread/name/set", {"threadId": thread_id, "name": name})
+        receive(lambda message: message.get("id") == named)
+        send("turn/start", {"threadId": thread_id,
+                            "input": [{"type": "text", "text": prompt, "text_elements": []}]})
+        receive(lambda message: message.get("method") == "turn/completed")
+    finally:
+        if child.stdin and not child.stdin.closed:
+            child.stdin.close()
+        if child.poll() is None:
+            child.terminate()
+        try:
+            child.wait(timeout=3)
+        except subprocess.TimeoutExpired:
+            child.kill()
+            child.wait()
+        reader.join(timeout=1)
+        if child.stdout:
+            child.stdout.close()
+
+    rollout_path = _registered_thread(thread_id, name, state_db)
+    if not rollout_path:
+        raise CodexThreadError(
+            f"Codex did not register the thread {thread_id}; it will not show in the sidebar.")
+    return {"thread_id": thread_id, "name": name, "cwd": cwd, "rollout_path": rollout_path}
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(prog="orchestrate", description=__doc__.splitlines()[0])
+    sub = parser.add_subparsers(dest="command", required=True)
+    solve = sub.add_parser("resolve", help="one command for (from, want, to)")
+    solve.add_argument("--from", dest="source", required=True, choices=RUNTIMES)
+    solve.add_argument("--want", required=True, choices=[*ROW_BY_KEY, *ROW_ALIASES])
+    solve.add_argument("--to", choices=RUNTIMES)
+    solve.add_argument("--task", default="<task>")
+    solve.add_argument("--session-id")
+    solve.add_argument("--thread", help="Codex desktop thread ID for a Claude caller")
+    solve.add_argument("--new-thread", help="create a named Codex desktop thread first")
+    solve.add_argument("--watch", action="store_true", help="create a Codex thread named from --task")
+    solve.add_argument("--design", action="store_true", help="design challenge on the review row")
+    solve.add_argument("--run-dir", help="directory for Codex worker output (result.md)")
+    solve.add_argument("--desktop-owned", action="store_true", help="the Codex thread is owned by Codex Desktop")
+    solve.add_argument("--desktop-native", action="store_true", help="the caller is Codex Desktop with native tools")
+    solve.add_argument("--native-route", choices=NATIVE_ROUTES, help="Codex Desktop route; default C")
+    solve.add_argument("--check", action="store_true", help="select Codex Desktop scheduled-check route D")
+    solve.add_argument("--hosted", action="store_true", help="request the CLI or Herdr route instead of desktop-native tools")
+    solve.add_argument("--cwd")
+    solve.add_argument("--room")
+    solve.add_argument("--conversation")
+    solve.add_argument("--profile", help="Hermes profile alias from local settings")
+    solve.add_argument("--workers", type=int, default=2)
+    table = sub.add_parser("grid", help="print the 8x3 menu as markdown")
+    table.add_argument("--from", dest="source", choices=RUNTIMES)
+    sub.add_parser("rows", help="list the eight rows")
+    health = sub.add_parser("doctor", help="read-only local check for retired dispatch doors")
+    health.add_argument("--home", type=Path, default=Path.home(), help="home to inspect (default: current home)")
+    health.add_argument("--vault", type=Path, help="portfolio to inspect (default: HOME/foxrun); system shelf uses HOME/.foxrun")
+    health.add_argument("--hermes-profiles", type=_hermes_profiles, default=None,
+                        help="comma-separated profiles to check (default: config/orchestrate.local.json or main)")
+    health.add_argument("--json", action="store_true", help="print JSON instead of the table")
+    create = sub.add_parser("codex-thread", help="create a named Codex desktop thread")
+    create.add_argument("--name", required=True)
+    create.add_argument("--cwd", required=True)
+    create.add_argument("--prompt", required=True)
+    create.add_argument("--model")
+    create.add_argument("--sandbox", choices=("read-only", "workspace-write", "danger-full-access"),
+                        default="read-only")
+    create.add_argument("--timeout", type=float, default=180, help=argparse.SUPPRESS)
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    if args.command == "doctor":
+        payload = doctor(args.home, args.vault, args.hermes_profiles)
+        print(json.dumps(payload, indent=2) if args.json else doctor_table(payload))
+        return int(payload["finding_count"] > 0)
+    if args.command == "rows":
+        print(json.dumps([{"row": int(n), "key": k, "name": name} for k, n, name in ROWS], indent=2, ensure_ascii=False))
+        return 0
+    if args.command == "grid":
+        print(grid(args.source))
+        return 0
+    if args.command == "codex-thread":
+        try:
+            payload = codex_thread(name=args.name, cwd=args.cwd, prompt=args.prompt,
+                                   model=args.model, sandbox=args.sandbox, timeout=args.timeout,
+                                   state_db=Path(os.environ["ORCHESTRATE_CODEX_STATE_DB"])
+                                   if "ORCHESTRATE_CODEX_STATE_DB" in os.environ else None)
+        except (CodexThreadError, OSError, ValueError, KeyError,
+                subprocess.CalledProcessError) as error:
+            print(str(error).replace("\n", " "), file=sys.stderr)
+            return 1
+        print(json.dumps(payload, ensure_ascii=False))
+        return 0
+    try:
+        payload = resolve(
+            source=args.source, want=args.want, to=args.to, task=args.task,
+            session_id=args.session_id, desktop_owned=args.desktop_owned, cwd=args.cwd,
+            room=args.room, conversation=args.conversation, profile=args.profile,
+            workers=args.workers, desktop_native=args.desktop_native,
+            native_route=args.native_route, check=args.check, hosted=args.hosted,
+            thread=args.thread, watch=args.watch, new_thread=args.new_thread,
+            design=args.design, run_dir=args.run_dir,
+        )
+    except ResolveError as error:
+        print(json.dumps({"error": str(error)}))
+        return 2
+    # T755: every route carries the run rules; the lead pastes them into each worker brief.
+    payload["run_rules"] = RUN_RULES
+    print(json.dumps(payload, indent=2, ensure_ascii=False))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

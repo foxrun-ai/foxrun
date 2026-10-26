@@ -1,0 +1,66 @@
+[
+  {
+    "session": "501192e0",
+    "index": 175,
+    "turn": {
+      "text": "All right, amigo. All right, photo rows, a row that holds only one type shows hold, holds type. A folder with several types or modules. I'm confused. Folder rows, what are we talking about? What column? I need more clarity. Docs, you said work is too broad and build. That actually kind of makes sense. So docs is the build collection inside the work module. Yes, agreed. Agreement files, you thought they were real agreements. Sorry, I know I'm just reading your shit out loud. Yep, agreed. On number three as well. Yep, on number four as well. All right, let's keep going. Um, what's happening in the background too? I see, looks like a task is running, or am I missing something? I have no idea.",
+      "timestamp": "2026-09-28T02:29:22.691Z",
+      "assistant_before": "      I sent it to the Adviser, and I owned it: 9 errors since compaction, listed in my own words.\n\n**The root cause I found:** we settled the folder rule at 16:27, but I never wrote it anywhere. It is not in a decision row, a `T5` comment, or the handoff. It lived only in chat, and compaction dropped it.\n\n**The Adviser will:**\n- Check the transcript against the rows and list everything else that exists only in chat.\n- Say whether the log.jsonl and queries supertypes were already settled.\n- Give me a checklist to run before every model reply.\n- Name fixes for the Architect seat, the handoff skill, and compaction.\n\nUntil it answers, I won't propose any more rulings.   The Adviser's diagnosis, in one line: I settled things with you in chat and never wrote them down. Compaction kept only the summary. Then I answered from that summary without rerunning my boot reads.\n\n**Its other causes**\n- I built the page and ran Jev in the same context I use for ruling with you.\n- I answered too many topics per reply.\n\n**What I recovered and logged just now** (it had lived only in chat):\n- 16:27, folder rows: \"holds <type>\" for a folder with one type; empty otherwise; never a view.\n- 17:14, your pushback that \"work is too broad.\" Whether you accepted \"build inside work\" was never logged.\n- 17:16, the agreement files are real signed agreements, so they go to raw/documents.\n- 17:51, the new-word rule: the previous name, what it relates to, and what is in it.\n- 17:59, the wiki content was never read. The knowledge count came from labels.\n\n**Error 9 was not a hallucination.** The log.jsonl and queries supertypes were genuinely open. My mistake was re-asking them without citing `g-cedar-shop-rule-19` and the T7 20:37 comment.\n\n**The fixes are filed as rows:**\n- `T8` Handoff and compaction guard: no unpromoted person yes · chief-of-staff. The handoff refuses to write while any yes has no row.\n- A `T6` comment adds the seat changes to architect.md.\n- A `T4` comment holds the lessons.\n\n**My rule from here:** before every reply, I check the rows, cover one topic, draw trees only from mapping.json, and write your yes down in the same turn.\n\n**One question, when you're ready:** on 17:14, \"work is too broad.\" Did you accept docs as the \"build\" collection inside the work module, or is that still open?  That notice is for pass 9, which I already reported. The open question is still 17:14: is docs the \"build\" collection inside the work module, or is that open?   Running the boot reads now, as T9 says, before I ask you anything.         I ran the boot reads: the handoff, 109 tagged rulings plus 28 untagged, CONCEPTS, the dictionary, lessons, activity, and my last 20 comments. Here are the four lost settlements from `T9`. Reply yes or give a change on each.\n\n1. **Folder rows (16:27):** a folder that holds only one type shows \"holds <type>.\" A folder with several types, or a module's own folder, stays empty. Folders are never views. Yes?\n2. **docs (17:14):** you said \"work is too broad,\" then \"build? That actually kind of makes sense.\" So docs is the build collection inside the work module. Yes?\n3. **Agreement files (17:16):** you thought they were real agreements. I showed that the file reads \"Compensation: Gift-only or Gift + $___,\" so they are blank templates. Templates live with their skill, and signed ones are agreement rows plus the frozen file. Yes?\n4. **New-word rule (17:51):** every new word I propose comes with its old name, what it relates to, and what it holds. Yes?   I told the Adviser: no rows get written on its word, only on yours. The four questions above are still waiting on your yes or change for each.    I answered the Adviser's test question 1: handoffs live in wiki/raw/handoffs, per `pr-raw-holds-trail`. I also said the disk still differs. Your four `T9` questions above are still open.  I answered test question 2. The log.jsonl supertype has no ruling yet. It's open in `g-cedar-shop-rule-19`, and the Adviser's pick, \"event,\" waits for your yes. Your four `T9` questions are still open. "
+    },
+    "kind": "comment",
+    "row": {
+      "id": 881,
+      "subject_id": "T9",
+      "body": "person: Docs, you said work is too broad and build. That actually kind of makes sense. So docs is the build collection inside the work module. Yes, agreed. Agreement files, you thought they were real agreements ... Yep, agreed. On number three as well. Yep, on number four as well.",
+      "at": "2026-09-27T22:29:41-04:00"
+    }
+  },
+  {
+    "session": "d034d308",
+    "index": 515,
+    "turn": {
+      "text": "Alright. Let's talk through. Also, I'd love to know how this stuff is being stored, given our new model. But workspace home page, I think I agree with that. We call it something else too. Right? It's like the name of whatever. One family word for database things. Super type database. Yep. I agree with that. Anything else you'd add? before we get to module?",
+      "timestamp": "2026-09-17T22:55:57.433Z",
+      "assistant_before": "         Version 55 is published, with the rebuilt `audit` tab.\n\n- It shows **8 lines**, and all eight fit on one iPad screen. Each line has a bold title, my recommendation in one sentence, and ✓ ⚑ ✗ on the right.\n- Tap a line if you want the detail: what I had, your words, and the date.\n- The other two filters are \"Claude fixes these\" (66) and \"Parked, out of scope\" (7). You can ignore both.\n\nThe eight items are: the home page, the `database` family word, module against collection, who owns the shared law, old compound-engineering plans, databases and Git, pipeline, and workflow.\n\nTell me when you have tapped them. "
+    },
+    "kind": "approval",
+    "row": {
+      "id": 1,
+      "subject_id": "pr-home-report",
+      "person_words": "workspace home page, I think I agree with that",
+      "given_at": "2026-09-17T18:58-04:00"
+    }
+  },
+  {
+    "session": "d034d308",
+    "index": 434,
+    "turn": {
+      "text": "Up, now we're fucking talking. Exactly, reports, views, exactly. What's the latency of that shit though? Like right now, what are my agents looking at across ShipBob, Shopify? I think we we created like a 90 day thing or something like that, right? Amazon. We don't have anything for TikTok. We probably should at some point. I can't remember if there's anything else. Data dough, the other thing. I think we are fucking. Okay, so what you said? You said what I have today, honestly, hand run scripts that show. Damn. So what's our decision? Like in plain English, I I'm I'm kind of vibing with with the direction you're going in.",
+      "timestamp": "2026-09-17T19:23:56.378Z",
+      "assistant_before": " **`listings.md` and `catalog.md`: ruled, both become views.**\n\nOn the bigger question, you are circling the right thing. Plain version of how this works, and ADR 0009 already says most of it:\n\n**1. The owner stays outside.** Shopify owns orders and products. ShipBob owns stock. Amazon owns listing status. We never pretend otherwise.\n\n**2. Our copy is a mirror. One way, in only.** Read-only, keyed by the outside system's own id. Nobody edits a mirror row. That is why syncing does not get you in trouble: one direction means nothing to conflict.\n\n**3. Changes go out through the front door.** A change to a listing or an order is staged, you approve it, it goes through that system's own API. Then the mirror refreshes. Never edit locally and hope it syncs.\n\n**4. One rule for agents: read the mirror to think, ask the source to act.**\n- Reports, views, \"which SKUs are low\": the mirror. Fast, joins with everything.\n- \"Is this in stock right now, before I create this order\": ask ShipBob live.\n\n**5. This is where modular gets real.** An add-on like Shopify is two parts:\n\n| part | what it is | swappable |\n|---|---|---|\n| the tables | the mirror's shape | no, same for everyone |\n| the feeder | what fills them: a printing-press CLI, an MCP, an export file | yes |\n\nSo a customer with an MCP and no printing press still gets the same tables. Only the feeder differs. Your kits' own local stores stay the kits' business. The feeder copies the few fields we need into the mirror. We never reach into a kit's private database.\n\n**What you have today, honestly:** hand-run scripts. `fill_dims_from_shipbob.py`, `build_amazon_catalog.py`, the Shopify data skill. They fill `cedar-shop.sqlite`: 627 products, 3,361 sales rows. That is the feeder in rough form. I have not checked how fresh any of it is.\n\nFiling: the two views ruled. The mirror and feeder idea as soft, since it touches ADR 0009.\n\nItem 5 next: `tiktok` becomes `tiktok-shop`. Yes? "
+    },
+    "kind": "decision",
+    "row": {
+      "id": "pr-g-cedar-shop-rule-8",
+      "person_words": "Now we're fucking talking. Exactly, reports, views, exactly.",
+      "decided_on": "2026-09-17",
+      "source": "cedar-shop-tab-review.jsonl"
+    }
+  },
+  {
+    "session": "d034d308",
+    "index": 1004,
+    "turn": {
+      "text": "Beautiful. Sounds good. All right. Let's let's get this shit rolling.",
+      "timestamp": "2026-09-21T20:54:25.115Z",
+      "assistant_before": " It is a hybrid with one default. The Cedar Shop lead steers reviewer. You steer the lead.\n\n**1️⃣ The default**\n- You talk to the Cedar Shop lead. It turns your direction into briefs and tasks for reviewer in Hermes. It checks the results and reports to you.\n- This is the same setup as today. You talked to me, and I steered Sol. You never steered Sol.\n\n**2️⃣ Your override**\n- You can message reviewer directly in Telegram at any time. For example, you are on your phone and a creator needs a fast answer.\n- Your direct word wins over the lead. reviewer writes it on the task, so the lead sees it and does not send reviewer the other way.\n\n**3️⃣ Why the lead is the default, and not you**\n- One steady steerer keeps reviewer on the plan. Two equal steerers cause drift.\n- Your attention is the scarce thing. The lead checks reviewer's work, so you do not have to.\n\n**4️⃣ Me**\n- I steer nobody in Cedar Shop. I read the rows and fix the foundation.\n\nYou give up: nothing. You keep a direct line to reviewer, and you gain a checker between you and the work. "
+    },
+    "kind": "decision",
+    "row": {
+      "id": "g-cedar-shop-rule-3",
+      "person_words": "Beautiful. Sounds good. Let's get this shit rolling.",
+      "decided_on": "2026-09-21",
+      "source": "chat d034d308"
+    }
+  }
+]

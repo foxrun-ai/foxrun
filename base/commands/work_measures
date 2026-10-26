@@ -1,0 +1,7 @@
+#!/usr/bin/env python3
+"""Forward a checked table command to the shared implementation."""
+import os
+from pathlib import Path
+import sys
+here = Path(__file__).resolve().parent.parent
+os.execv(sys.executable, [sys.executable, str(here / 'core.py'), *sys.argv[1:], '--table', 'work_measures'])

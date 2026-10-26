@@ -1,0 +1,10 @@
+{
+  "name": "ruled-file-home",
+  "run": "read",
+  "input": "Read the file-home instructions and report the declared path. Stop if the owning workspace is absent.",
+  "expect": {
+    "output_contains": [
+      "notes/decisions/"
+    ]
+  }
+}

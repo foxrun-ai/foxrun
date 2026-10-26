@@ -1,0 +1,87 @@
+#!/usr/bin/env python3
+"""Name the files that answer "how does Foxrun do X", in reading order, with the lines that match.
+
+Order: the nearest AGENTS.md above the folder, then the nearest DOCUMENTATION.md above it,
+then the system home's DOCUMENTATION.md. Read-only: it writes nothing.
+JSON goes to stdout. Notes go to stderr.
+"""
+
+import argparse
+import json
+import os
+from pathlib import Path
+import re
+import sys
+
+
+STOP = {"the", "and", "how", "does", "do", "what", "where", "why", "foxrun", "for", "with", "this", "that"}
+LIMIT = 12
+
+
+def home():
+    return Path(os.environ.get("FOXRUN_HOME") or Path.home() / ".foxrun").expanduser()
+
+
+def nearest(start, name, stop):
+    """The first file with this name in the folder or a parent, never above the stop folder."""
+    folder = start
+    while True:
+        file = folder / name
+        if file.is_file():
+            return file
+        if folder == stop or folder.parent == folder:
+            return None
+        folder = folder.parent
+
+
+def words(text):
+    return [word for word in re.findall(r"[a-z0-9][a-z0-9_.-]*", text.lower()) if len(word) >= 3 and word not in STOP]
+
+
+def hits(file, wanted):
+    found, section = [], None
+    for number, line in enumerate(file.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
+        if line.startswith("#"):
+            section = line.lstrip("#").strip()
+        lowered = line.lower()
+        score = sum(1 for word in wanted if re.search(r"(?<![a-z0-9])" + re.escape(word), lowered))
+        if score:
+            found.append({"line": number, "score": score, "section": section, "text": line.strip()[:200]})
+    found.sort(key=lambda item: (-item["score"], item["line"]))
+    return found[:LIMIT]
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(prog="ask-sources", description=__doc__,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("question", nargs="?", default="", help="the question, in the person's words")
+    parser.add_argument("--cwd", default=".", help="the folder the question comes from; default: here")
+    args = parser.parse_args(argv)
+    start = Path(args.cwd).expanduser().resolve()
+    system = home().resolve()
+    stop = Path.home().resolve()
+    if start != stop and stop not in start.parents:
+        stop = Path(start.anchor)
+    ordered = []
+    for role, file in (("nearest AGENTS.md", nearest(start, "AGENTS.md", stop)),
+                       ("nearest DOCUMENTATION.md", nearest(start, "DOCUMENTATION.md", stop)),
+                       ("system DOCUMENTATION.md", system / "DOCUMENTATION.md")):
+        if file is None or not file.is_file() or any(item["path"] == str(file) for item in ordered):
+            continue
+        ordered.append({"role": role, "path": str(file)})
+    wanted = words(args.question)
+    for item in ordered:
+        item["hits"] = hits(Path(item["path"]), wanted) if wanted else []
+    # The source whose best line holds the most question words; reading order breaks a tie.
+    scored = [(max((hit["score"] for hit in item["hits"]), default=0), -index, item["path"])
+              for index, item in enumerate(ordered)]
+    best = max(scored)[2] if scored else None
+    if not ordered:
+        print("ask-sources: no AGENTS.md or DOCUMENTATION.md found from " + str(start), file=sys.stderr)
+    print(json.dumps({"cwd": str(start), "words": wanted, "sources": ordered, "start_with": best},
+                     indent=2, ensure_ascii=False))
+    return 0 if ordered else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

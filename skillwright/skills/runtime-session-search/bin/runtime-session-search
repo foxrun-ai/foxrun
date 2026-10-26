@@ -1,0 +1,337 @@
+#!/usr/bin/env python3
+"""runtime-session-search — find any past session across Claude, Codex, and
+Hermes, read its final reply, and return the native id so `orchestrate` can
+resume it.
+
+Native files are truth:
+  Claude  ~/.claude/projects/<cwd-slug>/<uuid>.jsonl
+  Codex   ~/.codex/sessions/YYYY/MM/DD/rollout-<stamp>-<uuid>.jsonl
+  Hermes  ~/.hermes/state.db and ~/.hermes/profiles/<name>/state.db (SQLite, read-only)
+
+memex is an optional speed layer, used only when its exact capability check
+passes AND its index is fresh. It never replaces the native stores.
+
+The store readers are in lib/session_stores.py beside this program, so the
+skill needs no other skill on the shelf. Standard library only.
+"""
+
+from __future__ import annotations
+
+import argparse
+import importlib.machinery
+import importlib.util
+import json
+import os
+from pathlib import Path
+import shlex
+import subprocess
+import sys
+import time
+from typing import Callable
+
+HERE = Path(__file__).resolve().parent
+STORES_MODULE = HERE.parent / "lib" / "session_stores.py"
+DEFAULT_STORES_ROOT = Path("~")
+DEFAULT_MEMEX_INDEX = Path("~/.memex/index")
+MEMEX_FRESHNESS_SECONDS = 24 * 3600
+DEFAULT_SINCE = "90d"
+DEFAULT_LIMIT = 15
+RUNTIMES = ("claude", "codex", "hermes")
+
+
+class SearchError(RuntimeError):
+    pass
+
+
+def load_stores(path: Path | None = None):
+    """Load the store readers that ship beside this program."""
+    module_path = Path(path or STORES_MODULE).expanduser()
+    if not module_path.is_file():
+        raise SearchError(f"store readers not found: {module_path}")
+    loader = importlib.machinery.SourceFileLoader("runtime_session_search_stores", str(module_path))
+    spec = importlib.util.spec_from_loader(loader.name, loader)
+    assert spec is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[loader.name] = module
+    loader.exec_module(module)
+    return module
+
+
+def resume_command(runtime: str, session_id: str, profile: str | None = None) -> str:
+    if runtime == "claude":
+        return f"claude --resume {shlex.quote(session_id)}"
+    if runtime == "codex":
+        return f"codex exec resume {shlex.quote(session_id)}   # Desktop-owned thread: codex exec fork"
+    if profile and profile != "default":
+        return f"hermes -p {shlex.quote(profile)} --resume {shlex.quote(session_id)}"
+    return f"hermes --resume {shlex.quote(session_id)}"
+
+
+def hermes_databases(stores_root: Path) -> list[tuple[str, Path]]:
+    root = stores_root / ".hermes"
+    found: list[tuple[str, Path]] = []
+    main = root / "state.db"
+    if main.exists():
+        found.append(("default", main))
+    profiles = root / "profiles"
+    if profiles.is_dir():
+        for child in sorted(profiles.iterdir()):
+            database = child / "state.db"
+            if database.exists():
+                found.append((child.name, database))
+    return found
+
+
+def newest_mtime(paths: list[Path]) -> float:
+    newest = 0.0
+    for path in paths:
+        try:
+            newest = max(newest, path.stat().st_mtime)
+        except OSError:
+            continue
+    return newest
+
+
+def memex_index_fresh(
+    index_dir: Path, stores_root: Path, *, tolerance_seconds: float = MEMEX_FRESHNESS_SECONDS
+) -> tuple[bool, str]:
+    """memex is fresh when its index files are not older than the newest native
+    transcript by more than the tolerance. Anything else is stale → builtin."""
+    index_dir = index_dir.expanduser()
+    if not index_dir.exists():
+        return False, "memex_index_missing"
+    index_time = newest_mtime([path for path in index_dir.rglob("*") if path.is_file()] or [index_dir])
+    transcripts = list((stores_root / ".claude" / "projects").glob("*/*.jsonl"))
+    transcripts += list((stores_root / ".codex" / "sessions").glob("**/rollout-*.jsonl"))
+    native_time = newest_mtime(transcripts)
+    if native_time - index_time > tolerance_seconds:
+        return False, "memex_index_stale"
+    return True, "memex_index_fresh"
+
+
+def find(
+    query: str,
+    *,
+    stores,
+    stores_root: Path,
+    runtime: str | None = None,
+    since: str | None = None,
+    limit: int = DEFAULT_LIMIT,
+    memex: str = "auto",
+    memex_index: Path = DEFAULT_MEMEX_INDEX,
+    runner: Callable[..., subprocess.CompletedProcess[str]] = subprocess.run,
+    room_map: dict | None = None,
+    home: Path | None = None,
+) -> dict[str, object]:
+    if limit < 1:
+        raise SearchError("limit must be positive")
+    stores_root = stores_root.expanduser()
+    home = (home or Path.home()).expanduser()
+    room_map = room_map or {"rooms": []}
+    since_text, since_epoch = stores._since_cutoff(since or DEFAULT_SINCE, stores._utc_now())
+    id_query = stores._is_session_id_query(query)
+    notes: list[str] = []
+    hits: list[dict[str, object]] = []
+    backend = {"backend": "builtin", "memex": False}
+    use = {name: runtime in {None, name} for name in RUNTIMES}
+
+    memex_used = False
+    if memex != "off" and (use["claude"] or use["codex"]) and not id_query:
+        capability = stores.memex_capability(runner=runner, budget_seconds=0.5)
+        if capability.get("memex"):
+            fresh, reason = memex_index_fresh(memex_index, stores_root)
+            if fresh:
+                memex_hits, note = stores.memex_search_hits(
+                    query, since=since_text, limit=limit, room_map=room_map, home=home,
+                    executable=str(capability.get("executable") or "memex"), runner=runner,
+                )
+                if note:
+                    notes.append(note)
+                else:
+                    memex_used = True
+                    backend = {"backend": "memex", "memex": True, "version": capability.get("version")}
+                    hits.extend(h for h in memex_hits if use.get(str(h.get("store")), False))
+            else:
+                notes.append(f"{reason}; native files used")
+        else:
+            notes.append(f"{capability.get('reason', 'memex_unavailable')}; native files used")
+
+    claude_root = stores_root / ".claude" / "projects"
+    codex_root = stores_root / ".codex" / "sessions"
+    if id_query:
+        for name, root in (("claude", claude_root), ("codex", codex_root)):
+            if use[name] and root.exists():
+                hits.extend(stores.transcript_id_hits(root, name, query, room_map, home, limit=limit, notes=notes))
+    elif not memex_used:
+        if use["claude"] and claude_root.exists():
+            hits.extend(stores.claude_jsonl_hits(claude_root, query, room_map, home,
+                                                since_epoch=since_epoch, limit=limit, notes=notes))
+        if use["codex"] and codex_root.exists():
+            hits.extend(stores.codex_rollout_hits(codex_root, query, room_map, home,
+                                                 since_epoch=since_epoch, limit=limit, notes=notes))
+
+    if use["hermes"]:
+        databases = hermes_databases(stores_root)
+        if not databases:
+            notes.append("hermes_state_db_missing; adapter skipped")
+        for profile, database in databases:
+            session_list_text = ""
+            if profile == "default":
+                try:
+                    listed = runner(["hermes", "sessions", "list", "--limit", str(max(limit * 4, 100))],
+                                    capture_output=True, text=True, timeout=stores.FIND_ADAPTER_BUDGET, check=False)
+                    if listed.returncode == 0:
+                        session_list_text = listed.stdout
+                except (OSError, subprocess.TimeoutExpired):
+                    pass
+            profile_hits, note = stores.hermes_store_hits(
+                database, query, room_map, home, session_list_text=session_list_text,
+                since_epoch=0.0 if id_query else since_epoch, limit=limit,
+            )
+            for hit in profile_hits:
+                hit["profile"] = profile
+                hit["attach_or_resume_cmd"] = resume_command("hermes", str(hit["session_id"]), profile)
+            hits.extend(profile_hits)
+            if note:
+                notes.append(f"hermes[{profile}]: {note}")
+
+    deduped: dict[tuple[str, str], dict[str, object]] = {}
+    for hit in hits:
+        key = (str(hit.get("store")), str(hit.get("session_id")))
+        if key not in deduped:
+            deduped[key] = hit
+    ranked = sorted(
+        deduped.values(),
+        key=lambda hit: (
+            0 if stores._session_id_match_kind(query, hit.get("session_id")) == "id_exact" else
+            1 if stores._session_id_match_kind(query, hit.get("session_id")) else 2,
+            -stores._when_sort_key(hit.get("when")),
+        ),
+    )[:limit]
+    for hit in ranked:
+        hit.setdefault("attach_or_resume_cmd", resume_command(str(hit["store"]), str(hit["session_id"])))
+        hit["read_with"] = f"runtime-session-search read {shlex.quote(str(hit['session_id']))} --runtime {hit['store']}"
+        hit["orchestrate_with"] = f"orchestrate resolve --from <you> --want <row> --to {hit['store']} --session-id {shlex.quote(str(hit['session_id']))}"
+    status = "found" if ranked else "not_found"
+    if id_query and len({str(h["session_id"]) for h in ranked}) > 1:
+        status = "choice_required"
+    return {
+        "status": status,
+        "query": query,
+        "query_kind": "id" if id_query else "words",
+        "since": since_text or "all",
+        "backend": backend,
+        "hits": ranked,
+        "adapter_notes": notes,
+        "truth": "native files; memex is a speed layer only",
+    }
+
+
+def read(
+    session_id: str,
+    *,
+    stores,
+    stores_root: Path,
+    runtime: str | None = None,
+    profile: str | None = None,
+    max_lines: int | None = None,
+    max_bytes: int | None = None,
+) -> dict[str, object]:
+    stores_root = stores_root.expanduser()
+    max_lines = min(max_lines or stores.MAX_READ_LINES, stores.MAX_READ_LINES)
+    max_bytes = min(max_bytes or stores.MAX_READ_BYTES, stores.MAX_READ_BYTES)
+    candidates: list[tuple[str, str | None, tuple[str | None, str | None], str]] = []
+    if runtime in {None, "claude"}:
+        path = stores._session_jsonl_path(stores_root / ".claude" / "projects", "claude", session_id)
+        if path:
+            candidates.append(("claude", None, stores._jsonl_last_messages(path, "claude"), str(path)))
+    if runtime in {None, "codex"}:
+        path = stores._session_jsonl_path(stores_root / ".codex" / "sessions", "codex", session_id)
+        if path:
+            candidates.append(("codex", None, stores._jsonl_last_messages(path, "codex"), str(path)))
+    if runtime in {None, "hermes"}:
+        for name, database in hermes_databases(stores_root):
+            if profile and name != profile:
+                continue
+            try:
+                messages = stores._hermes_last_messages(database, session_id)
+            except stores.StoreError:
+                continue
+            if messages[0] or messages[1]:
+                candidates.append(("hermes", name, messages, str(database)))
+    if not candidates:
+        return {"status": "not_found", "session_id": session_id, "runtime": runtime, "profile": profile,
+                "hint": "exact native id required; use `find` first"}
+    if len(candidates) > 1:
+        return {"status": "choice_required", "session_id": session_id,
+                "choices": [{"runtime": r, "profile": p, "store": s} for r, p, _, s in candidates],
+                "hint": "pass --runtime (and --profile for Hermes)"}
+    found_runtime, found_profile, (last_user, final_reply), store = candidates[0]
+    if not final_reply:
+        return {"status": "no_reply", "session_id": session_id, "runtime": found_runtime,
+                "profile": found_profile, "store": store, "last_user": last_user,
+                "hint": "the session has no saved assistant reply"}
+    text = stores._format_transcript(last_user, final_reply)
+    limited = stores._limit_read_text(text, max_lines=max_lines, max_bytes=max_bytes)
+    return {
+        "status": "read",
+        "runtime": found_runtime,
+        "profile": found_profile,
+        "session_id": session_id,
+        "store": store,
+        "evidence": "latest_saved_messages",
+        "task_success": "not_inferred",
+        "private_reasoning": "excluded",
+        "resume_with": resume_command(found_runtime, session_id, found_profile),
+        **limited,
+    }
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(prog="runtime-session-search", description=__doc__.splitlines()[0])
+    parser.add_argument("--stores-root", type=Path,
+                        default=Path(os.environ.get("RUNTIME_SESSION_SEARCH_STORES", str(DEFAULT_STORES_ROOT))))
+    sub = parser.add_subparsers(dest="command", required=True)
+    find_parser = sub.add_parser("find", help="find sessions by words or native id")
+    find_parser.add_argument("query")
+    find_parser.add_argument("--runtime", choices=RUNTIMES)
+    find_parser.add_argument("--since", default=DEFAULT_SINCE, help="duration (7d, 12h), ISO timestamp, or all")
+    find_parser.add_argument("--limit", type=int, default=DEFAULT_LIMIT)
+    find_parser.add_argument("--memex", choices=("auto", "off"), default="auto")
+    find_parser.add_argument("--memex-index", type=Path, default=DEFAULT_MEMEX_INDEX)
+    read_parser = sub.add_parser("read", help="read the final reply of one exact native session id")
+    read_parser.add_argument("session_id")
+    read_parser.add_argument("--runtime", choices=RUNTIMES)
+    read_parser.add_argument("--profile", help="Hermes profile: default, or a folder name under ~/.hermes/profiles")
+    read_parser.add_argument("--max-lines", type=int)
+    read_parser.add_argument("--max-bytes", type=int)
+    sub.add_parser("check-memex", help="report whether memex passes the capability and freshness checks")
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    try:
+        stores = load_stores()
+        if args.command == "check-memex":
+            capability = stores.memex_capability()
+            fresh, reason = memex_index_fresh(DEFAULT_MEMEX_INDEX, args.stores_root.expanduser())
+            payload = {**capability, "index_fresh": fresh, "index_reason": reason}
+        elif args.command == "find":
+            payload = find(args.query, stores=stores, stores_root=args.stores_root, runtime=args.runtime,
+                           since=args.since, limit=args.limit, memex=args.memex, memex_index=args.memex_index)
+        else:
+            payload = read(args.session_id, stores=stores, stores_root=args.stores_root, runtime=args.runtime,
+                           profile=args.profile, max_lines=args.max_lines, max_bytes=args.max_bytes)
+    except SearchError as error:
+        print(json.dumps({"error": str(error)}))
+        return 2
+    except Exception as error:  # StoreError and friends
+        print(json.dumps({"error": str(error), "kind": type(error).__name__}))
+        return 2
+    print(json.dumps(payload, indent=2, ensure_ascii=False, default=str))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

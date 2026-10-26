@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+"""Save a reader result: raw file first, row second, one receipt."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sqlite3
+import sys
+from pathlib import Path
+
+sys.dont_write_bytecode = True
+sys.path.insert(0, str((Path(__file__).resolve().parent)))
+from lib.common import CaptureError, line, settings
+from lib.store import write_capture
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Save a reader JSON file and its capture row.")
+    parser.add_argument("reader_json", type=Path)
+    parser.add_argument("--note", default="", help="His exact words beside the URL.")
+    parser.add_argument("--things-id", default="")
+    args = parser.parse_args()
+    try:
+        root, store = settings()
+        reader_path = args.reader_json.expanduser().resolve()
+        data = json.loads(reader_path.read_text(encoding="utf-8"))
+        print(write_capture(data, reader_path, root, store, args.note, args.things_id))
+    except (CaptureError, OSError, UnicodeError, json.JSONDecodeError, sqlite3.Error) as exc:
+        print(f"capture-write · error · {line(exc)}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

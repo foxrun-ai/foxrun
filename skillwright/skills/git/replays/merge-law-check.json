@@ -1,0 +1,6 @@
+{
+  "name": "merge-law-check",
+  "run": "read",
+  "input": "Before a merge, what runs first, and which merge command must you never use?",
+  "expect": {"output_contains": ["--check-only", "gh pr merge"]}
+}

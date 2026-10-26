@@ -1,0 +1,4 @@
+{"type":"session_meta","payload":{"id":"codex-session-1","cwd":"/home/example/projects/demo","timestamp":"2026-08-22T14:00:00Z"}}
+{"type":"event_msg","payload":{"type":"user_message","message":"Implement the pricing launch validator."}}
+{"type":"event_msg","payload":{"type":"agent_message","last_agent_message":"The pricing launch validator passes."}}
+{"type":"response_item","payload":{"role":"assistant","content":[{"type":"output_text","text":"Pricing launch validation is complete."}]}}

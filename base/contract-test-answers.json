@@ -1,0 +1,9 @@
+{
+  "workspace": "foxrun",
+  "sources": ["agents/soul.md", "profile/AGENTS.md", "foxrun/AGENTS.md", "CLAUDE.md", "foxrun/CLAUDE.md"],
+  "answers": {
+    "root-file":"inbox", "root-send":"no", "root-ask":"@person@", "root-load":"workspace", "root-touch":"secret",
+    "workspace-file":"docs", "workspace-send":"no", "workspace-ask":"@person@", "workspace-load":"task", "workspace-touch":"no",
+    "runtime-file":"agents", "runtime-send":"no", "runtime-ask":"@person@", "runtime-load":"agents", "runtime-touch":"no"
+  }
+}

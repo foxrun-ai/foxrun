@@ -1,0 +1,34 @@
+{
+  "authority": "product definition acceptance and the schema-update path; additive dictionary storage only",
+  "source_blueprint": "v11 stays unchanged: product definition comments 1627 and 1635 only",
+  "columns": [
+    {
+      "table": "base_fields",
+      "column": "storage_type",
+      "sqlite_type": "TEXT",
+      "field_type": "text",
+      "required": false,
+      "allowed_values": null,
+      "link": null,
+      "ruling": [
+        "product definition"
+      ],
+      "source_columns": [],
+      "description": "The storage type names the SQLite type used to store this field."
+    },
+    {
+      "table": "base_fields",
+      "column": "sql_definition",
+      "sqlite_type": "TEXT",
+      "field_type": "text",
+      "required": false,
+      "allowed_values": null,
+      "link": null,
+      "ruling": [
+        "product definition"
+      ],
+      "source_columns": [],
+      "description": "The SQL definition shows how the database stores and checks this field."
+    }
+  ]
+}

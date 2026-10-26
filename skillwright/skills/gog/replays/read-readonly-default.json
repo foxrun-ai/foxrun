@@ -1,0 +1,6 @@
+{
+  "name": "read-readonly-default",
+  "run": "read",
+  "input": "With the gog skill, which flag keeps a Google task from changing any data, and which flag blocks Gmail sends?",
+  "expect": {"output_contains": ["--readonly", "--gmail-no-send"]}
+}

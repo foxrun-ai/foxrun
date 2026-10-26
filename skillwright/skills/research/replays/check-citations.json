@@ -1,0 +1,8 @@
+{
+  "name": "check-citations",
+  "run": "dry-run",
+  "note": "The ledger refuses a draft that cites a number it never handed out. sources.py has no --dry-run; it writes only its ledger in the temp folder.",
+  "input": "bin/sources.py --ledger {tmp}/ledger.json verify {tmp}/draft.md",
+  "setup": {"files": {"draft.md": "A claim with a made up source here.[1]\n"}},
+  "expect": {"exit": 1, "output_contains": ["not in the ledger"]}
+}

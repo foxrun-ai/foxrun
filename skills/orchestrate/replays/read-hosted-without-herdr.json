@@ -1,0 +1,6 @@
+{
+  "name": "read-hosted-without-herdr",
+  "run": "read",
+  "input": "On a fresh install with no herdr skill, what does orchestrate answer for row 5 (grill), and which rows still work?",
+  "expect": {"output_contains": ["unavailable", "one-shot"]}
+}

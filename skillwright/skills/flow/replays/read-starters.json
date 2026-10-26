@@ -1,0 +1,6 @@
+{
+  "name": "read-starters",
+  "run": "read",
+  "input": "Which three workflows ship, and which command checks one without making a run folder?",
+  "expect": {"output_contains": ["review", "research", "vote", "--dry-run"]}
+}

@@ -1,0 +1,78 @@
+# Synthetic runner fixture. Matches the graph used by the flow regression tests.
+version: 1
+flow: produce-ugc-ads
+kind: workflow
+purpose: "Make one UGC ad: brief it, produce it, review it, deliver it, learn from it."
+inputs:
+  product: {required: true, what: "The product the ad is for"}
+members:
+  creative-strategist: {seat: creative-strategist}
+  ugc-producer: {seat: ugc-producer}
+  designer: {seat: designer}
+  video-producer: {seat: video-producer}
+  creative-reviewer: {seat: creative-reviewer}
+  mercer: {seat: mercer}
+graph:
+  brief:
+    member: creative-strategist
+    skill: null
+    needs: []
+    input: [product, reviews, past ads]
+    output: "One approved brief with the required shots and claims."
+    done_when: {file: brief.md}
+    return: mercer
+  talent:
+    member: ugc-producer
+    skill: null
+    needs: [brief]
+    input: [brief.md, creator pipeline]
+    output: "The shot list, the creator assignment, and the delivery date."
+    done_when: {file: talent.md}
+    return: mercer
+  static:
+    member: designer
+    skill: null
+    needs: [brief]
+    input: [brief.md, brand file]
+    output: "Reviewed static variants."
+    done_when: {file: static.md}
+    return: mercer
+  cut:
+    member: video-producer
+    skill: video-assemble
+    needs: [talent]
+    input: [raw footage, brief.md]
+    output: "The cut, the captions, and the exports."
+    done_when: {file: cut.md}
+    return: mercer
+  check:
+    member: creative-reviewer
+    skill: check-required-shots
+    needs: [static, cut]
+    input: [the exact asset, brief.md]
+    output: "Missing shots, unsupported claims, and one revision request."
+    verdict: true
+    done_when: {file: check.md}
+    return: mercer
+  deliver:
+    member: mercer
+    skill: null
+    needs: [check]
+    input: [the reviewed asset]
+    output: "A draft to the client or a creator, and one ask."
+    gate: send
+    done_when: {file: deliver.md}
+    return: person
+  learn:
+    member: mercer
+    skill: log
+    needs: [deliver]
+    input: [results]
+    output: "One line in the client log."
+    done_when: {file: learn.md}
+    return: log
+loop:
+  repair: {on: check, repeat: [static, cut, check], max_rounds: 2}
+rules:
+  - "Any send or payment stops at the person."
+  - "The reviewer never edits the asset it reviews."

@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+FOXRUN_HOME=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
+export FOXRUN_HOME
+export PYTHONDONTWRITEBYTECODE=1
+exec python3 "$FOXRUN_HOME/hooks/after_compact.py" codex "$@"

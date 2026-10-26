@@ -1,0 +1,7 @@
+{
+  "name": "read-fresh-proof",
+  "run": "read",
+  "input": "A skill shipped and is on the shelf. Is that enough proof of delivery? Say what proves it. End with: Shelf alone proves it: <yes|no>",
+  "note": "The delivery canary became this check: a real question in a fresh session.",
+  "expect": {"output_contains": ["fresh session", "Shelf alone proves it: no"]}
+}

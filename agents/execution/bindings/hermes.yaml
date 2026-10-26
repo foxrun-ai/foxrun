@@ -1,0 +1,9 @@
+{
+  "managed_by": "agent-new",
+  "runtime": "hermes",
+  "model_role": "tier",
+  "defaults": "config/models.yaml",
+  "overrides": "config/models.yaml",
+  "availability": "add-on",
+  "legacy_auxiliary_model_tags_from": "config/models.yaml:legacy_auxiliary_model_tags"
+}

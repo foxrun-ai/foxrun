@@ -1,0 +1,20 @@
+#!/usr/bin/env python3
+"""ugc: checked writes for UGC tables."""
+
+from __future__ import annotations
+import sys
+from pathlib import Path
+
+ROOT = next(p for p in Path(__file__).resolve().parents if (p / 'base/table.py').is_file())
+sys.path.insert(0, str(ROOT / 'base'))
+from table import CommandConfig, main
+import table
+FIXTURE = next(p for p in Path(__file__).resolve().parents if (p / 'cedar-fixture.json').is_file())
+table.MODULES_ROOT = FIXTURE
+
+main(CommandConfig(
+    module="ugc",
+    writable=("creator_cycles", "deliverables", "content_permissions", "file_reqs"),
+    mirrors={"media_files": "the UGC media-index feeder"},
+    trends=("payments_owed_daily",),
+))

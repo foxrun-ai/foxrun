@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+"""commerce: checked writes for Commerce tables."""
+
+from __future__ import annotations
+import sys
+from pathlib import Path
+
+ROOT = next(p for p in Path(__file__).resolve().parents if (p / 'base/table.py').is_file())
+sys.path.insert(0, str(ROOT / 'base'))
+from table import CommandConfig, main
+import table
+FIXTURE = next(p for p in Path(__file__).resolve().parents if (p / 'cedar-fixture.json').is_file())
+table.MODULES_ROOT = FIXTURE
+
+main(CommandConfig(
+    module="commerce",
+    writable=("restocks", "receivings", "support_cases"),
+    mirrors={
+        "products": "shopify-catalog-feeder",
+        "orders": "shopify-sales-feeder or shipbob-feeder",
+        "order_lines": "shopify-sales-feeder or shipbob-feeder",
+        "shipments": "shipbob-feeder",
+        "stock_levels": "shipbob-feeder or shopify-catalog-feeder",
+        "customer_reviews": "customer-review-feeder",
+    },
+    trends=("stock_history",),
+))

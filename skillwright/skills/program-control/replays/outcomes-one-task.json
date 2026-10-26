@@ -1,0 +1,7 @@
+{
+  "name": "outcomes-one-task",
+  "run": "read",
+  "input": "One run fits the existing task T86 in work stream WS04. It produces five outcomes: read a thread, reply, place an order, change an address, and record a payment. Where does the run go, where do the five outcomes go, and how many new tasks do you create? Answer in three short lines. End with: New tasks: <n>",
+  "note": "One job has five record outcomes, not five tasks.",
+  "expect": {"output_contains": ["New tasks: 0"]}
+}

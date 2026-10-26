@@ -1,0 +1,6 @@
+{
+  "name": "promote-retires-row",
+  "run": "read",
+  "input": "A lesson now lives as a line in a skill. Which work.py verb retires the lesson, and to which status?",
+  "expect": {"output_contains": ["lesson-update", "replaced"]}
+}

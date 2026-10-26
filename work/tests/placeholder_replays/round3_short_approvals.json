@@ -1,0 +1,70 @@
+[
+  {
+    "name": "U369-comment-1054",
+    "turn": {
+      "text": "Yes",
+      "timestamp": "2026-09-29T13:48:46.466Z",
+      "assistant_before": " It fipate kemodi rasipe, and it pila my gegava. Here's the nalavu in geli rome.\n\n**Lifa gafisu:**\n1. **The rupifa** nevefe with the koze: nuna on your piti, Givupa, Tofubo. They own the mereva moki.\n2. **senoke-radivi is the nesiba.** It nodi from netuzo koze, vumigu the fidali, and kumami sino for any part of your sepi: Pige Piga, another dima, or futa.\n3. **`data.db` is your memory, for all your nemi,** not bala the robe. futa-workspace is one of netuzo nemi kare.\n\n**Fibu it gikabu tizore the decisions you already rokipa:**\n- senoke-radivi nodi a new text → writes it beli `data.db` (fidali and moki), **mozotu with its workspace**: pige-piga, futa-workspace, and so on.\n- senoke-radivi then zuba from `data.db` to diliso your tinu. You send.\n- senoke-beso own file miku only its nesiba tuse: zoviri dekeku and diliso rumigi.\n- **So there's one vezeti of every conversation,** and no muboti vezeti in senoke-radivi.\n\n**Tosopi my gegava changed to B:**\n- Fare and Mogo-reni borato A to keep futa leloge \"out of the dima file.\" But `data.db` veko a dima file. It holds every workspace, futa-workspace pevu.\n- A would split your moki fuvere laroko gabile (dima in `data.db`, futa in senoke-radivi). That's laroko nilezi for the fipa kind of zememo, which is the nili we're korufi.\n- B matches your bobu: one nesiba, one memory, every conversation mozotu by the part of your sepi it nobe to.\n\n**B:** all fidali go beli `data.db`, mozotu letu conversation, with tozu mego rigu to futa-workspace. Yes? "
+    },
+    "rows": [
+      {
+        "kind": "comment",
+        "id": 1054,
+        "subject_id": "T5",
+        "body": "person 9.29, futa leloge (option B after the nalavu bopo: senoke-radivi is the nesiba for dima and futa; data.db holds every workspace lefeku futa-workspace; one vezeti of every conversation): 'Yes'",
+        "at": "2026-09-29T09:48:54-04:00"
+      }
+    ],
+    "expected_row_id": "1054"
+  },
+  {
+    "name": "U470-comment-1139",
+    "turn": {
+      "text": "Yep, approved.",
+      "timestamp": "2026-09-29T21:45:23.227Z",
+      "assistant_before": " Yes, I keli riki:\n- **Runs** are in the \"all lifa agree\" degumu, which nosobu one yes goku.\n- **Gori** zude with question 9, the remaining poduze.\n\nBedu to question 3 only: **tasks, projects and kolabi tega one list of 8:** backlog, todo, in-progress, blocked, in-review, done, canceled, superseded. Yes? "
+    },
+    "rows": [
+      {
+        "kind": "comment",
+        "id": 1139,
+        "subject_id": "T5",
+        "body": "person 9.29 on biza statuses (nazu Q3), after motuze tosopi not backlog and whether all work polo can tega one set: 'Yep, approved.' Ruled: tasks, projects, and kolabi tega one list of 8: backlog, todo, in-progress, blocked, in-review, done, canceled, superseded. Runs and gori beze goku in the nazu.",
+        "at": "2026-09-29T17:45:30-04:00"
+      },
+      {
+        "kind": "decision",
+        "id": "pr-work-one-status-list",
+        "person_words": "Yep, approved.",
+        "decided_on": "2026-09-29",
+        "source": "comment:1139"
+      }
+    ],
+    "expected_row_id": "pr-work-one-status-list"
+  },
+  {
+    "name": "U474-comment-1142",
+    "turn": {
+      "text": "Okay, sounds good.",
+      "timestamp": "2026-09-29T22:14:55.309Z",
+      "assistant_before": " Here's a rule that miku the baso senoke. **A mopoto is only for tosa you zopu nefopo for.**\n\n- **You nefopo for it, with the muzo → no mopoto.** Your words are the yes. I gevi in one line, do it, and your words get sale as the approval. Luru: \"move $50 from Dimi to Visilu\" → done.\n- **A skill betize its gevele pako bunusu its nuti → no mopoto.** It bala mara what it changed. Luru: the niloni godole skill fezu sunipa by its migese → done, and you nati the result.\n- **An miganu decides on its own to change something → mopoto.** Luru: godole mudi Dimi is poneko and vabisi robogi $50 → it fedaka for your yes.\n- **Zupuli, bifa duru and nulumo → always your yes.** But a direct nefopo counts as that yes. For a send, I pubome telofe you the exact text first.\n\nSo your review baso holds only tosa an miganu thought of on its own. Yes? "
+    },
+    "rows": [
+      {
+        "kind": "comment",
+        "id": 1142,
+        "subject_id": "T5",
+        "body": "person 9.29 on when a mopoto is telofa (nazu Q7): vapu vanedo 'being kevubo with bego and there being a backlog of bipa I have to review ... if I'm motuze for something to be done, it nosobu done ... If it's denese, okay, nide then yeah. But if it's pobinu a skill that's tofile, rotume bigi gevele, do I lakosi a mopoto?' Then: 'Okay, sounds good.' Ruled: bego only for tira pila; godole nitibu nulonu are bopuga bego; bekuso work is tasks.",
+        "at": "2026-09-29T18:15:04-04:00"
+      },
+      {
+        "kind": "decision",
+        "id": "g-cedar-shop-rule-14",
+        "person_words": "... if I'm motuze for something to be done, it nosobu done, vazu you bala puzoku me a romemo fapako and naki ... If it's denese, okay, nide then yeah. But if it's pobinu a skill that's tofile, rotume bigi gevele, do I lakosi a mopoto? ... Okay, sounds good.",
+        "decided_on": "2026-09-29",
+        "source": "comment:1142"
+      }
+    ],
+    "expected_row_id": "g-cedar-shop-rule-14"
+  }
+]

@@ -1,0 +1,6 @@
+{
+  "name": "read-rollback-id",
+  "run": "read",
+  "input": "A ship needs a rollback. Which field in the release receipt names the release to return to? Give the exact field name.",
+  "expect": {"output_contains": ["previous_release_id"]}
+}

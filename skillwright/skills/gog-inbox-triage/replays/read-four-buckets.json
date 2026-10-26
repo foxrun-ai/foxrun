@@ -1,0 +1,6 @@
+{
+  "name": "read-four-buckets",
+  "run": "read",
+  "input": "Name the four buckets that gog-inbox-triage sorts unread mail into.",
+  "expect": {"output_contains": ["urgent", "reply soon", "waiting", "FYI"]}
+}

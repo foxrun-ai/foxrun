@@ -1,0 +1,7 @@
+{
+  "name": "two-runs-one-placement",
+  "run": "read",
+  "input": "At close, two runs did one job: check and correct a shipment in work stream WS04. Neither the brief task, open claims, nor open tasks fit. The person has not approved a new task. Give the single placement line, including how many tasks were created before the yes. Do not create a task. End with: Tasks created before yes: <n>",
+  "note": "Two runs on one job need one proposed task and no task write before the yes.",
+  "expect": {"output_contains": ["Tasks created before yes: 0"]}
+}

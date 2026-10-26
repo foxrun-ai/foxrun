@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "publish": [
+    "log",
+    "to-tickets",
+    "capture"
+  ],
+  "where": {
+    "log": "global",
+    "to-tickets": "global",
+    "capture": "global"
+  },
+  "sets": {
+    "base": {
+      "skills": [
+        "log",
+        "to-tickets"
+      ],
+      "tools": [],
+      "commands": []
+    },
+    "creative-reviewer": {
+      "skills": [],
+      "tools": [],
+      "commands": []
+    },
+    "architect": {
+      "skills": [],
+      "tools": [],
+      "commands": []
+    },
+    "adviser": {
+      "skills": [],
+      "tools": [],
+      "commands": []
+    },
+    "designer": {
+      "skills": [],
+      "tools": [],
+      "commands": []
+    },
+    "capture": {
+      "skills": [
+        "capture"
+      ],
+      "tools": [],
+      "commands": []
+    },
+    "comms-lead": {
+      "skills": [],
+      "tools": [],
+      "commands": []
+    },
+    "toolsmith": {
+      "skills": [],
+      "tools": [],
+      "commands": []
+    },
+    "skillwright": {
+      "skills": [],
+      "tools": [],
+      "commands": []
+    },
+    "chief-of-staff": {
+      "skills": [],
+      "tools": [],
+      "commands": []
+    },
+    "video-producer": {
+      "skills": [],
+      "tools": [],
+      "commands": []
+    },
+    "keeper": {
+      "skills": [],
+      "tools": [],
+      "commands": []
+    }
+  },
+  "exclude": {},
+  "host_specific": {},
+  "claude_preserve_physical": [],
+  "claude_approval_required": {}
+}

@@ -1,0 +1,178 @@
+#!/usr/bin/env python3
+"""capture-recover <url> [--out FILE]: find an archived copy of a blocked page.
+
+Ladder, cheapest first:
+  1. Wayback Machine "available" API -> dated snapshot (provenance: snapshot)
+  2. archive.today domain rotation   -> dated snapshot (provenance: snapshot)
+  3. Jina Reader, only when JINA_API_KEY is set -> live re-render (provenance: live)
+When all three fail, the JSON says to read the page with browse.
+
+Every body is checked before it counts: a byte floor, redirect stubs that point
+back at the blocked host, and interstitial titles. Fake 200 answers are common.
+It prints one JSON object. Exit 0 recovered, 1 nothing worked, 2 bad input.
+It writes a file only with --out.
+
+Ported from Hermes Agent skills/web/blocked-page-recovery (MIT License,
+Copyright (c) 2025 Nous Research). Changes: JSON output only, the local URL
+refusal from capture-read, and the browse step in place of the Hermes browser tool.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import sys
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+
+sys.dont_write_bytecode = True
+from readers import common
+
+USER_AGENT = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+              "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
+ARCHIVE_TODAY_HOSTS = ["archive.ph", "archive.md", "archive.li", "archive.is"]
+# Titles that mean "this is not the page you asked for".
+INTERSTITIAL_TITLES = ("just a moment", "redirecting", "google search", "attention required",
+                       "access denied", "are you a robot", "one more step")
+# Below these floors a body is a stub or an error page, not content.
+MIN_BODY_BYTES = {"wayback": 3072, "archive_today": 3072, "jina": 512}
+REDIRECT_STUB_RE = re.compile(r'http-equiv=["\']?refresh|window\.location|location\.replace', re.IGNORECASE)
+TITLE_RE = re.compile(r"<title[^>]*>(.*?)</title>", re.IGNORECASE | re.DOTALL)
+BROWSE_HINT = "No archive copy found. Read the page with browse and your signed-in browser cookies."
+
+
+def _fetch(url, timeout, headers=None, retries_on_429=2):
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, **(headers or {})})
+    for attempt in range(retries_on_429 + 1):
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                return resp.status, resp.read(), resp.geturl()
+        except urllib.error.HTTPError as exc:
+            if exc.code == 429 and attempt < retries_on_429:
+                time.sleep(5 * (attempt + 1))
+                continue
+            return exc.code, exc.read() if exc.fp else b"", exc.geturl() or url
+        except (urllib.error.URLError, OSError, ValueError):
+            return 0, b"", url
+    return 0, b"", url
+
+
+def _page_title(body):
+    m = TITLE_RE.search(body[:65536].decode("utf-8", "replace"))
+    return re.sub(r"\s+", " ", m.group(1)).strip().lower() if m else ""
+
+
+def validate(body, route, target_url):
+    """Return a rejection reason, or None if the body looks like real content."""
+    floor = MIN_BODY_BYTES.get(route, 3072)
+    if len(body) < floor:
+        return f"body_too_small:{len(body)}<{floor}"
+    title = _page_title(body)
+    for marker in INTERSTITIAL_TITLES:
+        if marker in title:
+            return f"interstitial_title:{marker!r}"
+    # A small page whose only job is to bounce back to the blocked host.
+    if len(body) < 8192 and REDIRECT_STUB_RE.search(body.decode("utf-8", "replace")):
+        target_host = urllib.parse.urlsplit(target_url).hostname or ""
+        if target_host and target_host.encode() in body:
+            return "redirect_stub_to_origin"
+    return None
+
+
+def try_wayback(url, timeout):
+    snap_url = snap_ts = None
+    status, raw, _ = _fetch("https://archive.org/wayback/available?url=" + urllib.parse.quote(url, safe=""), timeout)
+    if status == 200:
+        try:
+            closest = json.loads(raw).get("archived_snapshots", {}).get("closest", {})
+        except (json.JSONDecodeError, AttributeError):
+            closest = {}
+        if closest.get("available") and closest.get("url"):
+            snap_url = closest["url"].replace("http://web.archive.org", "https://web.archive.org")
+            snap_ts = closest.get("timestamp")
+    if snap_url is None:
+        # /web/2/<url> redirects to the newest snapshot when the discovery API is rate-limited.
+        snap_url = "https://web.archive.org/web/2/" + url
+    status, body, final_url = _fetch(snap_url, timeout)
+    if status != 200 or validate(body, "wayback", url):
+        return None
+    if snap_ts is None:
+        m = re.search(r"/web/(\d{14})", final_url)
+        snap_ts = m.group(1) if m else None
+    return {"route": "wayback", "provenance": "snapshot", "snapshot_timestamp": snap_ts,
+            "source_url": final_url, "body": body}
+
+
+def try_archive_today(url, timeout):
+    for host in ARCHIVE_TODAY_HOSTS:
+        fetch_url = f"https://{host}/newest/{url}"
+        status, body, _ = _fetch(fetch_url, timeout)
+        if status != 200 or validate(body, "archive_today", url):
+            continue  # 429 bodies and interstitials land here
+        # archive.today puts the snapshot date in the page, not in the API.
+        return {"route": f"archive_today:{host}", "provenance": "snapshot", "snapshot_timestamp": None,
+                "source_url": fetch_url, "body": body}
+    return None
+
+
+def try_jina(url, timeout):
+    key = os.environ.get("JINA_API_KEY")
+    if not key:
+        return None
+    status, body, _ = _fetch("https://r.jina.ai/" + url, timeout, headers={"Authorization": f"Bearer {key}"})
+    if status != 200 or validate(body, "jina", url):
+        return None
+    return {"route": "jina_reader", "provenance": "live", "snapshot_timestamp": None,
+            "source_url": "https://r.jina.ai/" + url, "body": body}
+
+
+ROUTES = (try_wayback, try_archive_today, try_jina)
+
+
+def recover(url, timeout=25):
+    for route in ROUTES:
+        found = route(url, timeout)
+        if found:
+            return found
+    return None
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("url")
+    parser.add_argument("--out", help="write the recovered body to this file")
+    parser.add_argument("--timeout", type=int, default=25)
+    args = parser.parse_args()
+    try:
+        common.checked_destination(args.url, resolve=False)
+    except common.ReaderError as error:
+        print(json.dumps({"recovered": False, "url": common.redact_url(args.url), "error": str(error)}))
+        return 2
+    if common.redact_url(args.url) != args.url:
+        # A signed or credential-bearing link must never reach an archive service (T750).
+        print(json.dumps({"recovered": False, "url": common.redact_url(args.url), "error": "credential-bearing URL",
+                          "next": "browse", "hint": BROWSE_HINT}))
+        return 2
+    found = recover(args.url, args.timeout)
+    if not found:
+        print(json.dumps({"recovered": False, "url": common.redact_url(args.url), "next": "browse", "hint": BROWSE_HINT}))
+        return 1
+    body = found.pop("body")
+    found.update(recovered=True, url=common.redact_url(args.url), body_bytes=len(body), title=_page_title(body))
+    if args.out:
+        with open(args.out, "xb") as handle:
+            handle.write(body)
+        found["saved_to"] = args.out
+    else:
+        found["body"] = body.decode("utf-8", "replace")
+    if found["provenance"] == "snapshot":
+        found["note"] = "An archived snapshot, not the live page. Cite it with its date."
+    print(json.dumps(found, ensure_ascii=False))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,40 @@
+home	type	pattern	source	quote	type_source	type_quote	except_patterns
+system	agents	CLAUDE.md	config/lint/pages.tsv:2	"system	CLAUDE.md	v3/top-pages/spec-CLAUDE.tsv	"	config/lint/specs/v3/top-pages/spec-CLAUDE.tsv:9	"frontmatter_value	type=agents"	
+workspace	agents	CLAUDE.md	config/lint/pages.tsv:3	"workspace	CLAUDE.md	v3/top-pages/spec-CLAUDE.tsv	"	config/lint/specs/v3/top-pages/spec-CLAUDE.tsv:9	"frontmatter_value	type=agents"	
+system	state	STATE.md	config/lint/pages.tsv:4	"system	STATE.md	v3/top-pages/spec-STATE.tsv	"	config/lint/specs/v3/top-pages/spec-STATE.tsv:9	"frontmatter_value	type=state"	
+workspace	state	STATE.md	config/lint/pages.tsv:5	"workspace	STATE.md	v3/top-pages/spec-STATE.tsv	"	config/lint/specs/v3/top-pages/spec-STATE.tsv:9	"frontmatter_value	type=state"	
+system	glossary	GLOSSARY.md	config/lint/pages.tsv:6	"system	GLOSSARY.md	v3/top-pages/spec-GLOSSARY.tsv	"	config/lint/specs/v3/top-pages/spec-GLOSSARY.tsv:10	"frontmatter_value	type=glossary"	
+workspace	glossary	GLOSSARY.md	config/lint/pages.tsv:7	"workspace	GLOSSARY.md	v3/top-pages/spec-GLOSSARY.tsv	"	config/lint/specs/v3/top-pages/spec-GLOSSARY.tsv:10	"frontmatter_value	type=glossary"	
+portfolio	agents	CLAUDE.md	config/lint/pages.tsv:8	"portfolio	CLAUDE.md	v3/top-pages/spec-CLAUDE.tsv	"	config/lint/specs/v3/top-pages/spec-CLAUDE.tsv:9	"frontmatter_value	type=agents"	
+atlas	agents	CLAUDE.md	config/lint/pages.tsv:9	"atlas	CLAUDE.md	v3/top-pages/spec-CLAUDE.tsv	"	config/lint/specs/v3/top-pages/spec-CLAUDE.tsv:9	"frontmatter_value	type=agents"	
+portfolio	index	index.md	config/lint/pages.tsv:10	"portfolio	index.md	v3/top-pages/spec-index.tsv	"	config/lint/specs/v3/top-pages/spec-index.tsv:10	"frontmatter_value	type=index"	
+workspace	index	index.md	config/lint/pages.tsv:11	"workspace	index.md	v3/top-pages/spec-index.tsv	"	config/lint/specs/v3/top-pages/spec-index.tsv:10	"frontmatter_value	type=index"	
+atlas	index	LIBRARY.md	config/lint/pages.tsv:12	"atlas	LIBRARY.md	v3/top-pages/spec-LIBRARY.tsv	"	config/lint/specs/v3/top-pages/spec-LIBRARY.tsv:9	"frontmatter_value	type=index"	
+atlas	index	TOPICS.md	config/lint/pages.tsv:13	"atlas	TOPICS.md	v3/top-pages/spec-TOPICS.tsv	"	config/lint/specs/v3/top-pages/spec-TOPICS.tsv:9	"frontmatter_value	type=index"	
+atlas	log	history/LOG.md	config/lint/pages.tsv:14	"atlas	history/LOG.md	v3/top-pages/spec-LOG.tsv	"	config/lint/specs/v3/top-pages/spec-LOG.tsv:9	"frontmatter_value	type=log"	
+system	doc	README.md	config/lint/pages.tsv:15	"system	README.md	v3/top-pages/spec-README.tsv	"	config/lint/specs/v3/top-pages/spec-README.tsv:10	"frontmatter_value	type=doc"	
+system	doc	RESOLVER.md	config/lint/pages.tsv:16	"system	RESOLVER.md	v3/top-pages/spec-RESOLVER-system.tsv	"	config/lint/specs/v3/top-pages/spec-RESOLVER-system.tsv:9	"frontmatter_value	type=doc"	
+system	doc	SCHEMA.md	config/lint/pages.tsv:17	"system	SCHEMA.md	v3/top-pages/spec-SCHEMA.tsv	"	config/lint/specs/v3/top-pages/spec-SCHEMA.tsv:10	"frontmatter_value	type=doc"	
+system	doc	DOCUMENTATION.md	config/lint/pages.tsv:18	"system	DOCUMENTATION.md	v3/top-pages/spec-DOCUMENTATION.tsv	"	config/lint/specs/v3/top-pages/spec-DOCUMENTATION.tsv:10	"frontmatter_value	type=doc"	
+system	doc	CHANGELOG.md	config/lint/pages.tsv:19	"system	CHANGELOG.md	v3/top-pages/spec-CHANGELOG.tsv	"	config/lint/specs/v3/top-pages/spec-CHANGELOG.tsv:9	"frontmatter_value	type=doc"	
+system	doc	INSTALL.md	config/lint/pages.tsv:20	"system	INSTALL.md	v3/top-pages/spec-HOWTO.tsv	"	config/lint/specs/v3/top-pages/spec-HOWTO.tsv:9	"frontmatter_value	type=doc"	
+system	doc	GUIDE.md	config/lint/pages.tsv:21	"system	GUIDE.md	v3/top-pages/spec-HOWTO.tsv	"	config/lint/specs/v3/top-pages/spec-HOWTO.tsv:9	"frontmatter_value	type=doc"	
+workspace	doc	RESOLVER.md	config/lint/pages.tsv:22	"workspace	RESOLVER.md	v3/top-pages/spec-RESOLVER.tsv	"	config/lint/specs/v3/top-pages/spec-RESOLVER.tsv:10	"frontmatter_value	type=doc"	
+workspace	index	ops/DASHBOARD.md	config/lint/pages.tsv:23	"workspace	ops/DASHBOARD.md	v3/top-pages/spec-DASHBOARD.tsv	"	config/lint/specs/v3/top-pages/spec-DASHBOARD.tsv:9	"frontmatter_value	type=index"	
+workspace	index	wiki/TOPICS.md	config/lint/pages.tsv:24	"workspace	wiki/TOPICS.md	v3/top-pages/spec-TOPICS.tsv	"	config/lint/specs/v3/top-pages/spec-TOPICS.tsv:9	"frontmatter_value	type=index"	
+workspace	log	history/LOG.md	config/lint/pages.tsv:25	"workspace	history/LOG.md	v3/top-pages/spec-LOG.tsv	"	config/lint/specs/v3/top-pages/spec-LOG.tsv:9	"frontmatter_value	type=log"	
+workspace	index	team/TEAM.md	config/lint/pages.tsv:26	"workspace	team/TEAM.md	v2/team/spec.tsv	"	config/lint/specs/v2/team/spec.tsv:8	"frontmatter_value	type=index"	
+system	index	tools/CAPABILITIES.md	config/lint/pages.tsv:27	"system	tools/CAPABILITIES.md	v2/capabilities/spec.tsv	"	config/lint/specs/v2/capabilities/spec.tsv:14	"frontmatter_value	type=index"	
+system	tool	tools/*/*.md	config/lint/pages.tsv:28	"system	tools/*/*.md	v3/tool-page/spec.tsv	tools/*/index.md|tools/*/README.md|tools/*/CAPABILITIES.md|tools/*/bin-inventory.md|tools/*/mattpocock-skills.md"	config/lint/specs/v3/tool-page/spec.tsv:16	"frontmatter_value	type=tool"	tools/*/index.md|tools/*/README.md|tools/*/CAPABILITIES.md|tools/*/bin-inventory.md|tools/*/mattpocock-skills.md
+system	doc	**/README.md	config/lint/pages.tsv:29	"system	**/README.md	v3/top-pages/spec-README.tsv	"	config/lint/specs/v3/top-pages/spec-README.tsv:10	"frontmatter_value	type=doc"	
+workspace	index	tools/CAPABILITIES.md	config/lint/pages.tsv:30	"workspace	tools/CAPABILITIES.md	v2/capabilities/spec.tsv	"	config/lint/specs/v2/capabilities/spec.tsv:14	"frontmatter_value	type=index"	
+workspace	tool	tools/*/*.md	config/lint/pages.tsv:31	"workspace	tools/*/*.md	v3/tool-page/spec.tsv	tools/*/index.md|tools/*/README.md|tools/*/CAPABILITIES.md|tools/*/bin-inventory.md|tools/*/mattpocock-skills.md"	config/lint/specs/v3/tool-page/spec.tsv:16	"frontmatter_value	type=tool"	tools/*/index.md|tools/*/README.md|tools/*/CAPABILITIES.md|tools/*/bin-inventory.md|tools/*/mattpocock-skills.md
+workspace	doc	**/README.md	config/lint/pages.tsv:32	"workspace	**/README.md	v3/top-pages/spec-README.tsv	"	config/lint/specs/v3/top-pages/spec-README.tsv:10	"frontmatter_value	type=doc"	
+system	index	workspaces/*/TEAM.md	config/lint/pages.tsv:33	"system	workspaces/*/TEAM.md	v2/workspace-view/spec-TEAM.tsv	"	config/lint/specs/v2/workspace-view/spec-TEAM.tsv:8	"frontmatter_value	type=index"	
+system	index	workspaces/*/SKILLS.md	config/lint/pages.tsv:34	"system	workspaces/*/SKILLS.md	v2/workspace-view/spec-SKILLS.tsv	"	config/lint/specs/v2/workspace-view/spec-SKILLS.tsv:8	"frontmatter_value	type=index"	
+system	index	workspaces/*/TOOLS.md	config/lint/pages.tsv:35	"system	workspaces/*/TOOLS.md	v2/workspace-view/spec-TOOLS.tsv	"	config/lint/specs/v2/workspace-view/spec-TOOLS.tsv:8	"frontmatter_value	type=index"	
+workspace	spec	specs/**/*.md	config/lint/pages.tsv:36	"workspace	specs/**/*.md	build-spec/spec.tsv	specs/AGENTS.md|specs/CLAUDE.md"	config/lint/specs/build-spec/spec.tsv:7	"frontmatter_value	type=spec"	specs/AGENTS.md|specs/CLAUDE.md
+system	doc	config/gates.md	install.py:291	STARTERS = ('agents/soul.md', 'config/gates.local.md', 'config/gates.md', 'config/lint/business-names.tsv',	config/lint/frontmatter.tsv:2	|handoff|doc|template|	
+system	doc	config/gates.local.md	install.py:291	STARTERS = ('agents/soul.md', 'config/gates.local.md', 'config/gates.md', 'config/lint/business-names.tsv',	config/lint/frontmatter.tsv:2	|handoff|doc|template|	
+system	doc	config/git.md	install.py:292	'config/git.local.md', 'config/git.md', 'config/lint/workspaces.tsv', 'config/words.tsv')	config/lint/frontmatter.tsv:2	|handoff|doc|template|	
+system	doc	config/git.local.md	install.py:292	'config/git.local.md', 'config/git.md', 'config/lint/workspaces.tsv', 'config/words.tsv')	config/lint/frontmatter.tsv:2	|handoff|doc|template|	

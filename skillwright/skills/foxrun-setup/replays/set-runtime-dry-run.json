@@ -1,0 +1,22 @@
+{
+  "name": "set-runtime-dry-run",
+  "run": "dry-run",
+  "note": "A changed answer shows from and to; the dry run leaves person.json as it was.",
+  "input": "bin/setup set --field runtime=both --field default_workspace=fake-shop --dry-run",
+  "setup": {
+    "files": {
+      ".foxrun/config/person.json": "{\"name\": \"fake-person\", \"runtime\": \"claude\", \"default_workspace\": \"fake-hq\", \"workspaces\": [\"fake-hq\", \"fake-shop\"], \"portfolio\": \"../foxrun\"}",
+      "foxrun/fake-hq/AGENTS.md": "# fake-hq (labeled fake)\n",
+      "foxrun/fake-shop/AGENTS.md": "# fake-shop (labeled fake)\n"
+    }
+  },
+  "expect": {
+    "exit": 0,
+    "output_contains": [
+      "\"from\": \"claude\"",
+      "\"to\": \"both\"",
+      "\"to\": \"fake-shop\"",
+      "\"dry_run\": true"
+    ]
+  }
+}

@@ -1,0 +1,499 @@
+#!/usr/bin/env python3
+"""List agent threads, plan one, make one, or record one made by an app tool.
+
+Commands:
+  list                         every agent, workspace agent, and workspace lead, and which has a thread
+  plan <seat> | lead <ws>      the title, folder, boot prompt, model, and route; writes nothing
+  make <seat> | lead <ws>      make the thread (codex, claude-cli); claude-desktop returns the plan
+  record <seat> | lead <ws>    save a thread that an app tool made (claude-desktop)
+
+JSON goes to stdout. Notes go to stderr. make and record take --dry-run.
+"""
+
+import argparse
+from datetime import datetime
+import json
+import os
+from pathlib import Path
+import queue
+import re
+import shlex
+import sqlite3
+import subprocess
+import sys
+import threading
+import time
+import uuid
+
+
+RUNTIMES = ("claude-desktop", "claude-cli", "codex")
+TIERS = ("judgment", "work", "cheap", "code")
+NAME = re.compile(r"[a-z][a-z0-9_-]{0,63}\Z")
+LEAD = "lead"
+# Default emoji, approved as defaults only (T862). config/threads.json "emoji" overrides a default;
+# --emoji, picked for the thread's own work, overrides both.
+DEFAULT_EMOJI = {
+    "chief-of-staff": "📋",
+    "architect": "🏛️",
+    "adviser": "🧿",
+    "skillwright": "🧪",
+    "toolsmith": "🔧",
+    "keeper": "🗄️",
+    "scout": "🔭",
+    "designer": "🎨",
+    "creative-reviewer": "🔍",
+    "video-producer": "🎬",
+    LEAD: "🧭",
+}
+FALLBACK_EMOJI = "🤖"
+
+
+class ThreadError(ValueError):
+    pass
+
+
+def note(text):
+    print("thread: " + text, file=sys.stderr)
+
+
+def home():
+    return Path(os.environ.get("FOXRUN_HOME") or Path.home() / ".foxrun").expanduser()
+
+
+def portfolio(system):
+    if os.environ.get("FOXRUN_PORTFOLIO"):
+        return Path(os.environ["FOXRUN_PORTFOLIO"]).expanduser()
+    person = system / "config/person.json"
+    if person.is_file():
+        value = json.loads(person.read_text(encoding="utf-8")).get("portfolio")
+        if isinstance(value, str) and value:
+            path = Path(value).expanduser()
+            return path if path.is_absolute() else (system / path).resolve()
+    return Path.home() / "foxrun"
+
+
+def shown(path):
+    """Write a path the way a person reads it: ~ for the home folder."""
+    text, user = str(path), str(Path.home())
+    return "~" + text[len(user):] if text == user or text.startswith(user + "/") else text
+
+
+def frontmatter(file):
+    text = file.read_text(encoding="utf-8")
+    if not text.startswith("---\n") or "\n---\n" not in text[4:]:
+        return None
+    head = text[4:].split("\n---\n", 1)[0]
+    try:
+        data = json.loads(head)
+    except json.JSONDecodeError:
+        data = {}
+        for line in head.splitlines():
+            key, sep, value = line.partition(":")
+            if sep and not line.startswith((" ", "-")):
+                data[key.strip()] = value.strip().strip("\"'")
+        if isinstance(data.get("runtimes"), str):
+            data["runtimes"] = [word.strip() for word in data["runtimes"].strip("[]").split(",") if word.strip()]
+    return data if isinstance(data, dict) else None
+
+
+def seat_record(file):
+    """One seat from an identity page whose frontmatter id matches its file name, else None."""
+    data = frontmatter(file)
+    if not data or data.get("id") != file.stem or not NAME.fullmatch(file.stem):
+        return None
+    return {
+        "seat": file.stem,
+        "role": data.get("display_name") or file.stem,
+        "tier": data.get("tier") if data.get("tier") in TIERS else "work",
+        "runtimes": list(data.get("runtimes") or ["claude", "codex"]),
+        "source": shown(file),
+    }
+
+
+def agents(system):
+    """Shipped seats, then personal copies in profile/agents, which win."""
+    found = {}
+    for folder in (system / "agents", system / "profile/agents"):
+        for file in sorted(folder.glob("*.md")) if folder.is_dir() else ():
+            record = seat_record(file)
+            if record:
+                found[file.stem] = record
+    return found
+
+
+def team_agents(folder):
+    """Agents made for one workspace (agent_new create --client <ws>): <portfolio>/<ws>/team/<id>.md.
+    A lead-* file is a lead, not an agent. The start command loads these only in their own workspace."""
+    found = []
+    for team in sorted(folder.glob("*/team")) if folder.is_dir() else ():
+        workspace = team.parent.name
+        if not NAME.fullmatch(workspace):
+            continue
+        for file in sorted(team.glob("*.md")):
+            record = None if file.stem.startswith("lead-") else seat_record(file)
+            if record:
+                found.append(dict(record, workspace=workspace))
+    return found
+
+
+def leads(folder):
+    found = {}
+    for team in sorted(folder.glob("*/team")) if folder.is_dir() else ():
+        workspace = team.parent.name
+        file = team / ("lead-" + workspace + ".md")
+        if NAME.fullmatch(workspace) and file.is_file():
+            data = frontmatter(file) or {}
+            found[workspace] = {
+                "seat": "lead-" + workspace,
+                "role": "Lead",
+                "workspace": workspace,
+                "tier": data.get("tier") if data.get("tier") in TIERS else "judgment",
+                "runtimes": list(data.get("runtimes") or ["claude", "codex"]),
+                "source": shown(file),
+            }
+    return found
+
+
+def config_file(system):
+    return system / "config/threads.json"
+
+
+def config(system):
+    file = config_file(system)
+    if not file.is_file():
+        return {"format": 1, "emoji": {}, "threads": {}}
+    data = json.loads(file.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise ThreadError("config/threads.json must hold an object")
+    data.setdefault("emoji", {})
+    data.setdefault("threads", {})
+    return data
+
+
+def emoji(settings, seat, is_lead, chosen=None):
+    """chosen: --emoji for this thread. default: the map. fallback: no map entry for the seat."""
+    if chosen is not None:
+        if not chosen or len(chosen) > 16 or any(char.isspace() or char.isascii() for char in chosen):
+            raise ThreadError("--emoji takes one emoji, with no spaces or letters")
+        return chosen, "chosen"
+    key = LEAD if is_lead else seat
+    mapped = settings.get("emoji", {}).get(key) or DEFAULT_EMOJI.get(key)
+    return (mapped, "default") if mapped else (FALLBACK_EMOJI, "fallback")
+
+
+def models(system):
+    file = system / "config/models.yaml"
+    text = file.read_text(encoding="utf-8")
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError:
+        sys.path.insert(0, str(system / "base"))
+        import simple_yaml  # the installed reader of config/models.yaml
+        data = simple_yaml.safe_load(text)
+    if not isinstance(data, dict) or not isinstance(data.get("tiers"), dict):
+        raise ThreadError("config/models.yaml must define tiers")
+    return data
+
+
+def pick_model(system, runtime, tier, model):
+    data = models(system)
+    family = "codex" if runtime == "codex" else "claude"
+    if model:
+        if model not in data.get("allowed", []):
+            raise ThreadError("model is not in the allowed list of config/models.yaml: " + model)
+        return model, None
+    entry = (data["tiers"].get(tier) or {}).get(family)
+    if not entry or not entry.get("model"):
+        raise ThreadError("config/models.yaml has no " + family + " model for tier " + tier)
+    return entry["model"], tier
+
+
+def target(system, words, workspace):
+    """Turn '<seat>' or 'lead <ws>' into one seat record with its workspace."""
+    folder = portfolio(system)
+    if len(words) == 2 and words[0] == LEAD:
+        found = leads(folder).get(words[1])
+        if not found:
+            raise ThreadError("no lead for workspace " + words[1] + ": need team/lead-" + words[1] + ".md")
+        if workspace and workspace != words[1]:
+            raise ThreadError("a lead thread starts in its own workspace")
+        return dict(found, lead=True)
+    if len(words) != 1:
+        raise ThreadError("name one seat, or: lead <workspace>")
+    # A workspace's own team file wins in that workspace, as the start command's seat lookup does.
+    homes = [item for item in team_agents(folder) if item["seat"] == words[0]]
+    here = next((item for item in homes if item["workspace"] == workspace), None)
+    if here:
+        return dict(here, lead=False)
+    found = agents(system).get(words[0])
+    if not found and homes:
+        if workspace:
+            raise ThreadError(words[0] + " is a workspace agent; its thread starts in its own workspace: "
+                              + ", ".join(item["workspace"] for item in homes))
+        if len(homes) > 1:
+            raise ThreadError(words[0] + " lives in several workspaces (" + ", ".join(
+                item["workspace"] for item in homes) + "); pass --workspace")
+        return dict(homes[0], lead=False)
+    if not found:
+        raise ThreadError("no agent named " + words[0] + "; run: thread list")
+    if not workspace:
+        raise ThreadError("--workspace is required for an agent thread; ask the person where it lives")
+    if not NAME.fullmatch(workspace) or not (folder / workspace).is_dir():
+        raise ThreadError("no workspace folder: " + str(folder / workspace))
+    return dict(found, workspace=workspace, lead=False)
+
+
+def plan(system, words, runtime, workspace=None, tier=None, model=None, chosen=None):
+    seat = target(system, words, workspace)
+    family = "codex" if runtime == "codex" else "claude"
+    if family not in seat["runtimes"]:
+        raise ThreadError(seat["seat"] + " does not run on " + family)
+    settings = config(system)
+    mark, state = emoji(settings, seat["seat"], seat["lead"], chosen)
+    chosen, chosen_tier = pick_model(system, runtime, tier or seat["tier"], model)
+    start = "python3 {}/foxrun.py start --workspace {} --seat {}".format(
+        shown(system), seat["workspace"], seat["seat"])
+    prompt = (
+        "You are the " + seat["role"] + " seat. Run `" + start + "` before anything else and read its output. "
+        "Then say one short, dry line about where we are. "
+        "Then run `" + shown(system) + "/skills/foxrun-setup/bin/setup status` and ask its `next` question "
+        "with this runtime's question tool. If `next` is empty, ask what to work on first."
+    )
+    cwd = portfolio(system) / seat["workspace"]
+    result = {
+        "seat": seat["seat"],
+        "role": seat["role"],
+        "workspace": seat["workspace"],
+        "key": seat["seat"] + "@" + seat["workspace"],
+        "title": "{} {} · {}".format(mark, seat["workspace"], seat["role"]),
+        "emoji": mark,
+        "emoji_state": state,
+        "cwd": str(cwd),
+        "prompt": prompt,
+        "runtime": runtime,
+        "model": chosen,
+        "tier": chosen_tier,
+    }
+    if runtime == "claude-cli":
+        result["command"] = shlex.join(["claude", "--bg", "-n", result["title"], "--model", chosen, prompt])
+    elif runtime == "codex":
+        result["command"] = "codex app-server: thread/start, thread/name/set, turn/start"
+    else:
+        result["next"] = ("Call the Claude app's new-session tool with title, cwd, and prompt. "
+                          "Then run: thread record ... --runtime claude-desktop --id <session id>")
+    return result
+
+
+def codex_threads():
+    """Codex thread names, read-only. A missing database gives an empty set."""
+    db = Path(os.environ.get("THREAD_CODEX_STATE_DB") or Path.home() / ".codex/state_5.sqlite")
+    if not db.is_file():
+        return {}
+    try:
+        with sqlite3.connect("file:" + str(db) + "?mode=ro", uri=True) as connection:
+            rows = connection.execute("select id, name from threads where name is not null").fetchall()
+    except sqlite3.Error:
+        return {}
+    return {name: ident for ident, name in rows}
+
+
+def listing(system):
+    settings = config(system)
+    saved = settings.get("threads", {})
+    names = codex_threads()
+    rows = []
+    folder = portfolio(system)
+    team = team_agents(folder)
+    team_keys = {item["seat"] + "@" + item["workspace"] for item in team}
+    found = list(agents(system).values()) + team + [dict(lead, lead=True) for lead in leads(folder).values()]
+    for seat in found:
+        is_lead = seat.get("lead", False)
+        mark, state = emoji(settings, seat["seat"], is_lead)
+        # A seat with a workspace (a lead or a workspace agent) owns only its own key.
+        # A system seat owns its keys in every workspace whose team does not hold the same id.
+        own = seat["seat"] + "@" + seat["workspace"] if seat.get("workspace") else None
+        threads = [dict(value, key=key) for key, value in sorted(saved.items())
+                   if (key == own if own else key.split("@", 1)[0] == seat["seat"] and key not in team_keys)]
+        for title, ident in sorted(names.items()):
+            # The emoji varies by thread, so match on the rest. A lead's title names its own workspace.
+            parts = title.split(" ", 1)
+            rest = parts[1] if len(parts) == 2 else ""
+            if seat.get("workspace"):
+                fits = rest == seat["workspace"] + " · " + ("Lead" if is_lead else seat["role"])
+            else:
+                fits = re.fullmatch(r"[a-z0-9][a-z0-9-]* · " + re.escape(seat["role"]), rest) is not None
+            if fits and not any(item.get("id") == ident for item in threads):
+                threads.append({"runtime": "codex", "id": ident, "title": title, "found_in": "codex"})
+        rows.append({"seat": seat["seat"], "role": seat["role"], "lead": is_lead,
+                     "workspace": seat.get("workspace"), "emoji": mark, "emoji_state": state,
+                     "threads": threads, "has_thread": bool(threads)})
+    missing = [row["seat"] for row in rows if not row["has_thread"]]
+    return {"agents": rows, "without_thread": missing}
+
+
+def save(system, planned, ident, dry_run):
+    entry = {"runtime": planned["runtime"], "id": ident, "title": planned["title"], "emoji": planned["emoji"],
+             "cwd": planned["cwd"], "model": planned["model"],
+             "made": datetime.now().astimezone().isoformat(timespec="seconds")}
+    if dry_run:
+        return entry
+    settings = config(system)
+    settings["threads"][planned["key"]] = entry
+    file = config_file(system)
+    file.parent.mkdir(parents=True, exist_ok=True)
+    temporary = file.with_name(file.name + "." + uuid.uuid4().hex + ".tmp")
+    temporary.write_text(json.dumps(settings, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    os.replace(temporary, file)
+    return entry
+
+
+def codex_make(planned, timeout):
+    """The route tested on 2026-10-23 (T713): thread/start, thread/name/set, turn/start."""
+    binary = os.environ.get("THREAD_CODEX_BIN", "codex")
+    child = subprocess.Popen([binary, "app-server"], cwd=planned["cwd"], stdin=subprocess.PIPE,
+                             stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, bufsize=1)
+    counter = [0]
+    lines = queue.Queue()
+
+    def read():
+        for line in child.stdout:
+            try:
+                lines.put(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+        lines.put(None)
+
+    threading.Thread(target=read, daemon=True).start()
+
+    def send(method, params=None, notify=False):
+        message = {"jsonrpc": "2.0", "method": method}
+        if params is not None:
+            message["params"] = params
+        if not notify:
+            counter[0] += 1
+            message["id"] = counter[0]
+        child.stdin.write(json.dumps(message) + "\n")
+        child.stdin.flush()
+        return None if notify else counter[0]
+
+    def wait(ident=None, until=None):
+        end = time.time() + timeout
+        while True:
+            remaining = end - time.time()
+            if remaining <= 0:
+                raise ThreadError("codex app-server timed out after %d seconds" % timeout)
+            try:
+                message = lines.get(timeout=remaining)
+            except queue.Empty:
+                continue
+            if message is None:
+                raise ThreadError("codex app-server closed early")
+            if ident is not None and message.get("id") == ident and "method" not in message:
+                if "error" in message:
+                    raise ThreadError("codex app-server error: " + json.dumps(message["error"]))
+                return message.get("result") or {}
+            if "id" in message and "method" in message:
+                # An approval request during the boot turn: decline; the person approves in the app.
+                child.stdin.write(json.dumps({"jsonrpc": "2.0", "id": message["id"],
+                                              "result": {"decision": "decline"}}) + "\n")
+                child.stdin.flush()
+            if until and message.get("method") == until:
+                return message.get("params") or {}
+
+    try:
+        wait(send("initialize", {"clientInfo": {"name": "foxrun-thread", "version": "1"}}))
+        send("initialized", notify=True)
+        started = wait(send("thread/start", {"cwd": planned["cwd"], "model": planned["model"]}))
+        ident = started["thread"]["id"]
+        wait(send("thread/name/set", {"threadId": ident, "name": planned["title"]}))
+        wait(send("turn/start", {"threadId": ident, "input": [{"type": "text", "text": planned["prompt"]}]}))
+        wait(until="turn/completed")
+        return ident
+    finally:
+        # Close stdin first, so the server reads every reply sent (such as a decline) before it stops.
+        try:
+            child.stdin.close()
+            child.wait(timeout=3)
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+        if child.poll() is None:
+            child.terminate()
+            try:
+                child.wait(timeout=3)
+            except subprocess.TimeoutExpired:
+                child.kill()
+
+
+def claude_make(planned):
+    binary = os.environ.get("THREAD_CLAUDE_BIN", "claude")
+    argv = [binary] + shlex.split(planned["command"])[1:]
+    done = subprocess.run(argv, cwd=planned["cwd"], capture_output=True, text=True, timeout=120)
+    text = (done.stdout + done.stderr).strip()
+    if done.returncode:
+        if "trust" in text.lower():
+            raise ThreadError("Claude refused an untrusted folder. Open `claude` once in "
+                              + planned["cwd"] + ", accept the trust prompt, then retry.")
+        raise ThreadError("claude --bg failed: " + text.replace("\n", " ")[:400])
+    match = re.search(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", text)
+    return match.group(0) if match else planned["title"]
+
+
+def parser():
+    top = argparse.ArgumentParser(prog="thread", description=__doc__,
+                                  formatter_class=argparse.RawDescriptionHelpFormatter)
+    commands = top.add_subparsers(dest="command", required=True)
+    commands.add_parser("list", help="every agent and lead, and which has a thread")
+    for name, text in (("plan", "print the plan; write nothing"), ("make", "make the thread"),
+                       ("record", "save a thread an app tool made")):
+        sub = commands.add_parser(name, help=text)
+        sub.add_argument("target", nargs="+", help="<seat>, or: lead <workspace>")
+        sub.add_argument("--runtime", choices=RUNTIMES, required=name != "plan", default="claude-desktop")
+        sub.add_argument("--workspace", help="the folder in the portfolio where an agent thread starts")
+        sub.add_argument("--tier", choices=TIERS, help="model tier; default: the seat's tier")
+        sub.add_argument("--model", help="one model from the allowed list; wins over --tier")
+        sub.add_argument("--emoji", help="one emoji for this thread's work; wins over the default map")
+        if name != "plan":
+            sub.add_argument("--dry-run", action="store_true", help="print what would happen; write and start nothing")
+        if name == "make":
+            sub.add_argument("--timeout", type=int, default=180, help=argparse.SUPPRESS)
+        if name == "record":
+            sub.add_argument("--id", required=True, help="the session id the app tool returned")
+    return top
+
+
+def main(argv=None):
+    args = parser().parse_args(argv)
+    system = home()
+    try:
+        if args.command == "list":
+            print(json.dumps(listing(system), indent=2, ensure_ascii=False))
+            return 0
+        planned = plan(system, args.target, args.runtime, args.workspace, args.tier, args.model, args.emoji)
+        if args.command == "plan":
+            print(json.dumps(planned, indent=2, ensure_ascii=False))
+            return 0
+        if args.command == "record":
+            if args.runtime != "claude-desktop":
+                note("record is for a thread an app tool made; make records codex and claude-cli itself")
+            planned["recorded"] = save(system, planned, args.id, args.dry_run)
+            planned["dry_run"] = args.dry_run
+            print(json.dumps(planned, indent=2, ensure_ascii=False))
+            return 0
+        if args.dry_run or args.runtime == "claude-desktop":
+            planned["dry_run"] = args.dry_run
+            planned["made"] = False
+            print(json.dumps(planned, indent=2, ensure_ascii=False))
+            return 0
+        ident = codex_make(planned, args.timeout) if args.runtime == "codex" else claude_make(planned)
+        planned["made"] = True
+        planned["recorded"] = save(system, planned, ident, False)
+        print(json.dumps(planned, indent=2, ensure_ascii=False))
+        return 0
+    except (ThreadError, OSError, KeyError, json.JSONDecodeError, subprocess.SubprocessError) as error:
+        print(json.dumps({"error": str(error)}, ensure_ascii=False))
+        note(str(error))
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

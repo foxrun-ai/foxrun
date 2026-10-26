@@ -1,0 +1,112 @@
+evidence_kind,evidence,action,target_table,load,ruling_id,note
+command,create,created,work_changes,yes,event-actions; pr-db-event-milestones,unchanged
+command,program-create,created,work_changes,yes,event-actions; pr-db-event-milestones,unchanged
+command,theme-create,created,work_changes,yes,event-actions; pr-db-event-milestones,unchanged
+command,stream-create,created,work_changes,yes,event-actions; pr-db-event-milestones,unchanged
+command,function-create,created,work_changes,yes,event-actions; pr-db-event-milestones,unchanged
+command,incident-open,created,work_changes,yes,event-actions; pr-db-event-milestones,unchanged
+command,bug-open,created,work_changes,yes,event-actions; pr-db-event-milestones,unchanged
+command,decision-add; status ruled,decided,work_changes,yes,not ruled (map author's pick); event-actions,CHANGED: was created. Waits for question 2. 235 lines (AO 233; PR 2)
+command,decision-add; any other status,created,work_changes,yes,event-actions,unchanged. 8 lines
+command,approval-add; call approve,approved,base_approvals,no: double,event-actions; pr-object-list-calls; pr-db-event-milestones,CHANGED: was created. The approval row is the event
+command,approval-add; call wrong,rejected,base_approvals,no: double,event-actions; pr-object-list-calls; pr-db-event-milestones,CHANGED: was created. 0 lines today
+command,approval-add; call edit,edited,base_approvals,no: double,event-actions; pr-db-edit-not-yes; pr-db-event-milestones,CHANGED: was created. 0 lines today
+command,approval-add; call discuss,discussed,base_approvals,no: double,event-actions; pr-object-list-calls; pr-db-event-milestones,CHANGED: was created. 0 lines today
+command,comment,commented,work_comments,no: double,event-actions; pr-db-event-action-column; no-activity-collection,CHANGED: was created. The comment row is the event
+command,link,updated,work_changes,no: double,not ruled (map author's pick); event-actions,CHANGED: was created. The bug or incident is not created. The link row in work_links has its own created line
+command,claim,claimed,work_changes,yes,event-actions,unchanged
+command,done,finished,work_changes,yes,event-actions; pr-work-task-statuses,unchanged
+command,accept,accepted,work_changes,yes,pr-work-task-statuses; status-in-review,unchanged
+command,bounce,moved,work_changes,yes,not ruled (map author's pick); db-design-rule-r12,CHANGED: was updated. Status in-review to in-progress is a move of state
+command,cancel,moved,work_changes,yes,event-actions; pr-db-event-milestones,CHANGED: was closed. closed is for a problem or a session. Question 3 may change it
+command,block,moved,work_changes,yes,db-design-rule-r12 (reading),unchanged
+command,task-move,moved,work_changes,yes,event-actions,unchanged
+command,run-move,moved,work_changes,yes,event-actions; run-parent-is-task,unchanged
+command,flag,updated,work_changes,yes,event-actions,unchanged
+command,unflag,updated,work_changes,yes,event-actions,unchanged
+command,link-task,updated,work_changes,yes,event-actions,unchanged
+command,task-update; field parent,moved,work_changes,yes,event-actions,unchanged
+command,task-update,updated,work_changes,yes,event-actions,unchanged
+command,function-update,updated,work_changes,yes,event-actions,unchanged
+status,new in-progress; note is exactly claimed,claimed,work_changes,yes,event-actions,unchanged. 254 lines
+status,new done; note is exactly accepted,accepted,work_changes,yes,pr-work-task-statuses,unchanged
+status,new done; note is exactly accepted receipt,accepted,work_changes,yes,pr-work-task-statuses,unchanged. 128 lines
+status,new accepted; note is exactly accepted receipt,accepted,work_changes,yes,pr-work-task-statuses,unchanged. 16 lines
+status,decision; new ruled,decided,work_changes,yes,event-actions,unchanged. 0 lines reach it
+status,new done,finished,work_changes,yes,event-actions,unchanged. 49 lines
+status,new succeeded,finished,work_changes,yes,event-actions; pr-db-status-lists-batch,unchanged
+status,new in-review,finished,work_changes,yes,status-in-review; pr-work-task-statuses,CHANGED: was moved. 0 blank lines today
+status,new in-progress,started,work_changes,yes,event-actions,unchanged. 5 lines
+status,new failed,failed,work_changes,yes,event-actions,unchanged
+status,new fixed,fixed,work_changes,yes,event-actions,unchanged. 38 lines
+status,new restored,restored,work_changes,yes,event-actions,unchanged. 2 lines
+status,new closed,closed,work_changes,yes,event-actions; pr-db-event-milestones,unchanged. For a bug or an incident. 2 lines
+status,new wont-fix,closed,work_changes,yes,not ruled (map author's pick); event-actions,unchanged. A bug is a problem. 5 lines
+status,new canceled,moved,work_changes,yes,event-actions; pr-db-event-milestones,CHANGED: was closed. Question 3 may change it. 30 blank lines; 23 lines with the old word canceled
+status,new accepted,accepted,work_changes,yes,pr-work-task-statuses,unchanged
+status,new superseded,replaced,work_changes,yes,pr-db-renames-batch-2,unchanged. 16 lines
+status,new replaced,replaced,work_changes,yes,pr-db-renames-batch-2,unchanged
+status,new sent,sent,work_changes,yes,event-actions,unchanged
+status,new published,published,work_changes,yes,event-actions,unchanged
+status,new backlog,moved,work_changes,yes,db-design-rule-r12 (reading),unchanged. 9 lines
+status,new todo,moved,work_changes,yes,db-design-rule-r12 (reading),unchanged. 72 lines
+status,new blocked,moved,work_changes,yes,db-design-rule-r12 (reading),unchanged. 7 blank lines; also the 9 lines with the old word blocked
+status,new open,moved,work_changes,yes,db-design-rule-r12 (reading),unchanged. 1 line
+status,new soft,moved,work_changes,yes,db-design-rule-r12 (reading),unchanged
+status,new deferred,moved,work_changes,yes,db-design-rule-r12 (reading),unchanged
+status,new withdrawn,moved,work_changes,yes,db-design-rule-r12 (reading),unchanged
+status,new ruled; not a decision,moved,work_changes,yes,db-design-rule-r12 (reading),unchanged. Only decisions have this status
+status,new investigating,moved,work_changes,yes,db-design-rule-r12 (reading),unchanged. No tracker status list holds this value
+status,new active,moved,work_changes,yes,db-design-rule-r12 (reading),unchanged. No tracker status list holds this value
+status,new resolved,moved,work_changes,yes,db-design-rule-r12 (reading),unchanged. No tracker status list holds this value
+status,deliverable; old proposed; new agreed,moved,work_changes,yes,db-design-rule-r12 (reading),NEW. 3 lines in PR; held today
+status,any new value; old word migrated; source status migration,moved,work_changes,yes,not ruled (map author's pick),Status migration; original history stays in its source.
+field,create,created,work_changes,yes,event-actions; pr-db-event-milestones; time-from-machine-clock,unchanged. One created line for each record: the load-time created line is the double (question 1). 642 doubled today
+field,created,created,work_changes,yes,event-actions; pr-db-event-milestones,unchanged. 50 lines
+field,comment,commented,work_comments,no: double,event-actions; pr-db-event-action-column; no-activity-collection; pr-db-event-milestones,CHANGED: was created. Applies whatever word the line holds. 2857 lines; 2125 loaded today must come out
+field,approval; new approve,approved,base_approvals,no: double,event-actions; pr-object-list-calls; who-approves-what; pr-db-event-milestones,CHANGED: was created. Applies whatever word the line holds. 172 lines; 127 loaded today must come out
+field,approval; new wrong,rejected,base_approvals,no: double,event-actions; pr-object-list-calls,CHANGED: was created. 0 lines today
+field,approval; new edit,edited,base_approvals,no: double,event-actions; pr-db-edit-not-yes,CHANGED: was created. 0 lines today
+field,approval; new discuss,discussed,base_approvals,no: double,event-actions; pr-object-list-calls,CHANGED: was created. 0 lines today
+field,link,updated,work_changes,no: double,not ruled (map author's pick); event-actions,CHANGED: was created. The link row in work_links has its own created line; give that line this line's time and person. 184 lines; 181 loaded today must come out
+field,load,imported,work_changes,yes,event-actions; pr-db-event-milestones,unchanged. 40 lines
+field,receipt,attached,work_attachments,no: double,no-activity-collection; pr-db-event-action-column; pr-db-event-milestones,CHANGED: was created. The attachment rows are the event. 369 lines; 211 loaded today must come out. 29 old lines (97 files) have no attachment row: make the rows
+field,ended_at,updated,work_changes,yes,pr-db-runs-record; db-design-rule-r12,CHANGED: was finished. All 9 lines are a run opened again (end time to empty)
+field,parent,moved,work_changes,yes,event-actions,unchanged. Also for the 69 lines with the old word placed or unplaced
+field,project,moved,work_changes,yes,event-actions,unchanged. 175 lines
+field,subject,moved,work_changes,yes,event-actions; run-parent-is-task,unchanged
+field,name,updated,work_changes,yes,event-actions,unchanged. Not for a line of a record add
+field,organization,updated,work_changes,yes,event-actions,unchanged. Not for a line of a record add
+field,owner,updated,work_changes,yes,event-actions,unchanged. Not for a line of a record add
+field,page,updated,work_changes,yes,event-actions,unchanged
+field,tags,updated,work_changes,yes,event-actions,unchanged. Not for a line of a record add
+field,title,updated,work_changes,yes,event-actions,unchanged. Not for a line of a record add
+field,note,updated,work_changes,yes,event-actions,unchanged
+field,acceptance,updated,work_changes,yes,event-actions,unchanged
+field,check_by,updated,work_changes,yes,event-actions,unchanged
+field,checked_by,updated,work_changes,yes,event-actions,unchanged
+field,reviewer,updated,work_changes,yes,event-actions,unchanged
+field,reviewed_by,updated,work_changes,yes,event-actions,unchanged
+field,claimed_by,updated,work_changes,yes,event-actions,unchanged
+field,flag,updated,work_changes,yes,event-actions,unchanged
+field,blocks,updated,work_changes,yes,event-actions,unchanged
+field,statement,updated,work_changes,yes,event-actions,unchanged
+field,replaces,updated,work_changes,yes,event-actions,unchanged
+field,replaced_by,updated,work_changes,no: held,not ruled (map author's pick); pr-db-renames-batch-2,The word is unchanged. The field is never stored. 1 line
+field,ord,updated,work_changes,yes,event-actions,unchanged. Not for a line of a record add
+field,function,updated,work_changes,yes,event-actions,unchanged. Not for a line of a record add
+field,goal,updated,work_changes,yes,event-actions,unchanged
+field,idempotency_key,updated,work_changes,yes,event-actions,unchanged
+field,id; old empty; note added or accepted P-...; source people cli or ugc cli,created,work_changes,yes,db-design-rule-r12; event-actions,NEW. The add of a record: one created line for each record. 259 lines; held today
+field,stage; pipeline stage; old empty; note added,created,work_changes,yes,db-design-rule-r12; event-actions,NEW. A pipeline stage has no id line; its stage line is the add. 6 lines; held today
+field,any other field; old empty; same record and same time and same note as a record add,created,work_changes,no: double,db-design-rule-r12; pr-db-event-milestones,NEW. A column of the same add. Key on the line not on the field name. 2177 lines (1609 held; 568 wait with the wrong word updated)
+field,value or currency or agreed_amount; the record exists; note accepted P-...,updated,work_changes,yes,event-actions,NEW. A real change. 36 lines (value 18; currency 16; agreed_amount 2); held today
+field,updated_at; the record exists,updated,work_changes,no: double,db-design-rule-r12,NEW. The record's own clock; it repeats the change beside it. 24 lines; held today
+field,created_at; the record exists,updated,work_changes,no: held,not ruled (map author's pick),NEW. 5 lines; held today
+field,evidence_refs; the record exists,updated,work_changes,no: held,not ruled (map author's pick),NEW. The dictionary has no column for it. 4 lines; held today
+field,state; proposal; old empty; new pending,created,work_changes,yes,event-actions; pr-db-proposals-to-approval,NEW. A new proposal. 36 lines; held today
+field,state; proposal; new accepted,approved,base_approvals,no: double,pr-db-proposals-to-approval; event-actions; pr-db-event-milestones,NEW. Person's yes is the approval row. 36 lines; all 36 match an approval row; held today
+field,notion_link,created,work_changes,no: held,not ruled (map author's pick),NEW. A link row in work_links; its created line is the event. 1 line; held today
+field,notion-page,none,none,no: held,not ruled,No column and no record. 1 line; stays held
+field,notion-projection,none,none,no: held,not ruled,The subject is a workspace; a workspace is not a record. 2 lines; stays held
+field,any; the line already holds one of the ruled words,that word,the table of that word,yes,event-actions,unchanged. But the rules for comment and approval and receipt and link come first

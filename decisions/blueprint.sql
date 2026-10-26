@@ -1,0 +1,4 @@
+-- Decisions and approvals currently use the definitions in work/blueprint.sql.
+-- That file creates decisions, approvals, and open_decisions once.
+-- Do not repeat those declarations here. The blueprint checker loads both files.
+-- This file adds no schema objects while work owns the legacy definitions.

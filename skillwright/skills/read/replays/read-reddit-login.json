@@ -1,0 +1,6 @@
+{
+  "name": "read-reddit-login",
+  "run": "read",
+  "input": "capture-read returns needs-login on a Reddit post. Which skill reads it instead?",
+  "expect": {"output_contains": ["browse"]}
+}

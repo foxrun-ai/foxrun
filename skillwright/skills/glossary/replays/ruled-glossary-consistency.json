@@ -1,0 +1,13 @@
+{
+  "name": "ruled-glossary-consistency",
+  "run": "dry-run",
+  "input": "scripts/check-glossary-rows --dry-run",
+  "expect": {
+    "exit": 0,
+    "output_contains": [
+      "words table -> checked write command -> regenerate",
+      "missing commands stop",
+      "no direct GLOSSARY.md writes"
+    ]
+  }
+}

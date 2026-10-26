@@ -1,0 +1,806 @@
+spec	key	status	reason
+v2/capabilities/spec.tsv	page	reference	Source description, not a lint claim.
+v2/capabilities/spec.tsv	one_format	reference	Source description, not a lint claim.
+v2/capabilities/spec.tsv	scope	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	scope	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	scope_minus	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	no_business_name	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	business_names_extra	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	scope_rule	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v2/capabilities/spec.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v2/capabilities/spec.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v2/capabilities/spec.tsv	frontmatter_keys_allowed	implemented	Generic frontmatter_keys_allowed check.
+v2/capabilities/spec.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v2/capabilities/spec.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v2/capabilities/spec.tsv	frontmatter_format	partial	Checks timestamp ISO 8601 with offset. MADE comparison remains open.
+v2/capabilities/spec.tsv	h1	implemented	Generic h1 check.
+v2/capabilities/spec.tsv	block_order	partial	Title, opening paragraph, fixed heading order, and count parts receive checks. Dynamic block ordering stays open.
+v2/capabilities/spec.tsv	intro	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	intro	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	count_block_labels	implemented	Generic count_block_labels check.
+v2/capabilities/spec.tsv	count_value	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	count_value	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	count_value	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	heading_order	implemented	Generic heading_order check.
+v2/capabilities/spec.tsv	h2_first	implemented	Generic h2_first check.
+v2/capabilities/spec.tsv	contents	partial	Requires Contents. Counts and navigation completeness remain open.
+v2/capabilities/spec.tsv	contents_check	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	how_to_read	implemented	Generic how_to_read check.
+v2/capabilities/spec.tsv	h2_last	implemented	Generic h2_last check.
+v2/capabilities/spec.tsv	check	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	use_source	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	use_source	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	use_heading	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	use_list	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	section	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	table_columns	implemented	Generic table_columns check.
+v2/capabilities/spec.tsv	table_columns	implemented	Generic table_columns check.
+v2/capabilities/spec.tsv	same_as	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	row_order	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	row_order	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	status_mark	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	cell_forbidden	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	cell_fallback	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	section	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	gap_lists	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	last_h3	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	not_placed_sentence	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	not_placed_sentence	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	block_form	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	link_form	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	link_target	partial	Local existence and internal heading anchors only. Web and block anchors remain open.
+v2/capabilities/spec.tsv	max_code_line	implemented	Generic max_code_line check.
+v2/capabilities/spec.tsv	max_table_columns	implemented	Generic max_table_columns check.
+v2/capabilities/spec.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v2/capabilities/spec.tsv	blank_page	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	emoji	open	Needs a source adapter or reviewed semantic check.
+v2/capabilities/spec.tsv	named_line	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	page	reference	Source description, not a lint claim.
+v2/team/spec.tsv	source_folder	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v2/team/spec.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v2/team/spec.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v2/team/spec.tsv	frontmatter_keys_allowed	implemented	Generic frontmatter_keys_allowed check.
+v2/team/spec.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v2/team/spec.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v2/team/spec.tsv	frontmatter_format	partial	Checks timestamp ISO 8601 with offset. MADE comparison remains open.
+v2/team/spec.tsv	h1	implemented	Generic h1 check.
+v2/team/spec.tsv	block_order	partial	Title, opening paragraph, fixed heading order, and count parts receive checks. Dynamic block ordering stays open.
+v2/team/spec.tsv	go_to_line	implemented	Generic go_to_line check.
+v2/team/spec.tsv	heading_order	implemented	Generic heading_order check.
+v2/team/spec.tsv	headings_allowed	implemented	Generic headings_allowed check.
+v2/team/spec.tsv	lead_line	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	lead_rule	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	count_block_labels	implemented	Generic count_block_labels check.
+v2/team/spec.tsv	count_value	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	count_value	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	table_columns	implemented	Generic table_columns check.
+v2/team/spec.tsv	row_source	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	row_order	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	standard_line	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	standard_line	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	standard_line_source	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	section	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	tree_label	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	tree_label	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	tree_label	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	tree_label	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	tree_form	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	section	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	notes_line	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	notes_marks	implemented	Generic notes_marks check.
+v2/team/spec.tsv	link_form	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	link_target	partial	Local existence and internal heading anchors only. Web and block anchors remain open.
+v2/team/spec.tsv	max_code_line	implemented	Generic max_code_line check.
+v2/team/spec.tsv	max_table_columns	implemented	Generic max_table_columns check.
+v2/team/spec.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v2/team/spec.tsv	emoji	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	lint_at_source	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	lint_at_source	open	Needs a source adapter or reviewed semantic check.
+v2/team/spec.tsv	purpose	reference	Source description, not a lint claim.
+v2/workspace-view/spec-SKILLS.tsv	page	reference	Source description, not a lint claim.
+v2/workspace-view/spec-SKILLS.tsv	source_folder	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v2/workspace-view/spec-SKILLS.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v2/workspace-view/spec-SKILLS.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v2/workspace-view/spec-SKILLS.tsv	frontmatter_keys_allowed	implemented	Generic frontmatter_keys_allowed check.
+v2/workspace-view/spec-SKILLS.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v2/workspace-view/spec-SKILLS.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v2/workspace-view/spec-SKILLS.tsv	frontmatter_format	partial	Checks timestamp ISO 8601 with offset. MADE comparison remains open.
+v2/workspace-view/spec-SKILLS.tsv	made_by	reference	Source description, not a lint claim.
+v2/workspace-view/spec-SKILLS.tsv	hand_edit	reference	Source description, not a lint claim.
+v2/workspace-view/spec-SKILLS.tsv	h1	implemented	Generic h1 check.
+v2/workspace-view/spec-SKILLS.tsv	nav_line	implemented	Generic nav_line check.
+v2/workspace-view/spec-SKILLS.tsv	source_line	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	block_order	partial	Title, opening paragraph, fixed heading order, and count parts receive checks. Dynamic block ordering stays open.
+v2/workspace-view/spec-SKILLS.tsv	grouping	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	use_source	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	needs_line	implemented	Generic needs_line check.
+v2/workspace-view/spec-SKILLS.tsv	count_block_labels	implemented	Generic count_block_labels check.
+v2/workspace-view/spec-SKILLS.tsv	count_value	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	count_value	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	count_value	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	count_value	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	table_columns	implemented	Generic table_columns check.
+v2/workspace-view/spec-SKILLS.tsv	row_source	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	row_order	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	cell_cut	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	cell_fallback	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	known_tool_names	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	cell_link	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	table_when_empty	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	block	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	block	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	lint_at_source	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	link_form	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	link_target	partial	Local existence and internal heading anchors only. Web and block anchors remain open.
+v2/workspace-view/spec-SKILLS.tsv	block_form	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	block_when_empty	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	block_row_order	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	max_code_line	implemented	Generic max_code_line check.
+v2/workspace-view/spec-SKILLS.tsv	max_table_columns	implemented	Generic max_table_columns check.
+v2/workspace-view/spec-SKILLS.tsv	table_cell_guard	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v2/workspace-view/spec-SKILLS.tsv	emoji	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	blank_page	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	no_business_name	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-SKILLS.tsv	purpose	reference	Source description, not a lint claim.
+v2/workspace-view/spec-TEAM.tsv	page	reference	Source description, not a lint claim.
+v2/workspace-view/spec-TEAM.tsv	source_folder	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v2/workspace-view/spec-TEAM.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v2/workspace-view/spec-TEAM.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v2/workspace-view/spec-TEAM.tsv	frontmatter_keys_allowed	implemented	Generic frontmatter_keys_allowed check.
+v2/workspace-view/spec-TEAM.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v2/workspace-view/spec-TEAM.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v2/workspace-view/spec-TEAM.tsv	frontmatter_format	partial	Checks timestamp ISO 8601 with offset. MADE comparison remains open.
+v2/workspace-view/spec-TEAM.tsv	made_by	reference	Source description, not a lint claim.
+v2/workspace-view/spec-TEAM.tsv	hand_edit	reference	Source description, not a lint claim.
+v2/workspace-view/spec-TEAM.tsv	h1	implemented	Generic h1 check.
+v2/workspace-view/spec-TEAM.tsv	nav_line	implemented	Generic nav_line check.
+v2/workspace-view/spec-TEAM.tsv	source_line	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	block_order	partial	Title, opening paragraph, fixed heading order, and count parts receive checks. Dynamic block ordering stays open.
+v2/workspace-view/spec-TEAM.tsv	count_block_labels	implemented	Generic count_block_labels check.
+v2/workspace-view/spec-TEAM.tsv	count_value	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	count_value	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	count_value	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	table_columns	implemented	Generic table_columns check.
+v2/workspace-view/spec-TEAM.tsv	row_source	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	row_order	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	table_when_empty	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	block	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	block_label	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	block_label	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	block_label	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	block_label	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	block_cell	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	link_form	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	link_target	partial	Local existence and internal heading anchors only. Web and block anchors remain open.
+v2/workspace-view/spec-TEAM.tsv	block_form	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	block_when_empty	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	block_row_order	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	max_code_line	implemented	Generic max_code_line check.
+v2/workspace-view/spec-TEAM.tsv	max_table_columns	implemented	Generic max_table_columns check.
+v2/workspace-view/spec-TEAM.tsv	table_cell_guard	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v2/workspace-view/spec-TEAM.tsv	emoji	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	blank_page	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	no_business_name	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TEAM.tsv	purpose	reference	Source description, not a lint claim.
+v2/workspace-view/spec-TOOLS.tsv	page	reference	Source description, not a lint claim.
+v2/workspace-view/spec-TOOLS.tsv	source_folder	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v2/workspace-view/spec-TOOLS.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v2/workspace-view/spec-TOOLS.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v2/workspace-view/spec-TOOLS.tsv	frontmatter_keys_allowed	implemented	Generic frontmatter_keys_allowed check.
+v2/workspace-view/spec-TOOLS.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v2/workspace-view/spec-TOOLS.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v2/workspace-view/spec-TOOLS.tsv	frontmatter_format	partial	Checks timestamp ISO 8601 with offset. MADE comparison remains open.
+v2/workspace-view/spec-TOOLS.tsv	made_by	reference	Source description, not a lint claim.
+v2/workspace-view/spec-TOOLS.tsv	hand_edit	reference	Source description, not a lint claim.
+v2/workspace-view/spec-TOOLS.tsv	h1	implemented	Generic h1 check.
+v2/workspace-view/spec-TOOLS.tsv	nav_line	implemented	Generic nav_line check.
+v2/workspace-view/spec-TOOLS.tsv	source_line	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	block_order	partial	Title, opening paragraph, fixed heading order, and count parts receive checks. Dynamic block ordering stays open.
+v2/workspace-view/spec-TOOLS.tsv	grouping	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	count_block_labels	implemented	Generic count_block_labels check.
+v2/workspace-view/spec-TOOLS.tsv	count_value	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	count_value	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	count_value	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	kind_folders	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	table_columns	implemented	Generic table_columns check.
+v2/workspace-view/spec-TOOLS.tsv	row_source	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	row_order	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	status_mark	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	no_use_yet_line	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	cell_fallback	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	table_when_empty	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	block	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	block	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	block	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	link_form	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	link_target	partial	Local existence and internal heading anchors only. Web and block anchors remain open.
+v2/workspace-view/spec-TOOLS.tsv	block_form	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	block_when_empty	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	block_row_order	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	max_code_line	implemented	Generic max_code_line check.
+v2/workspace-view/spec-TOOLS.tsv	max_table_columns	implemented	Generic max_table_columns check.
+v2/workspace-view/spec-TOOLS.tsv	table_cell_guard	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v2/workspace-view/spec-TOOLS.tsv	emoji	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	blank_page	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	no_business_name	open	Needs a source adapter or reviewed semantic check.
+v2/workspace-view/spec-TOOLS.tsv	purpose	reference	Source description, not a lint claim.
+v2/workspace-view/spec-TOOLS.tsv	shelf_section	partial	base/tests/test_tool_shelf.py checks the generator; lint does not check the section.
+v3/tool-page/spec.tsv	page	reference	Source description, not a lint claim.
+v3/tool-page/spec.tsv	tool_beside_page	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/tool-page/spec.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/tool-page/spec.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/tool-page/spec.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/tool-page/spec.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/tool-page/spec.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/tool-page/spec.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/tool-page/spec.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/tool-page/spec.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/tool-page/spec.tsv	frontmatter_keys_allowed	implemented	Generic frontmatter_keys_allowed check.
+v3/tool-page/spec.tsv	frontmatter_key_order	implemented	Generic frontmatter_key_order check.
+v3/tool-page/spec.tsv	frontmatter_rule	partial	Only name and kind receive path checks. Semantic wording needs source review.
+v3/tool-page/spec.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/tool-page/spec.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/tool-page/spec.tsv	frontmatter_format	partial	Checks timestamp ISO 8601 with offset. MADE comparison remains open.
+v3/tool-page/spec.tsv	frontmatter_rule	partial	Only name and kind receive path checks. Semantic wording needs source review.
+v3/tool-page/spec.tsv	frontmatter_rule	partial	Only name and kind receive path checks. Semantic wording needs source review.
+v3/tool-page/spec.tsv	frontmatter_enum	implemented	Generic frontmatter_enum check.
+v3/tool-page/spec.tsv	frontmatter_enum	implemented	Generic frontmatter_enum check.
+v3/tool-page/spec.tsv	frontmatter_enum	implemented	Generic frontmatter_enum check.
+v3/tool-page/spec.tsv	use_rule	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	use_list_source	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	frontmatter_rule	partial	Only name and kind receive path checks. Semantic wording needs source review.
+v3/tool-page/spec.tsv	status_mark	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	status_meaning	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	status_meaning	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	status_meaning	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	status_meaning	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	h1	implemented	Generic h1 check.
+v3/tool-page/spec.tsv	block_order	partial	Title, opening paragraph, fixed heading order, and count parts receive checks. Dynamic block ordering stays open.
+v3/tool-page/spec.tsv	content_rule_1	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	content_rule_2	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	content_rule_3	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	content_rule_4	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	what_it_is	partial	Requires the opening paragraph and plain-words marker. Maker attribution remains source review.
+v3/tool-page/spec.tsv	what_it_is_sentence_1	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	what_it_is_sentence_2	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	makers_words_check	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	plain_sentence_forbidden_words	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	his_use_block	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	his_use_list	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	his_use_check	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	proof_file	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	proof_rows	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	proof_source_check	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	writer_note	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	install_line	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	install_line_rule	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	facts_table_columns	implemented	Generic facts_table_columns check.
+v3/tool-page/spec.tsv	facts_table_rows	implemented	Generic facts_table_rows check.
+v3/tool-page/spec.tsv	facts_cell	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	facts_cell	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	facts_cell	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	facts_cell	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	facts_cell	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	facts_cell	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	facts_cell	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	facts_cell	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	heading_order	implemented	Generic heading_order check.
+v3/tool-page/spec.tsv	headings_allowed	implemented	Generic headings_allowed check.
+v3/tool-page/spec.tsv	headings_required	implemented	Generic headings_required check.
+v3/tool-page/spec.tsv	table_columns	implemented	Generic table_columns check.
+v3/tool-page/spec.tsv	table_rows_required	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	table_columns	implemented	Generic table_columns check.
+v3/tool-page/spec.tsv	use_rule	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	table_row_count	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	code_block_count	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	table_columns	implemented	Generic table_columns check.
+v3/tool-page/spec.tsv	row_source	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	skills_line	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	table_when_empty	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	no_business_name	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	business_names_extra	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	left_off	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	table_columns	implemented	Generic table_columns check.
+v3/tool-page/spec.tsv	settings_rule	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	section	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	link_form	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	link_target	partial	Local existence and internal heading anchors only. Web and block anchors remain open.
+v3/tool-page/spec.tsv	sentence_max_words	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	max_code_line	implemented	Generic max_code_line check.
+v3/tool-page/spec.tsv	max_table_columns	implemented	Generic max_table_columns check.
+v3/tool-page/spec.tsv	page_max_lines	implemented	Generic page_max_lines check.
+v3/tool-page/spec.tsv	forbidden_headings	implemented	Generic forbidden_headings check.
+v3/tool-page/spec.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v3/tool-page/spec.tsv	emoji	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	settings_rule_2	open	Needs a source adapter or reviewed semantic check.
+v3/tool-page/spec.tsv	notes_rule	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-CHANGELOG.tsv	page	reference	Source description, not a lint claim.
+v3/top-pages/spec-CHANGELOG.tsv	made_by	reference	Source description, not a lint claim.
+v3/top-pages/spec-CHANGELOG.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-CHANGELOG.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-CHANGELOG.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-CHANGELOG.tsv	frontmatter_keys_allowed	implemented	Generic frontmatter_keys_allowed check.
+v3/top-pages/spec-CHANGELOG.tsv	frontmatter_format	partial	Checks timestamp ISO 8601 with offset. MADE comparison remains open.
+v3/top-pages/spec-CHANGELOG.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-CHANGELOG.tsv	h1	implemented	Generic h1 check.
+v3/top-pages/spec-CHANGELOG.tsv	block_order	partial	Title, opening paragraph, fixed heading order, and count parts receive checks. Dynamic block ordering stays open.
+v3/top-pages/spec-CHANGELOG.tsv	count_block_labels	implemented	Generic count_block_labels check.
+v3/top-pages/spec-CHANGELOG.tsv	check	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-CHANGELOG.tsv	version_section	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-CHANGELOG.tsv	forbidden_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-CHANGELOG.tsv	no_business_name	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-CHANGELOG.tsv	link_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-CHANGELOG.tsv	link_target	partial	Local existence and internal heading anchors only. Web and block anchors remain open.
+v3/top-pages/spec-CHANGELOG.tsv	max_code_line	implemented	Generic max_code_line check.
+v3/top-pages/spec-CHANGELOG.tsv	max_table_columns	implemented	Generic max_table_columns check.
+v3/top-pages/spec-CHANGELOG.tsv	sentence_max_words	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-CHANGELOG.tsv	emoji	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-CHANGELOG.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v3/top-pages/spec-CHANGELOG.tsv	purpose	reference	Source description, not a lint claim.
+v3/top-pages/spec-CLAUDE.tsv	page	reference	Source description, not a lint claim.
+v3/top-pages/spec-CLAUDE.tsv	made_by	reference	Source description, not a lint claim.
+v3/top-pages/spec-CLAUDE.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-CLAUDE.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-CLAUDE.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-CLAUDE.tsv	frontmatter_keys_allowed	implemented	Generic frontmatter_keys_allowed check.
+v3/top-pages/spec-CLAUDE.tsv	frontmatter_format	partial	Checks timestamp ISO 8601 with offset. MADE comparison remains open.
+v3/top-pages/spec-CLAUDE.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-CLAUDE.tsv	body	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-CLAUDE.tsv	body_max_lines	implemented	Generic body_max_lines check.
+v3/top-pages/spec-CLAUDE.tsv	forbidden	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-CLAUDE.tsv	link_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-CLAUDE.tsv	link_target	partial	Local existence and internal heading anchors only. Web and block anchors remain open.
+v3/top-pages/spec-CLAUDE.tsv	max_code_line	implemented	Generic max_code_line check.
+v3/top-pages/spec-CLAUDE.tsv	max_table_columns	implemented	Generic max_table_columns check.
+v3/top-pages/spec-CLAUDE.tsv	sentence_max_words	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-CLAUDE.tsv	emoji	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-CLAUDE.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v3/top-pages/spec-CLAUDE.tsv	purpose	reference	Source description, not a lint claim.
+v3/top-pages/spec-DASHBOARD.tsv	page	reference	Source description, not a lint claim.
+v3/top-pages/spec-DASHBOARD.tsv	made_by	reference	Source description, not a lint claim.
+v3/top-pages/spec-DASHBOARD.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-DASHBOARD.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-DASHBOARD.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-DASHBOARD.tsv	frontmatter_keys_allowed	implemented	Generic frontmatter_keys_allowed check.
+v3/top-pages/spec-DASHBOARD.tsv	frontmatter_format	partial	Checks timestamp ISO 8601 with offset. MADE comparison remains open.
+v3/top-pages/spec-DASHBOARD.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-DASHBOARD.tsv	h1	implemented	Generic h1 check.
+v3/top-pages/spec-DASHBOARD.tsv	block_order	partial	Title, opening paragraph, fixed heading order, and count parts receive checks. Dynamic block ordering stays open.
+v3/top-pages/spec-DASHBOARD.tsv	go_to_line	implemented	Generic go_to_line check.
+v3/top-pages/spec-DASHBOARD.tsv	heading_order	implemented	Generic heading_order check.
+v3/top-pages/spec-DASHBOARD.tsv	count_block_labels	implemented	Generic count_block_labels check.
+v3/top-pages/spec-DASHBOARD.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-DASHBOARD.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-DASHBOARD.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-DASHBOARD.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-DASHBOARD.tsv	row_source	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-DASHBOARD.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-DASHBOARD.tsv	split_with_state	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-DASHBOARD.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v3/top-pages/spec-DASHBOARD.tsv	link_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-DASHBOARD.tsv	link_target	partial	Local existence and internal heading anchors only. Web and block anchors remain open.
+v3/top-pages/spec-DASHBOARD.tsv	max_code_line	implemented	Generic max_code_line check.
+v3/top-pages/spec-DASHBOARD.tsv	max_table_columns	implemented	Generic max_table_columns check.
+v3/top-pages/spec-DASHBOARD.tsv	sentence_max_words	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-DASHBOARD.tsv	emoji	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-DASHBOARD.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v3/top-pages/spec-DASHBOARD.tsv	purpose	reference	Source description, not a lint claim.
+v3/top-pages/spec-DOCUMENTATION.tsv	page	reference	Source description, not a lint claim.
+v3/top-pages/spec-DOCUMENTATION.tsv	approved	reference	Source description, not a lint claim.
+v3/top-pages/spec-DOCUMENTATION.tsv	made_by	reference	Source description, not a lint claim.
+v3/top-pages/spec-DOCUMENTATION.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-DOCUMENTATION.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-DOCUMENTATION.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-DOCUMENTATION.tsv	frontmatter_keys_allowed	implemented	Generic frontmatter_keys_allowed check.
+v3/top-pages/spec-DOCUMENTATION.tsv	frontmatter_format	partial	Checks timestamp ISO 8601 with offset. MADE comparison remains open.
+v3/top-pages/spec-DOCUMENTATION.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-DOCUMENTATION.tsv	h1	implemented	Generic h1 check.
+v3/top-pages/spec-DOCUMENTATION.tsv	block_order	partial	Title, opening paragraph, fixed heading order, and count parts receive checks. Dynamic block ordering stays open.
+v3/top-pages/spec-DOCUMENTATION.tsv	h2_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-DOCUMENTATION.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-DOCUMENTATION.tsv	description_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-DOCUMENTATION.tsv	trigger_words	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-DOCUMENTATION.tsv	row_rule	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-DOCUMENTATION.tsv	today	reference	Source description, not a lint claim.
+v3/top-pages/spec-DOCUMENTATION.tsv	no_business_name	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-DOCUMENTATION.tsv	link_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-DOCUMENTATION.tsv	link_target	partial	Local existence and internal heading anchors only. Web and block anchors remain open.
+v3/top-pages/spec-DOCUMENTATION.tsv	max_code_line	implemented	Generic max_code_line check.
+v3/top-pages/spec-DOCUMENTATION.tsv	max_table_columns	implemented	Generic max_table_columns check.
+v3/top-pages/spec-DOCUMENTATION.tsv	sentence_max_words	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-DOCUMENTATION.tsv	emoji	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-DOCUMENTATION.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v3/top-pages/spec-DOCUMENTATION.tsv	purpose	reference	Source description, not a lint claim.
+v3/top-pages/spec-GLOSSARY.tsv	page	reference	Source description, not a lint claim.
+v3/top-pages/spec-GLOSSARY.tsv	made_by	reference	Source description, not a lint claim.
+v3/top-pages/spec-GLOSSARY.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-GLOSSARY.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-GLOSSARY.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-GLOSSARY.tsv	frontmatter_keys_allowed	implemented	Generic frontmatter_keys_allowed check.
+v3/top-pages/spec-GLOSSARY.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-GLOSSARY.tsv	frontmatter_format	partial	Checks timestamp ISO 8601 with offset. MADE comparison remains open.
+v3/top-pages/spec-GLOSSARY.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-GLOSSARY.tsv	h1	implemented	Generic h1 check.
+v3/top-pages/spec-GLOSSARY.tsv	intro	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-GLOSSARY.tsv	intro	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-GLOSSARY.tsv	block_order	partial	Title, opening paragraph, fixed heading order, and count parts receive checks. Dynamic block ordering stays open.
+v3/top-pages/spec-GLOSSARY.tsv	count_block_labels	implemented	Generic count_block_labels check.
+v3/top-pages/spec-GLOSSARY.tsv	check	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-GLOSSARY.tsv	group_source	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-GLOSSARY.tsv	place_rule	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-GLOSSARY.tsv	heading_order	implemented	Generic heading_order check.
+v3/top-pages/spec-GLOSSARY.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-GLOSSARY.tsv	row_order	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-GLOSSARY.tsv	cell_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-GLOSSARY.tsv	cell_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-GLOSSARY.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-GLOSSARY.tsv	unique	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-GLOSSARY.tsv	forbidden_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-GLOSSARY.tsv	forbidden_headings	implemented	Generic forbidden_headings check.
+v3/top-pages/spec-GLOSSARY.tsv	page_max_lines	implemented	Generic page_max_lines check.
+v3/top-pages/spec-GLOSSARY.tsv	link_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-GLOSSARY.tsv	link_target	partial	Local existence and internal heading anchors only. Web and block anchors remain open.
+v3/top-pages/spec-GLOSSARY.tsv	max_code_line	implemented	Generic max_code_line check.
+v3/top-pages/spec-GLOSSARY.tsv	max_table_columns	implemented	Generic max_table_columns check.
+v3/top-pages/spec-GLOSSARY.tsv	sentence_max_words	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-GLOSSARY.tsv	emoji	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-GLOSSARY.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v3/top-pages/spec-GLOSSARY.tsv	purpose	reference	Source description, not a lint claim.
+v3/top-pages/spec-GLOSSARY.tsv	no_business_name	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-HOWTO.tsv	page	reference	Source description, not a lint claim.
+v3/top-pages/spec-HOWTO.tsv	made_by	reference	Source description, not a lint claim.
+v3/top-pages/spec-HOWTO.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-HOWTO.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-HOWTO.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-HOWTO.tsv	frontmatter_keys_allowed	implemented	Generic frontmatter_keys_allowed check.
+v3/top-pages/spec-HOWTO.tsv	frontmatter_format	partial	Checks timestamp ISO 8601 with offset. MADE comparison remains open.
+v3/top-pages/spec-HOWTO.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-HOWTO.tsv	h1	implemented	Generic h1 check.
+v3/top-pages/spec-HOWTO.tsv	block_order	partial	Title, opening paragraph, fixed heading order, and count parts receive checks. Dynamic block ordering stays open.
+v3/top-pages/spec-HOWTO.tsv	heading_order	implemented	Generic heading_order check.
+v3/top-pages/spec-HOWTO.tsv	headings_required	implemented	Generic headings_required check.
+v3/top-pages/spec-HOWTO.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-HOWTO.tsv	section	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-HOWTO.tsv	command_rule	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-HOWTO.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-HOWTO.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-HOWTO.tsv	forbidden_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-HOWTO.tsv	no_business_name	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-HOWTO.tsv	link_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-HOWTO.tsv	link_target	partial	Local existence and internal heading anchors only. Web and block anchors remain open.
+v3/top-pages/spec-HOWTO.tsv	max_code_line	implemented	Generic max_code_line check.
+v3/top-pages/spec-HOWTO.tsv	max_table_columns	implemented	Generic max_table_columns check.
+v3/top-pages/spec-HOWTO.tsv	sentence_max_words	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-HOWTO.tsv	emoji	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-HOWTO.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v3/top-pages/spec-HOWTO.tsv	purpose	reference	Source description, not a lint claim.
+v3/top-pages/spec-LIBRARY.tsv	page	reference	Source description, not a lint claim.
+v3/top-pages/spec-LIBRARY.tsv	made_by	reference	Source description, not a lint claim.
+v3/top-pages/spec-LIBRARY.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-LIBRARY.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-LIBRARY.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-LIBRARY.tsv	frontmatter_keys_allowed	implemented	Generic frontmatter_keys_allowed check.
+v3/top-pages/spec-LIBRARY.tsv	frontmatter_format	partial	Checks timestamp ISO 8601 with offset. MADE comparison remains open.
+v3/top-pages/spec-LIBRARY.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-LIBRARY.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-LIBRARY.tsv	h1	implemented	Generic h1 check.
+v3/top-pages/spec-LIBRARY.tsv	block_order	partial	Title, opening paragraph, fixed heading order, and count parts receive checks. Dynamic block ordering stays open.
+v3/top-pages/spec-LIBRARY.tsv	count_block_labels	implemented	Generic count_block_labels check.
+v3/top-pages/spec-LIBRARY.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-LIBRARY.tsv	row_source	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-LIBRARY.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-LIBRARY.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-LIBRARY.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-LIBRARY.tsv	check	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-LIBRARY.tsv	section	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-LIBRARY.tsv	link_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-LIBRARY.tsv	link_target	partial	Local existence and internal heading anchors only. Web and block anchors remain open.
+v3/top-pages/spec-LIBRARY.tsv	max_code_line	implemented	Generic max_code_line check.
+v3/top-pages/spec-LIBRARY.tsv	max_table_columns	implemented	Generic max_table_columns check.
+v3/top-pages/spec-LIBRARY.tsv	sentence_max_words	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-LIBRARY.tsv	emoji	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-LIBRARY.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v3/top-pages/spec-LIBRARY.tsv	purpose	reference	Source description, not a lint claim.
+v3/top-pages/spec-LOG.tsv	page	reference	Source description, not a lint claim.
+v3/top-pages/spec-LOG.tsv	made_by	reference	Source description, not a lint claim.
+v3/top-pages/spec-LOG.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-LOG.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-LOG.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-LOG.tsv	frontmatter_keys_allowed	implemented	Generic frontmatter_keys_allowed check.
+v3/top-pages/spec-LOG.tsv	frontmatter_format	partial	Checks timestamp ISO 8601 with offset. MADE comparison remains open.
+v3/top-pages/spec-LOG.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-LOG.tsv	h1	implemented	Generic h1 check.
+v3/top-pages/spec-LOG.tsv	block_order	partial	Title, opening paragraph, fixed heading order, and count parts receive checks. Dynamic block ordering stays open.
+v3/top-pages/spec-LOG.tsv	heading_order	implemented	Generic heading_order check.
+v3/top-pages/spec-LOG.tsv	count_block_labels	implemented	Generic count_block_labels check.
+v3/top-pages/spec-LOG.tsv	section	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-LOG.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-LOG.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-LOG.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-LOG.tsv	check	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-LOG.tsv	forbidden	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-LOG.tsv	link_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-LOG.tsv	link_target	partial	Local existence and internal heading anchors only. Web and block anchors remain open.
+v3/top-pages/spec-LOG.tsv	max_code_line	implemented	Generic max_code_line check.
+v3/top-pages/spec-LOG.tsv	max_table_columns	implemented	Generic max_table_columns check.
+v3/top-pages/spec-LOG.tsv	sentence_max_words	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-LOG.tsv	emoji	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-LOG.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v3/top-pages/spec-LOG.tsv	purpose	reference	Source description, not a lint claim.
+v3/top-pages/spec-README.tsv	page	reference	Source description, not a lint claim.
+v3/top-pages/spec-README.tsv	made_by	reference	Source description, not a lint claim.
+v3/top-pages/spec-README.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-README.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-README.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-README.tsv	frontmatter_keys_allowed	implemented	Generic frontmatter_keys_allowed check.
+v3/top-pages/spec-README.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-README.tsv	frontmatter_format	partial	Checks timestamp ISO 8601 with offset. MADE comparison remains open.
+v3/top-pages/spec-README.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-README.tsv	h1	implemented	Generic h1 check.
+v3/top-pages/spec-README.tsv	block_order	partial	Title, opening paragraph, fixed heading order, and count parts receive checks. Dynamic block ordering stays open.
+v3/top-pages/spec-README.tsv	first_paragraph	partial	Requires an opening paragraph. Sentence claims remain source review.
+v3/top-pages/spec-README.tsv	facts_table_columns	implemented	Generic facts_table_columns check.
+v3/top-pages/spec-README.tsv	facts_table_rows	implemented	Generic facts_table_rows check.
+v3/top-pages/spec-README.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-README.tsv	heading_order	implemented	Generic heading_order check.
+v3/top-pages/spec-README.tsv	h2_count	implemented	Generic h2_count check.
+v3/top-pages/spec-README.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-README.tsv	row_rule	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-README.tsv	section	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-README.tsv	section	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-README.tsv	command_rule	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-README.tsv	page_max_lines	implemented	Generic page_max_lines check.
+v3/top-pages/spec-README.tsv	forbidden_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-README.tsv	forbidden_headings	implemented	Generic forbidden_headings check.
+v3/top-pages/spec-README.tsv	link_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-README.tsv	link_target	partial	Local existence and internal heading anchors only. Web and block anchors remain open.
+v3/top-pages/spec-README.tsv	max_code_line	implemented	Generic max_code_line check.
+v3/top-pages/spec-README.tsv	max_table_columns	implemented	Generic max_table_columns check.
+v3/top-pages/spec-README.tsv	sentence_max_words	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-README.tsv	emoji	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-README.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v3/top-pages/spec-README.tsv	purpose	reference	Source description, not a lint claim.
+v3/top-pages/spec-README.tsv	no_business_name	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-RESOLVER-system.tsv	page	reference	Source description, not a lint claim.
+v3/top-pages/spec-RESOLVER-system.tsv	made_by	reference	Source description, not a lint claim.
+v3/top-pages/spec-RESOLVER-system.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-RESOLVER-system.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-RESOLVER-system.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-RESOLVER-system.tsv	frontmatter_keys_allowed	implemented	Generic frontmatter_keys_allowed check.
+v3/top-pages/spec-RESOLVER-system.tsv	frontmatter_format	partial	Checks timestamp ISO 8601 with offset. MADE comparison remains open.
+v3/top-pages/spec-RESOLVER-system.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-RESOLVER-system.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-RESOLVER-system.tsv	h1	implemented	Generic h1 check.
+v3/top-pages/spec-RESOLVER-system.tsv	block_order	partial	Title, opening paragraph, fixed heading order, and count parts receive checks. Dynamic block ordering stays open.
+v3/top-pages/spec-RESOLVER-system.tsv	heading_order	implemented	Generic heading_order check.
+v3/top-pages/spec-RESOLVER-system.tsv	h3_under_rules	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-RESOLVER-system.tsv	count_block_labels	implemented	Generic count_block_labels check.
+v3/top-pages/spec-RESOLVER-system.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-RESOLVER-system.tsv	row_rule	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-RESOLVER-system.tsv	section	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-RESOLVER-system.tsv	section	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-RESOLVER-system.tsv	no_business_name	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-RESOLVER-system.tsv	link_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-RESOLVER-system.tsv	link_target	partial	Local existence and internal heading anchors only. Web and block anchors remain open.
+v3/top-pages/spec-RESOLVER-system.tsv	max_code_line	implemented	Generic max_code_line check.
+v3/top-pages/spec-RESOLVER-system.tsv	max_table_columns	implemented	Generic max_table_columns check.
+v3/top-pages/spec-RESOLVER-system.tsv	sentence_max_words	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-RESOLVER-system.tsv	emoji	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-RESOLVER-system.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v3/top-pages/spec-RESOLVER-system.tsv	purpose	reference	Source description, not a lint claim.
+v3/top-pages/spec-RESOLVER.tsv	page	reference	Source description, not a lint claim.
+v3/top-pages/spec-RESOLVER.tsv	made_by	reference	Source description, not a lint claim.
+v3/top-pages/spec-RESOLVER.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-RESOLVER.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-RESOLVER.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-RESOLVER.tsv	frontmatter_keys_allowed	implemented	Generic frontmatter_keys_allowed check.
+v3/top-pages/spec-RESOLVER.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-RESOLVER.tsv	frontmatter_format	partial	Checks timestamp ISO 8601 with offset. MADE comparison remains open.
+v3/top-pages/spec-RESOLVER.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-RESOLVER.tsv	h1	implemented	Generic h1 check.
+v3/top-pages/spec-RESOLVER.tsv	intro	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-RESOLVER.tsv	block_order	partial	Title, opening paragraph, fixed heading order, and count parts receive checks. Dynamic block ordering stays open.
+v3/top-pages/spec-RESOLVER.tsv	heading_order	implemented	Generic heading_order check.
+v3/top-pages/spec-RESOLVER.tsv	headings_allowed	implemented	Generic headings_allowed check.
+v3/top-pages/spec-RESOLVER.tsv	count_block_labels	implemented	Generic count_block_labels check.
+v3/top-pages/spec-RESOLVER.tsv	check	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-RESOLVER.tsv	section	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-RESOLVER.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-RESOLVER.tsv	cell_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-RESOLVER.tsv	row_rule	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-RESOLVER.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-RESOLVER.tsv	row_rule	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-RESOLVER.tsv	cell_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-RESOLVER.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-RESOLVER.tsv	section	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-RESOLVER.tsv	block_cut	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-RESOLVER.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v3/top-pages/spec-RESOLVER.tsv	link_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-RESOLVER.tsv	link_target	partial	Local existence and internal heading anchors only. Web and block anchors remain open.
+v3/top-pages/spec-RESOLVER.tsv	max_code_line	implemented	Generic max_code_line check.
+v3/top-pages/spec-RESOLVER.tsv	max_table_columns	implemented	Generic max_table_columns check.
+v3/top-pages/spec-RESOLVER.tsv	sentence_max_words	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-RESOLVER.tsv	emoji	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-RESOLVER.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v3/top-pages/spec-RESOLVER.tsv	purpose	reference	Source description, not a lint claim.
+v3/top-pages/spec-SCHEMA.tsv	page	reference	Source description, not a lint claim.
+v3/top-pages/spec-SCHEMA.tsv	made_by	reference	Source description, not a lint claim.
+v3/top-pages/spec-SCHEMA.tsv	today	reference	Source description, not a lint claim.
+v3/top-pages/spec-SCHEMA.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-SCHEMA.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-SCHEMA.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-SCHEMA.tsv	frontmatter_keys_allowed	implemented	Generic frontmatter_keys_allowed check.
+v3/top-pages/spec-SCHEMA.tsv	frontmatter_format	partial	Checks timestamp ISO 8601 with offset. MADE comparison remains open.
+v3/top-pages/spec-SCHEMA.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-SCHEMA.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-SCHEMA.tsv	h1	implemented	Generic h1 check.
+v3/top-pages/spec-SCHEMA.tsv	block_order	partial	Title, opening paragraph, fixed heading order, and count parts receive checks. Dynamic block ordering stays open.
+v3/top-pages/spec-SCHEMA.tsv	contents	partial	Requires Contents. Counts and navigation completeness remain open.
+v3/top-pages/spec-SCHEMA.tsv	count_block_labels	implemented	Generic count_block_labels check.
+v3/top-pages/spec-SCHEMA.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-SCHEMA.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-SCHEMA.tsv	row_order	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-SCHEMA.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-SCHEMA.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-SCHEMA.tsv	check	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-SCHEMA.tsv	no_business_name	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-SCHEMA.tsv	link_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-SCHEMA.tsv	link_target	partial	Local existence and internal heading anchors only. Web and block anchors remain open.
+v3/top-pages/spec-SCHEMA.tsv	max_code_line	implemented	Generic max_code_line check.
+v3/top-pages/spec-SCHEMA.tsv	max_table_columns	implemented	Generic max_table_columns check.
+v3/top-pages/spec-SCHEMA.tsv	sentence_max_words	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-SCHEMA.tsv	emoji	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-SCHEMA.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v3/top-pages/spec-SCHEMA.tsv	purpose	reference	Source description, not a lint claim.
+v3/top-pages/spec-STATE.tsv	page	reference	Source description, not a lint claim.
+v3/top-pages/spec-STATE.tsv	made_by	reference	Source description, not a lint claim.
+v3/top-pages/spec-STATE.tsv	reader	reference	Source description, not a lint claim.
+v3/top-pages/spec-STATE.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-STATE.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-STATE.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-STATE.tsv	frontmatter_keys_allowed	implemented	Generic frontmatter_keys_allowed check.
+v3/top-pages/spec-STATE.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-STATE.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-STATE.tsv	frontmatter_format	partial	Checks timestamp ISO 8601 with offset. MADE comparison remains open.
+v3/top-pages/spec-STATE.tsv	h1	implemented	Generic h1 check.
+v3/top-pages/spec-STATE.tsv	intro	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	heading_order	implemented	Generic heading_order check.
+v3/top-pages/spec-STATE.tsv	headings_fixed	implemented	Generic headings_fixed check.
+v3/top-pages/spec-STATE.tsv	count_block_keys	implemented	Generic count_block_keys check.
+v3/top-pages/spec-STATE.tsv	count_block_form	partial	Checks label order and value column. Counts, timestamps, and freshness stay open.
+v3/top-pages/spec-STATE.tsv	count_value	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	count_value	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	count_value	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	section	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	section	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-STATE.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-STATE.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-STATE.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-STATE.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-STATE.tsv	list_cap	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	list_empty	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	cell_rule	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	section	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	section	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	command_rule	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	page_max_lines	implemented	Generic page_max_lines check.
+v3/top-pages/spec-STATE.tsv	first_screen	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	agent_test_1_parse	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	agent_test_2_counts	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	agent_test_3_ids	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	agent_test_4_more	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	agent_test_5_commands	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	agent_test_6_limits	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	agent_test_7_fresh	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	agent_test_8_answers	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	agent_test_9_no_comfort	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	link_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	link_target	partial	Local existence and internal heading anchors only. Web and block anchors remain open.
+v3/top-pages/spec-STATE.tsv	max_code_line	implemented	Generic max_code_line check.
+v3/top-pages/spec-STATE.tsv	max_table_columns	implemented	Generic max_table_columns check.
+v3/top-pages/spec-STATE.tsv	sentence_max_words	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	emoji	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-STATE.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v3/top-pages/spec-STATE.tsv	purpose	reference	Source description, not a lint claim.
+v3/top-pages/spec-TOPICS.tsv	page	reference	Source description, not a lint claim.
+v3/top-pages/spec-TOPICS.tsv	made_by	reference	Source description, not a lint claim.
+v3/top-pages/spec-TOPICS.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-TOPICS.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-TOPICS.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-TOPICS.tsv	frontmatter_keys_allowed	implemented	Generic frontmatter_keys_allowed check.
+v3/top-pages/spec-TOPICS.tsv	frontmatter_format	partial	Checks timestamp ISO 8601 with offset. MADE comparison remains open.
+v3/top-pages/spec-TOPICS.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-TOPICS.tsv	h1	implemented	Generic h1 check.
+v3/top-pages/spec-TOPICS.tsv	block_order	partial	Title, opening paragraph, fixed heading order, and count parts receive checks. Dynamic block ordering stays open.
+v3/top-pages/spec-TOPICS.tsv	contents	partial	Requires Contents. Counts and navigation completeness remain open.
+v3/top-pages/spec-TOPICS.tsv	grouping	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-TOPICS.tsv	count_block_labels	implemented	Generic count_block_labels check.
+v3/top-pages/spec-TOPICS.tsv	list_line	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-TOPICS.tsv	check	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-TOPICS.tsv	empty_topic	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-TOPICS.tsv	section	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-TOPICS.tsv	link_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-TOPICS.tsv	link_target	partial	Local existence and internal heading anchors only. Web and block anchors remain open.
+v3/top-pages/spec-TOPICS.tsv	max_code_line	implemented	Generic max_code_line check.
+v3/top-pages/spec-TOPICS.tsv	max_table_columns	implemented	Generic max_table_columns check.
+v3/top-pages/spec-TOPICS.tsv	sentence_max_words	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-TOPICS.tsv	emoji	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-TOPICS.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v3/top-pages/spec-TOPICS.tsv	purpose	reference	Source description, not a lint claim.
+v3/top-pages/spec-index.tsv	page	reference	Source description, not a lint claim.
+v3/top-pages/spec-index.tsv	made_by	reference	Source description, not a lint claim.
+v3/top-pages/spec-index.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-index.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-index.tsv	frontmatter_key	implemented	Generic frontmatter_key check.
+v3/top-pages/spec-index.tsv	frontmatter_keys_allowed	implemented	Generic frontmatter_keys_allowed check.
+v3/top-pages/spec-index.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-index.tsv	frontmatter_format	partial	Checks timestamp ISO 8601 with offset. MADE comparison remains open.
+v3/top-pages/spec-index.tsv	frontmatter_value	implemented	Generic frontmatter_value check.
+v3/top-pages/spec-index.tsv	h1	implemented	Generic h1 check.
+v3/top-pages/spec-index.tsv	intro	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-index.tsv	block_order	partial	Title, opening paragraph, fixed heading order, and count parts receive checks. Dynamic block ordering stays open.
+v3/top-pages/spec-index.tsv	heading_order	implemented	Generic heading_order check.
+v3/top-pages/spec-index.tsv	headings_allowed	implemented	Generic headings_allowed check.
+v3/top-pages/spec-index.tsv	count_block_labels	implemented	Generic count_block_labels check.
+v3/top-pages/spec-index.tsv	count_rule	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-index.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-index.tsv	row_order	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-index.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-index.tsv	no_sentence	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-index.tsv	table_columns	implemented	Generic table_columns check.
+v3/top-pages/spec-index.tsv	row_order	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-index.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-index.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-index.tsv	cell_source	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-index.tsv	section	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-index.tsv	tree_rule	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-index.tsv	section	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-index.tsv	extra_rule	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-index.tsv	page_max_lines	implemented	Generic page_max_lines check.
+v3/top-pages/spec-index.tsv	forbidden	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-index.tsv	link_form	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-index.tsv	link_target	partial	Local existence and internal heading anchors only. Web and block anchors remain open.
+v3/top-pages/spec-index.tsv	max_code_line	implemented	Generic max_code_line check.
+v3/top-pages/spec-index.tsv	max_table_columns	implemented	Generic max_table_columns check.
+v3/top-pages/spec-index.tsv	sentence_max_words	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-index.tsv	emoji	open	Needs a source adapter or reviewed semantic check.
+v3/top-pages/spec-index.tsv	forbidden_text	implemented	Generic forbidden_text check.
+v3/top-pages/spec-index.tsv	purpose	reference	Source description, not a lint claim.
+v2/team/spec.tsv	required_table	implemented	The seat table must exist.
+v2/team/spec.tsv	section_nonempty	implemented	The folder tree must exist.
+v2/team/spec.tsv	section_fence_count	implemented	Files requires one non-empty tree fence.
+v3/top-pages/spec-STATE.tsv	section_nonempty	implemented	Fixed headings must have bodies.
+v3/top-pages/spec-STATE.tsv	section_numbered_count	implemented	The approved startup list has five steps.
+v3/top-pages/spec-STATE.tsv	section_bullet_count	implemented	The approved limits list has four lines.
+v3/top-pages/spec-STATE.tsv	section_fence_count	implemented	The activity count block must exist.
+v3/top-pages/spec-STATE.tsv	section_code_labels	implemented	Each activity count must exist.
+v3/top-pages/spec-STATE.tsv	section_fence_count	implemented	The command fence must exist.
+v3/top-pages/spec-STATE.tsv	section_command_count	implemented	Four numbered command entries must exist.
+v3/top-pages/spec-STATE.tsv	required_table	implemented	The query navigation table must exist.

@@ -1,0 +1,8 @@
+{"type": "user", "timestamp": "2026-09-27T23:00:00Z", "message": {"role": "user", "content": "Pick up T286 and walk me through the hook plan."}}
+{"type": "assistant", "timestamp": "2026-09-27T23:00:05Z", "message": {"role": "assistant", "model": "code", "content": [{"type": "tool_use", "id": "c1", "name": "Bash", "input": {"command": "sqlite3 -readonly agent-os/agent-os.sqlite \"select * from tasks where id='T286'\""}}]}}
+{"type": "user", "timestamp": "2026-09-27T23:00:06Z", "sourceToolUseID": "c1", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "c1", "content": "T286|Hook: PreCompact handoff and coverage check|in-progress"}]}}
+{"type": "assistant", "timestamp": "2026-09-27T23:01:00Z", "message": {"role": "assistant", "model": "code", "content": [{"type": "text", "text": "Plan: one script, three registrations where possible."}]}}
+{"type": "user", "timestamp": "2026-09-27T23:02:00Z", "message": {"role": "user", "content": "Ruled: handoff, pre-compaction note, and close are one shape with three triggers."}}
+{"type": "assistant", "timestamp": "2026-09-27T23:02:30Z", "message": {"role": "assistant", "model": "code", "content": [{"type": "text", "text": "Noted."}]}}
+{"type": "user", "timestamp": "2026-09-27T23:03:00Z", "message": {"role": "user", "content": "From now on every seat writes its own handoff before compaction, no exceptions."}}
+{"type": "assistant", "timestamp": "2026-09-27T23:03:30Z", "message": {"role": "assistant", "model": "code", "content": [{"type": "text", "text": "Understood."}]}}

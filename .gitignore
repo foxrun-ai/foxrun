@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.sqlite
+*.db
+.env*
+
+# SQLite test journals are generated, never source.
+*.db-shm
+*.db-wal
+*.sqlite-shm
+*.sqlite-wal
+
+accept-*/
+
+# Generated public builds (T760).
+build/

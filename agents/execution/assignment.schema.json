@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Assignment",
+  "type": "object",
+  "required": ["identity", "identity_version", "client", "task", "inputs", "output", "limits", "return_to"],
+  "properties": {
+    "identity": {"type": "string"},
+    "identity_version": {"type": "integer"},
+    "client": {"type": "string"},
+    "task": {"type": "string"},
+    "inputs": {"type": "array", "items": {"type": "string"}, "description": "paths or record ids the worker may read"},
+    "skills": {"type": "array", "items": {"type": "string"}},
+    "output": {"type": "string", "description": "what a finished result contains"},
+    "limits": {"type": "object", "properties": {"timeout_seconds": {"type": "integer"}, "cost_usd": {"type": "number"}, "tools": {"type": "array", "items": {"type": "string"}}}},
+    "return_to": {"type": "string", "description": "topic or session that receives the result"},
+    "origin_topic": {"type": "string"}
+  }
+}

@@ -1,0 +1,113 @@
+[
+  {
+    "departure": "Keep typed business tables beside memory",
+    "owner_need": "Existing orders, tasks, approvals, people, and measures",
+    "design_evidence": "79 tables in practice; Hindsight shows structured evidence, not the owner's domain records. [D1, S13]",
+    "cost": "Schema migrations and backups",
+    "precedents": [
+      {
+        "id": "S13",
+        "source": "sample-shop/sources/s13.md",
+        "line": 1,
+        "sha256": "70a2e5de4080724bb9367515060812b8897a8ba7fe6effe3f274af8c7e8aa7ae",
+        "excerpt": "Labeled fake evidence: Sample Shop capture S13 for \"Keep typed business tables beside memory\"."
+      }
+    ]
+  },
+  {
+    "departure": "Separate model proposals from the writer",
+    "owner_need": "Eager writes and replaced decisions are named failures",
+    "design_evidence": "Owner tests; Python-applied plans provide a first-hand implementation pattern. [B2, S11]",
+    "cost": "Queue and validation code",
+    "precedents": [
+      {
+        "id": "S11",
+        "source": "sample-shop/sources/s11.md",
+        "line": 1,
+        "sha256": "b02dfbcc58a371513d2afd09b5f62e41ad9101f78aa6cdc914f88b9f49697417",
+        "excerpt": "Labeled fake evidence: Sample Shop capture S11 for \"Separate model proposals from the writer\"."
+      }
+    ]
+  },
+  {
+    "departure": "Version decisions and block dirty current answers",
+    "owner_need": "A replaced decision must never read as live",
+    "design_evidence": "Existing `replaces` column; Muse replacement IDs; Hindsight freshness handling. [D1, S2, S13]",
+    "cost": "Revision checks and freshness watermarks",
+    "precedents": [
+      {
+        "id": "S2",
+        "source": "sample-shop/sources/s2.md",
+        "line": 1,
+        "sha256": "2dce5c72b6c418fb56678f9790536e35aa34b17254922441b2e2e6a08ce1a94a",
+        "excerpt": "Labeled fake evidence: Sample Shop capture S2 for \"Version decisions and block dirty current answers\"."
+      },
+      {
+        "id": "S13",
+        "source": "sample-shop/sources/s13.md",
+        "line": 1,
+        "sha256": "d5a79903dd72c31d917988eee2d33f559d48afeb2314fe561331fd4317db84f7",
+        "excerpt": "Labeled fake evidence: Sample Shop capture S13 for \"Version decisions and block dirty current answers\"."
+      }
+    ]
+  },
+  {
+    "departure": "Scope reads and actions by business and employee",
+    "owner_need": "Several businesses, functions, managers, and specialists",
+    "design_evidence": "Owner goal and inventory; Honcho integration has scoped context. [B1, B3, S14, S17]",
+    "cost": "Adapter identity checks; no silent shared context",
+    "precedents": [
+      {
+        "id": "S14",
+        "source": "sample-shop/sources/s14.md",
+        "line": 1,
+        "sha256": "cf88c19c6658db765dc93abf151df6b357e766fda03ef0ce5e06b0bc27f72d58",
+        "excerpt": "Labeled fake evidence: Sample Shop capture S14 for \"Scope reads and actions by business and employee\"."
+      },
+      {
+        "id": "S17",
+        "source": "sample-shop/sources/s17.md",
+        "line": 1,
+        "sha256": "5e15cc6ace4e9170977193ec51b67862d5813deb10a2d911b6642dcebf07c7af",
+        "excerpt": "Labeled fake evidence: Sample Shop capture S17 for \"Scope reads and actions by business and employee\"."
+      }
+    ]
+  },
+  {
+    "departure": "Preserve trend and root-cause query paths",
+    "owner_need": "CEO questions require dates, measures, and causal evidence",
+    "design_evidence": "Required tests and existing measure/incident/history tables. [B2, D1]",
+    "cost": "Typed event history; unknown answers when evidence is absent",
+    "precedents": [
+      {
+        "id": "current-schema",
+        "source": "sample-shop/sources/current-schema.md",
+        "line": 1,
+        "sha256": "1901081e811e352e2b8a01eac130004c3356360c5241f758fbdf2983b08f8464",
+        "excerpt": "Labeled fake evidence: Sample Shop capture current-schema for \"Preserve trend and root-cause query paths\"."
+      }
+    ]
+  },
+  {
+    "departure": "Ship local scheduler, recovery and evals",
+    "owner_need": "Friends must install without another hosted product; workers run unattended",
+    "design_evidence": "Owner goal; agent-dream supplies local scheduled review; Vellum documents completion and timeout ownership. [B1, S10, S22]",
+    "cost": "OS binding, disk limits, fault reporting and restore tests",
+    "precedents": [
+      {
+        "id": "S10",
+        "source": "sample-shop/sources/s10.md",
+        "line": 1,
+        "sha256": "e9ad7b54411b626a10c0b39a3022ef1972d84fa685e5b10e19ea5c2d844ac6b8",
+        "excerpt": "Labeled fake evidence: Sample Shop capture S10 for \"Ship local scheduler, recovery and evals\"."
+      },
+      {
+        "id": "S22",
+        "source": "sample-shop/sources/s22.md",
+        "line": 1,
+        "sha256": "7e1164eabc7e58a087780cfd73d6f293b1610978747b67459306bcbc1c7ef53c",
+        "excerpt": "Labeled fake evidence: Sample Shop capture S22 for \"Ship local scheduler, recovery and evals\"."
+      }
+    ]
+  }
+]

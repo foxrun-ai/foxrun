@@ -1,0 +1,9 @@
+#!/bin/sh
+# Foxrun shared Git hook: check the index after the original hook succeeds.
+home=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd) || exit 2
+common=$(git rev-parse --git-common-dir) || exit 2
+original="$common/hooks/pre-commit"
+if [ -x "$original" ]; then
+  "$original" "$@" || exit "$?"
+fi
+exec python3 "$home/base/secret_check.py"

@@ -1,0 +1,489 @@
+#!/usr/bin/env python3
+"""Print the seat's newest handoff for a SessionStart hook (Claude or Codex).
+
+Reads the hook JSON on stdin (session_id, cwd, source), finds this seat's lead
+handoffs, and prints the SessionStart hook JSON. Boot reads the sequence
+(g-handoff-boot-sequence): the newest hand-written handoff for the seat and
+session first, then every newer pre-compaction note, oldest first. With no
+hand-written handoff it prints the session's pre-compaction notes in order.
+The nightly status lines ride along only when a handoff is printed.
+Over the output cap it keeps the hand-written handoff whole and cuts the
+oldest notes first, and names what it cut. Exit 0 always.
+
+Seat order: --seat, env FOXRUN_SEAT, else the seat of the newest handoff whose
+frontmatter `session:` equals the incoming session id (compaction and resume).
+A handoff belongs to a seat when its frontmatter `seat:` equals it, or (with no
+`seat:` field) its `tags` hold it, or its file name subject starts with it.
+"""
+
+import argparse
+from datetime import datetime, timezone
+import json
+import os
+from pathlib import Path
+import re
+import select
+import sqlite3
+import sys
+import unicodedata
+from urllib.parse import quote
+from zoneinfo import ZoneInfo
+
+
+CAP = 12000
+STDIN_WAIT = 0.2  # by-hand runs (--seat or --cwd): seconds to wait for stdin before treating it as empty
+FILE_OVERHEAD = 120  # a note's File N of M line and cut marker
+MIN_PART = 400  # a note smaller than this share of the cap is cut, not shown in part
+HEADER = "Boot: read this handoff first; rows win over it."
+SEQUENCE_HEADER = "Boot: read these handoffs in order; rows win over them."
+NAME = re.compile(r"(\d{4}-\d{2}-\d{2})-(\d{3})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md\Z")
+SKIP_ROOT_DIRS = {"archive", "scratch", "inbox"}
+LOCAL_ZONE = ZoneInfo("America/New_York")
+
+
+class QuietParser(argparse.ArgumentParser):
+    """A hook must never block a session start: bad flags exit 0."""
+
+    def error(self, message):
+        self.print_usage(sys.stderr)
+        print(f"handoff-boot: {message}", file=sys.stderr)
+        sys.exit(0)
+
+
+def build_parser():
+    parser = QuietParser(
+        prog="handoff-boot",
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument("--seat", help="seat name, such as chief-of-staff")
+    parser.add_argument("--workspace", help="portfolio workspace folder name, such as foxrun-dev")
+    parser.add_argument("--cwd", help="working folder; default: stdin cwd, then the process folder")
+    parser.add_argument("--vault", default="~/foxrun", help="portfolio root; default: ~/foxrun")
+    parser.add_argument("--dry-run", action="store_true", help="explain the match on stderr; print no hook output")
+    parser.add_argument("--json", action="store_true", help="print the match report as JSON on stdout instead of the hook output")
+    parser.add_argument("--no-nightly", action="store_true", help="skip the unrelated nightly status scan")
+    return parser
+
+
+def stdin_timeout(args):
+    """Flags mean a by-hand run: wait briefly for stdin. No flags means a hook: block to EOF."""
+    return STDIN_WAIT if (args.seat or args.cwd) else None
+
+
+def read_stdin(timeout=None):
+    """Return the hook object, {} when there is no stdin, or None when stdin is not a JSON object.
+
+    With timeout None (the hook case) read to EOF, however slow the hook is to write.
+    With a timeout (the by-hand case, --seat or --cwd given) read only when data or
+    EOF arrives in time: a shell that leaves stdin open but never writes would block
+    a plain read forever, so no data in time means empty input.
+    """
+    try:
+        if sys.stdin is None or sys.stdin.isatty():
+            return {}
+        if timeout is not None:
+            ready, _, _ = select.select([sys.stdin], [], [], timeout)
+            if not ready:
+                return {}
+        raw = sys.stdin.read()
+    except (OSError, ValueError):
+        return {}
+    if not raw.strip():
+        return {}
+    try:
+        value = json.loads(raw)
+    except ValueError:
+        return None
+    return value if isinstance(value, dict) else None
+
+
+def frontmatter(path):
+    try:
+        lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+    except OSError:
+        return {}
+    if not lines or lines[0].strip() != "---":
+        return {}
+    fields, key = {}, None
+    for line in lines[1:]:
+        if line.strip() == "---":
+            break
+        item = re.match(r"\s+-\s+(.*)", line)
+        if item and key:
+            if not isinstance(fields.get(key), list):
+                fields[key] = []
+            fields[key].append(clean(item.group(1)))
+            continue
+        pair = re.match(r"([A-Za-z_][\w-]*):\s*(.*)", line)
+        if not pair:
+            continue
+        key, value = pair.group(1), pair.group(2).strip()
+        if value.startswith("[") and value.endswith("]"):
+            fields[key] = [clean(part) for part in value[1:-1].split(",") if clean(part)]
+        else:
+            fields[key] = clean(value)
+    return fields
+
+
+def clean(value):
+    return str(value).strip().strip("'\"").strip()
+
+
+def tags_of(fields):
+    tags = fields.get("tags", [])
+    if isinstance(tags, str):
+        tags = [part.strip() for part in tags.split(",") if part.strip()]
+    return [str(tag).lstrip("#") for tag in tags]
+
+
+def is_precompact(path, fields):
+    if "precompact" in tags_of(fields):
+        return True
+    try:
+        return "Written by the pre-compaction hook" in path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return False
+
+
+def handoffs_in(folders):
+    """Every dated handoff file in the folders, newest first."""
+    found = []
+    for folder in folders:
+        try:
+            names = os.listdir(folder)
+        except OSError:
+            continue
+        for name in names:
+            match = NAME.fullmatch(name)
+            if match and (folder / name).is_file():
+                date, number, subject = match.groups()
+                found.append(((date, int(number), name), folder / name, subject))
+    found.sort(key=lambda entry: entry[0], reverse=True)
+    return [(path, subject) for _, path, subject in found]
+
+
+def belongs(fields, subject, seat):
+    declared = fields.get("seat")
+    if isinstance(declared, str) and declared:
+        return declared == seat
+    return seat in tags_of(fields) or subject == seat or subject.startswith(seat + "-")
+
+
+def seat_of(fields, subject):
+    declared = fields.get("seat")
+    if isinstance(declared, str) and declared:
+        return declared
+    tags = tags_of(fields)
+    prefixed = [tag for tag in tags if subject == tag or subject.startswith(tag + "-")]
+    if prefixed:
+        return max(prefixed, key=len)
+    return tags[0] if tags else None
+
+
+def inside(path, root):
+    try:
+        return path.relative_to(root)
+    except ValueError:
+        return None
+
+
+def resolve(args, hook):
+    report = {
+        "picked": None, "seat": None, "seat_from": None, "workspace": None,
+        "session": hook.get("session_id") or None, "source": hook.get("source") or hook.get("session_start_reason") or None,
+        "reason": None,
+    }
+    vault = Path(os.path.abspath(os.path.expanduser(args.vault)))
+    cwd_text = args.cwd or hook.get("cwd") or os.getcwd()
+    cwd = Path(os.path.abspath(os.path.expanduser(str(cwd_text))))
+    report["vault"], report["cwd"] = str(vault), str(cwd)
+
+    if args.workspace:
+        workspace = args.workspace.strip("/")
+    else:
+        relative = inside(cwd, vault)
+        if relative is None:
+            relative = inside(cwd.resolve(), vault.resolve())
+        if relative is None:
+            report["reason"] = "cwd is outside the vault"
+            return report
+        workspace = relative.parts[0] if relative.parts else None
+    report["workspace"] = workspace
+    if workspace:
+        folders = [vault / workspace / "history" / "handoffs"]
+    else:
+        folders = sorted(
+            child / "history" / "handoffs" for child in vault.iterdir()
+            if child.is_dir() and not child.name.startswith(".") and child.name not in SKIP_ROOT_DIRS
+        )
+    files = handoffs_in(folders)
+    cache = {}
+
+    def fields_of(path):
+        if path not in cache:
+            cache[path] = frontmatter(path)
+        return cache[path]
+
+    seat, seat_from = args.seat, "flag" if args.seat else None
+    if not seat and os.environ.get("FOXRUN_SEAT", "").strip():
+        seat, seat_from = os.environ["FOXRUN_SEAT"].strip(), "env FOXRUN_SEAT"
+    if not seat and report["session"]:
+        for path, subject in files:
+            if fields_of(path).get("session") == report["session"]:
+                seat = seat_of(fields_of(path), subject)
+                seat_from = f"session match in {path.name}"
+                break
+    report["seat"], report["seat_from"] = seat, seat_from
+    if not seat:
+        report["reason"] = "no seat: no --seat, no FOXRUN_SEAT, and no handoff with this session id"
+        return report
+
+    matching = [(path, subject) for path, subject in files if belongs(fields_of(path), subject, seat)]
+    if matching:
+        newest = matching[0][0]
+        session = fields_of(newest).get("session")
+        same_session = [path for path, _ in matching if session and fields_of(path).get("session") == session]
+        same_session = same_session or [newest]
+        lead = next((path for path in same_session if not is_precompact(path, fields_of(path))), None)
+        if lead:
+            newer = same_session[:same_session.index(lead)]
+            notes = [path for path in newer if is_precompact(path, fields_of(path))]
+        else:
+            notes = [path for path in same_session if is_precompact(path, fields_of(path))]
+        sequence = ([lead] if lead else []) + list(reversed(notes))
+        kept, cut = plan(sequence, bool(lead))
+        report["picked"] = str(sequence[0])
+        report["sequence"] = [str(path) for path in sequence]
+        report["printed"] = [[str(path), size] for path, size in kept]
+        report["shortened"] = [str(path) for path, size in kept if size < len(text_of(path))]
+        report["cut"] = [str(path) for path in cut]
+        if lead:
+            report["reason"] = "hand-written handoff for the seat and session"
+            if notes:
+                report["reason"] += f", then {len(notes)} newer pre-compaction note(s), oldest first"
+        else:
+            report["reason"] = "no hand-written handoff; pre-compaction notes for the session, oldest first"
+        return report
+    report["reason"] = f"no handoff for seat {seat} in {', '.join(str(folder) for folder in folders) or 'the vault'}"
+    return report
+
+
+def text_of(path):
+    try:
+        return Path(path).read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return ""
+
+
+def plan(sequence, has_lead):
+    """Return (kept, cut): kept is [(path, characters to print)] in reading order.
+
+    The hand-written handoff stays whole (up to the cap). Notes fill what is left,
+    newest first: the first note that does not fit is printed up to the budget,
+    and every older note is cut whole.
+    """
+    if not sequence:
+        return [], []
+    head, rest, budget = [], list(sequence), CAP
+    if has_lead:
+        size = min(len(text_of(sequence[0])), CAP)
+        head, rest, budget = [(sequence[0], size)], sequence[1:], CAP - size
+    kept_rest, cut = [], []
+    for path in reversed(rest):  # newest note first, so the oldest are cut first
+        room = budget - len(str(path)) - FILE_OVERHEAD  # its header and cut marker count too
+        if room < MIN_PART and (head or kept_rest):
+            cut.insert(0, path)
+            budget -= len(str(path)) + 2  # its path is named on the cut line
+            continue
+        size = max(0, min(len(text_of(path)), room))
+        kept_rest.insert(0, (path, size))
+        budget = room - size
+    return head + kept_rest, cut
+
+
+def tracker_path(vault, workspace):
+    if workspace == "foxrun-dev":
+        override = os.environ.get("FOXRUN_TRACKER", "").strip()
+        if override:
+            return Path(override).expanduser()
+        system = Path(os.environ.get("FOXRUN_HOME", "~/.foxrun")).expanduser()
+        return system / "data.db"
+    return Path(vault) / workspace / "data.db"
+
+
+def superseded_since(path, vault, workspace):
+    timestamp = frontmatter(Path(path)).get("timestamp")
+    if not isinstance(timestamp, str) or not timestamp:
+        return []
+    cutoff = datetime.fromisoformat(timestamp)
+    database = tracker_path(vault, workspace)
+    if not database.is_file():
+        return []
+    uri = "file:" + quote(str(database.resolve()), safe="/:@") + "?mode=ro"
+    with sqlite3.connect(uri, uri=True) as db:
+        events = db.execute(
+            "SELECT DISTINCT d.id,a.at FROM decisions d JOIN activity a "
+            "ON a.subject_type='decision' AND a.subject_id=d.id "
+            "WHERE d.status='superseded' AND a.field='status' AND a.new_value='superseded'"
+        )
+        return sorted({decision_id for decision_id, at in events
+                       if datetime.fromisoformat(at) > cutoff})
+
+
+def nightly_words(value):
+    value = unicodedata.normalize("NFKC", value).casefold()
+    value = re.sub(r"(?<=\w)['’](?=\w)", "", value)
+    return re.findall(r"[^\W_]+", value)
+
+
+def flag_words(body):
+    return body.split(": ", 2)[-1].rsplit(" (Jev ", 1)[0]
+
+
+def nightly_time(value):
+    stamp = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    return stamp if stamp.tzinfo else stamp.replace(tzinfo=LOCAL_ZONE)
+
+
+def flag_answered(flag, evidence):
+    flag_id, _, at, body = flag
+    flag_time = nightly_time(at)
+    source_words = nightly_words(flag_words(body))
+    runs = {tuple(source_words[i:i + 8]) for i in range(len(source_words) - 7)}
+    citation = re.compile(r"(?<!\d)" + re.escape(str(flag_id)) + r"(?!\d)")
+    for _, evidence_at, evidence_text in evidence:
+        if not evidence_at:
+            continue
+        if "T" not in evidence_at:
+            if datetime.fromisoformat(evidence_at).date() <= flag_time.date():
+                continue
+        elif nightly_time(evidence_at) <= flag_time:
+            continue
+        if citation.search(evidence_text):
+            return True
+        if not runs:
+            continue
+        quoted = nightly_words(evidence_text)
+        if any(tuple(quoted[i:i + 8]) in runs for i in range(len(quoted) - 7)):
+            return True
+    return False
+
+
+def nightly_status(vault, now=None):
+    """Read the nightly run and unanswered flags from the AgentOS tracker.
+
+    Env FOXRUN_TRACKER overrides the tracker path (default ~/.foxrun/data.db);
+    env FOXRUN_NIGHTLY_PLIST overrides the LaunchAgent path. Tests set both to temp paths.
+    """
+    database = tracker_path(vault, "foxrun-dev")
+    plist = Path(os.environ.get("FOXRUN_NIGHTLY_PLIST", "").strip()
+                 or "~/Library/LaunchAgents/com.foxrun.session-nightly.plist").expanduser()
+    if not database.is_file():
+        return ["Nightly check has never run"] if plist.is_file() else []
+    uri = "file:" + quote(str(database.resolve()), safe="/:@") + "?mode=ro"
+    with sqlite3.connect(uri, uri=True) as db:
+        tables = {row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        if "runs" not in tables:
+            return ["Nightly check has never run"] if plist.is_file() else []
+        # The nightly job signs its runs; the task it records them on is the person's own setting.
+        run = db.execute(
+            'SELECT ended_at,result FROM runs WHERE "by"=? '
+            'AND ended_at IS NOT NULL ORDER BY ended_at DESC LIMIT 1',
+            ("session-nightly",),
+        ).fetchone()
+        if not run:
+            return ["Nightly check has never run"] if plist.is_file() else []
+        flags, evidence = [], []
+        if "comments" in tables:
+            flags = db.execute(
+                "SELECT f.id,f.subject_id,f.at,f.body FROM comments f "
+                "WHERE f.subject_type='task' AND f.author='session-nightly' "
+                "AND f.body LIKE 'Flag: unpromoted%' "
+                "ORDER BY f.at DESC,f.id DESC"
+            ).fetchall()
+            evidence.extend((task, at, body) for task, at, body in db.execute(
+                "SELECT subject_id,at,body FROM comments WHERE author!='session-nightly'"))
+        if "decisions" in tables:
+            evidence.extend((None, at, " ".join(str(part or "") for part in (words, source)))
+                            for words, source, at in db.execute(
+                "SELECT person_words,source,decided_on FROM decisions WHERE decided_on IS NOT NULL"))
+        if "approvals" in tables:
+            evidence.extend((task, at, " ".join(str(part or "") for part in (words, source)))
+                            for task, words, source, at in db.execute(
+                "SELECT subject_id,person_words,source,given_at FROM approvals"))
+        flags = [flag for flag in flags if not flag_answered(flag, evidence)]
+    ended = datetime.fromisoformat(run[0].replace("Z", "+00:00")).astimezone(LOCAL_ZONE)
+    current = now or datetime.now(timezone.utc)
+    age = (current - ended).total_seconds() / 3600
+    lines = [f"Nightly check last ran {ended.strftime('%Y-%m-%d %H:%M %Z')} "
+             f"({run[1]}), {len(flags)} open flags."]
+    if run[1] == "fail":
+        lines.append("Nightly check failed")
+    elif age > 30:
+        lines.append(f"Nightly check has not run for {int(age)} h")
+    for _, task, _, body in flags[:5]:
+        words = flag_words(body)
+        words = re.sub(r"\b(?:sk-|ghp_|xox)[^\s]*|Bearer\s+[^\s]+|op://[^\s]+",
+                       "[REDACTED]", words, flags=re.I)
+        lines.append(f"Flag: unpromoted {task}: {words}")
+    return lines
+
+
+def hook_output(report, vault, workspace, include_nightly=True):
+    kept = report.get("printed") or [[report["picked"], CAP]]
+    cut = report.get("cut") or []
+    parts = [HEADER]
+    if len(kept) > 1 or cut:
+        parts = [SEQUENCE_HEADER + " Order: the hand-written handoff "
+                 "first, then newer pre-compaction notes, oldest first."]
+    if cut:
+        parts.append(f"Cut for length: {len(cut)} older pre-compaction note(s), not printed. "
+                     "Read them directly, oldest first, after File 1: " + ", ".join(cut))
+    for number, (path, size) in enumerate(kept, 1):
+        text = text_of(path)
+        body = text[:size]
+        if len(text) > size:
+            body += f"\n\n[cut at {size} of {len(text)} characters; read the file for the rest]"
+        parts.append(f"File {number} of {len(kept)}: {path}\n\n{body}")
+    context = "\n\n".join(parts)
+    ids = superseded_since(report["picked"], vault, workspace)
+    if ids:
+        context += "\nSuperseded since your last handoff: " + ", ".join(ids)
+    status = nightly_status(vault) if include_nightly else []
+    if status:
+        context += "\n" + "\n".join(status)
+    return {"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": context}}
+
+
+def main(argv=None):
+    args = build_parser().parse_args(argv)
+    explain = args.dry_run or args.json
+    try:
+        hook = read_stdin(stdin_timeout(args))
+        if hook is None:
+            report = {"picked": None, "reason": "stdin is not a JSON object"}
+        else:
+            report = resolve(args, hook)
+        if args.json:
+            if report.get("vault") and not args.no_nightly:
+                report["nightly_status"] = nightly_status(report["vault"])
+            print(json.dumps(report, indent=2))
+        elif args.dry_run:
+            for key, value in report.items():
+                print(f"{key}: {value}", file=sys.stderr)
+            print("dry run: no hook output printed", file=sys.stderr)
+        elif report.get("picked"):
+            workspace = report["workspace"] or Path(report["picked"]).parent.parent.name
+            payload = json.dumps(hook_output(report, report["vault"], workspace,
+                                             include_nightly=not args.no_nightly), ensure_ascii=False)
+            sys.stdout.write(payload + "\n")
+        # No seat, cwd outside the vault, or zero matches: print nothing, not even the nightly line.
+    except Exception as error:  # a hook must never block a session start
+        if explain:
+            print(f"handoff-boot: {error.__class__.__name__}: {error}", file=sys.stderr)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

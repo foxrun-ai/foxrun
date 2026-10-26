@@ -1,0 +1,405 @@
+[
+  {
+    "name": "P1-long-turn-older-unrelated-comment",
+    "rows": [
+      {
+        "kind": "comment",
+        "id": 1,
+        "subject_id": "T1",
+        "body": "person: Let me know if you want the gazobu fufa report; we can review it goku.",
+        "at": "2026-09-29T13:00:00Z"
+      }
+    ],
+    "turns": [
+      {
+        "text": "Let me know if the new semidi report should telofe mori by gumi and zosanu.",
+        "timestamp": "2026-09-29T14:00:00Z",
+        "assistant_before": "Should the new semidi report telofe mori by gumi and zosanu?"
+      }
+    ],
+    "expected_matches": [
+      false
+    ],
+    "expected_recorded": [],
+    "expected_unpromoted": []
+  },
+  {
+    "name": "P2-yes-later-unrelated-row",
+    "rows": [
+      {
+        "kind": "comment",
+        "id": 2,
+        "subject_id": "T2",
+        "body": "person: yes",
+        "at": "2026-09-29T14:01:00Z"
+      }
+    ],
+    "turns": [
+      {
+        "text": "yes",
+        "timestamp": "2026-09-29T14:00:30Z",
+        "assistant_before": "Should I approve T1?"
+      }
+    ],
+    "expected_matches": [
+      false
+    ],
+    "expected_recorded": [],
+    "expected_unpromoted": [
+      1
+    ]
+  },
+  {
+    "name": "P2b-yes-decision-days-later",
+    "rows": [
+      {
+        "kind": "decision",
+        "id": "g-cedar-shop-rule-13",
+        "person_words": "yes",
+        "decided_on": "2026-10-02T14:01:00Z",
+        "source": null
+      }
+    ],
+    "turns": [
+      {
+        "text": "yes",
+        "timestamp": "2026-09-29T14:01:00Z",
+        "assistant_before": "Should I record g-cedar-shop-rule-13?"
+      }
+    ],
+    "expected_matches": [
+      false
+    ],
+    "expected_recorded": [],
+    "expected_unpromoted": [
+      1
+    ]
+  },
+  {
+    "name": "P3-two-approved-one-approval-row",
+    "rows": [
+      {
+        "kind": "approval",
+        "id": 3,
+        "subject_id": "T8",
+        "person_words": "approved",
+        "given_at": "2026-09-29T14:02:00Z"
+      }
+    ],
+    "turns": [
+      {
+        "text": "approved",
+        "timestamp": "2026-09-29T14:00:00Z",
+        "assistant_before": "Should I approve T8?"
+      },
+      {
+        "text": "approved",
+        "timestamp": "2026-09-29T14:01:00Z",
+        "assistant_before": "Should I approve T8?"
+      }
+    ],
+    "expected_matches": [
+      true,
+      true
+    ],
+    "expected_recorded": [
+      "3"
+    ],
+    "expected_unpromoted": [
+      2
+    ]
+  },
+  {
+    "name": "P4-pricing-tier-unrelated-decision",
+    "rows": [
+      {
+        "kind": "decision",
+        "id": "g-cedar-shop-rule-16",
+        "person_words": "we go with B for the bulo pese",
+        "decided_on": "2026-09-29T14:03:00Z",
+        "source": null
+      }
+    ],
+    "turns": [
+      {
+        "text": "we go with B for the retuzo mepofa",
+        "timestamp": "2026-09-29T14:02:00Z",
+        "assistant_before": "Should I settle retuzo mepofa B?"
+      }
+    ],
+    "expected_matches": [
+      false
+    ],
+    "expected_recorded": [],
+    "expected_unpromoted": [
+      1
+    ]
+  },
+  {
+    "name": "P5-approved-other-item-same-task",
+    "rows": [
+      {
+        "kind": "comment",
+        "id": 5,
+        "subject_id": "T5",
+        "body": "person on R15: 'approved'",
+        "at": "2026-09-29T14:15:00-04:00"
+      }
+    ],
+    "turns": [
+      {
+        "text": "approved",
+        "timestamp": "2026-09-29T14:00:00-04:00",
+        "assistant_before": "Should I approve T5 R14?"
+      }
+    ],
+    "expected_matches": [
+      false
+    ],
+    "expected_recorded": [],
+    "expected_unpromoted": [
+      1
+    ]
+  },
+  {
+    "name": "P6-unrelated-backfill-long-turn",
+    "rows": [
+      {
+        "kind": "comment",
+        "id": 6,
+        "subject_id": "T6",
+        "body": "Backfill is final; run the funa soke after review.",
+        "at": "2026-09-29T16:00:00-04:00"
+      }
+    ],
+    "turns": [
+      {
+        "text": "Okay sounds good, run the funa soke, that is final.",
+        "timestamp": "2026-09-29T14:00:00-04:00",
+        "assistant_before": "Should I run the funa soke?"
+      }
+    ],
+    "expected_matches": [
+      false
+    ],
+    "expected_recorded": [],
+    "expected_unpromoted": [
+      1
+    ]
+  },
+  {
+    "name": "P7-pasted-agent-status-is-not-person-comment",
+    "rows": [
+      {
+        "kind": "comment",
+        "id": 7,
+        "subject_id": "T4",
+        "body": "The fare found 730 pedo rows are echoes of comments and nelu, sotedo fuse.",
+        "at": "2026-09-29T14:01:00Z"
+      }
+    ],
+    "turns": [
+      {
+        "text": "The rule is to review this pasted miganu status: The fare found 730 pedo rows are echoes of comments and nelu, sotedo fuse.",
+        "timestamp": "2026-09-29T14:00:00Z",
+        "assistant_before": ""
+      }
+    ],
+    "expected_matches": [
+      false
+    ],
+    "expected_recorded": [],
+    "expected_unpromoted": [
+      1
+    ]
+  },
+  {
+    "name": "P8-common-eight-words-date-only-decision",
+    "rows": [
+      {
+        "kind": "decision",
+        "id": "g-cedar-shop-rule-17",
+        "person_words": "we go with the shared zolete for every workspace record without review",
+        "decided_on": "2026-09-29",
+        "source": null
+      }
+    ],
+    "turns": [
+      {
+        "text": "The rule is we go with the shared zolete for every workspace task after review.",
+        "timestamp": "2026-09-29T14:00:00Z",
+        "assistant_before": ""
+      }
+    ],
+    "expected_matches": [
+      false
+    ],
+    "expected_recorded": [],
+    "expected_unpromoted": [
+      1
+    ]
+  },
+  {
+    "name": "P9-date-mismatch-in-lead-mode",
+    "rows": [
+      {
+        "kind": "comment",
+        "id": 9,
+        "subject_id": "T9",
+        "body": "person: The rule is we approved the new nizusa limu for every workspace record ritase.",
+        "at": "2026-09-28T14:00:00Z"
+      }
+    ],
+    "turns": [
+      {
+        "text": "The rule is we approved the new nizusa limu for every workspace record ritase.",
+        "timestamp": "2026-09-29T14:00:00Z",
+        "assistant_before": ""
+      }
+    ],
+    "expected_matches": [
+      false
+    ],
+    "expected_recorded": [],
+    "expected_unpromoted": [],
+    "expected_date_mismatch": [
+      1
+    ]
+  },
+  {
+    "name": "P10-quoted-proposal-person-rejects",
+    "rows": [
+      {
+        "kind": "decision",
+        "id": "g-cedar-shop-rule-18",
+        "person_words": "Every skill writes its own zolete to the shared log at the end of each run.",
+        "decided_on": "2026-09-29",
+        "source": null
+      }
+    ],
+    "turns": [
+      {
+        "text": "The rule is to reject this mopoto: “Every skill writes its own zolete to the shared log at the end of each run.” Keep it open.",
+        "timestamp": "2026-09-29T14:00:00Z",
+        "assistant_before": ""
+      }
+    ],
+    "expected_matches": [
+      false
+    ],
+    "expected_recorded": [],
+    "expected_unpromoted": [
+      1
+    ]
+  },
+  {
+    "name": "P11-unquoted-paste-echoed-by-assistant",
+    "rows": [
+      {
+        "kind": "comment",
+        "id": 11,
+        "subject_id": "T3",
+        "body": "Status for person: The fare found 730 pedo rows are echoes of comments and nelu sotedo fuse in the tracker.",
+        "at": "2026-09-29T14:01:00Z"
+      }
+    ],
+    "turns": [
+      {
+        "text": "The rule is to reject this pasted status. The fare found 730 pedo rows are echoes of comments and nelu sotedo fuse in the tracker.",
+        "timestamp": "2026-09-29T14:00:00Z",
+        "assistant_before": "The fare found 730 pedo rows are echoes of comments and nelu sotedo fuse in the tracker."
+      }
+    ],
+    "expected_matches": [
+      false
+    ],
+    "expected_recorded": [],
+    "expected_unpromoted": [
+      1
+    ]
+  },
+  {
+    "name": "P12-filler-comment-two-hours-later",
+    "rows": [
+      {
+        "kind": "comment",
+        "id": 12,
+        "subject_id": "T7",
+        "body": "person: All right, sounds good. That's fine for now.",
+        "at": "2026-09-29T16:00:00Z"
+      }
+    ],
+    "turns": [
+      {
+        "text": "All right, sounds good. That's fine for now. The rule is to set the new retuzo at fimomu basi tusiza.",
+        "timestamp": "2026-09-29T14:00:00Z",
+        "assistant_before": "Should we set the new retuzo?"
+      }
+    ],
+    "expected_matches": [
+      false
+    ],
+    "expected_recorded": [],
+    "expected_unpromoted": [
+      1
+    ]
+  },
+  {
+    "name": "P13-short-unlinked-date-only-decision",
+    "rows": [
+      {
+        "kind": "decision",
+        "id": "g-cedar-shop-rule-20",
+        "person_words": "Approved.",
+        "decided_on": "2026-09-29",
+        "source": null
+      }
+    ],
+    "turns": [
+      {
+        "text": "Retuzo bilagu is approved, pesine it.",
+        "timestamp": "2026-09-29T14:00:00Z",
+        "assistant_before": ""
+      }
+    ],
+    "expected_matches": [
+      false
+    ],
+    "expected_recorded": [],
+    "expected_unpromoted": [
+      1
+    ]
+  },
+  {
+    "name": "U175-comment-881-eight-word-run",
+    "real_index": 175,
+    "expected_match": true
+  },
+  {
+    "name": "U515-approval-1-eight-word-run",
+    "real_index": 515,
+    "expected_match": true
+  },
+  {
+    "name": "U434-decision-pr-g-cedar-shop-rule-9",
+    "real_index": 434,
+    "expected_match": true
+  },
+  {
+    "name": "U464-decision-pr-g-cedar-shop-rule-2",
+    "session": "0b0b0b02",
+    "real_turn": {
+      "text": "That memory rule was perfect. I love that. That also lifiti us to contain and lala memory.md's. I love that. 100% approve of it. The decisions zobonu again, that gole be until we start toti vanedo modogi. Novu, we lakosi to radivi lavu that. So we already have, like I laraga lenuvo have an Geto, I miga nesiba code. I laraga know. I always nati that in people's soloze. I thought we had an zegi gunano. Where did netuzo go? I laraga bolulo. I thought like the whole skills zegi. I laraga. It nomi reguzo kalumo in kalumo. That's what I was fume at, right? Zopu we have like uh I miga there's fote in sikufo agents. You know, lesugi it, lesugi it, lesugi it. Let's radivi vanedo sikufo agents, sikufo Claude, sikufo Codex and novu. Togadi, I think they they all go kalumo to kalumo, and nide an Geto zobonu. They nomi lakosi to nevefe forike in the gelu, bala tebeze, laku they kema bomoda. They're nomi, you know, I'm even midigo log reguzo all the way at the fagene kevufi kokubu. I laraga know, I laraga know. Nide I'm buru. So yeah, what um fibu we do this? Laku right now you have lome, and again it's kukipu vanedo we already bolulo we bodalo lavu that rolure of raru the limu, we rokipa a call, but there's pubome bipa that's nafudi to nevefe here now, right, at the root of the workspace.",
+      "timestamp": "2026-09-17T20:24:35.477Z",
+      "assistant_before": "That memory rule was perfect."
+    },
+    "kind": "decision",
+    "row": {
+      "id": "pr-g-cedar-shop-rule-1",
+      "person_words": "they put on a new fatopu... I laraga know fibu that'll lesugi up their memory.md that's labole to be zepoga. I libazo thought of that. | 9.17: That memory rule was perfect. 100% approve of it. That also lifiti us to contain and lala memory.md's.",
+      "decided_on": "2026-09-17",
+      "source": "sagu 0b0b0b02"
+    },
+    "expected_match": true
+  }
+]

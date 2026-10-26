@@ -1,0 +1,6 @@
+{
+  "name": "read-state-first",
+  "run": "read",
+  "input": "The person asks: what did we decide about the nightly schedule? The start page does not say. Which ladder step do you try first, and which step is last? End with: First: <step>. Last: <step>.",
+  "expect": {"output_contains": ["First: State", "Last: Search"]}
+}

@@ -1,0 +1,6 @@
+{
+  "name": "read-switched-file",
+  "run": "read",
+  "input": "A workspace has generated history/LOG.md. Which installed command writes a new receipt? Name the command.",
+  "expect": {"output_contains": ["~/.foxrun/events/log.py"]}
+}

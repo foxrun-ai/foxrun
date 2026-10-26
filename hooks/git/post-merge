@@ -1,0 +1,8 @@
+#!/bin/sh
+# Foxrun shared Git hook: preserve the original repository hook.
+common=$(git rev-parse --git-common-dir) || exit 2
+original="$common/hooks/post-merge"
+if [ -x "$original" ]; then
+  exec "$original" "$@"
+fi
+exit 0

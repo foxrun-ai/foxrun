@@ -1,0 +1,62 @@
+rule	value
+page	<home>/tools/CAPABILITIES.md; <home> is the system home or a workspace
+one_format	the same template in the system home and in every workspace; only the scope changes
+scope	system home=every tool in <system home>/tools/<kind>/ and every skill in <system home>/skills/
+scope	workspace=its own tools and skills; every tool and skill that a seat file in team/ loads; every system tool and skill whose name or line names this workspace
+scope_minus	system home=a tool or skill whose name or line holds a business name is not listed; the section On a workspace page gives the count
+no_business_name	the page in the system home holds no workspace name (each folder name of the portfolio but atlas and inbox, with - or with a space, any letter case) and no name on the extra list; this holds for uses, names, and lines
+business_names_extra	a list the person keeps; its home is his call; the examples use sample-business and sample-workspace
+scope_rule	a seat loads the names in its front matter skills, and in tools (a file with id) or mcpServers (a file without id)
+frontmatter_key	type
+frontmatter_key	workspace
+frontmatter_key	timestamp
+frontmatter_keys_allowed	type|workspace|timestamp
+frontmatter_value	type=index
+frontmatter_value	workspace=the workspace folder name; system in the system home
+frontmatter_format	timestamp=ISO 8601 with time and offset
+h1	Capabilities: <workspace>
+block_order	h1 > intro > Contents > count block > how-to-read line > one section for each use > Not placed yet
+intro	system home=Every tool and skill on this Mac, by use. A script makes this page. Edit a tool page or a skill; then run the script.
+intro	workspace=Every tool and skill this workspace uses, by use. A script makes this page. Edit a tool page, a skill, or a seat file; then run the script.
+count_block_labels	USES|TOOLS|SKILLS|MADE
+count_value	USES=number of use sections
+count_value	TOOLS=all tools in scope; with a use: = tools in a use section
+count_value	SKILLS=all skills in scope that are on disk; with a use: = skills in a use section
+heading_order	Contents > <each use, A to Z, letter case ignored> > Not placed yet
+h2_first	Contents
+contents	required: the first h2; a list with two topics in bold, By use and Not placed yet; under each, one line for each section: a link to the section, ' · ', then its counts
+contents_check	every h2 and h3 of the page but Contents has one line in Contents, and every line opens a section that exists
+how_to_read	required, word for word: **How to read a row.** A tool row says what the tool is. A skill row says what the skill does, and the tools it needs. A skill does not work when a tool it needs is not set up. Each name opens its own page.
+h2_last	Not placed yet
+check	the counts in Contents add up to TOOLS and SKILLS in the count block
+use_source	tool=front matter use of its tool page
+use_source	skill=front matter use of SKILL.md; when there is none, metadata.category
+use_heading	the use as written at its source, first letter in capitals
+use_list	every use is on the use list (see ../tool-page/spec.tsv, frontmatter_enum use); a use not on the list is a finding
+section	each use=the tools table when it has tools, then the skills table when it has skills; no other text
+table_columns	tools in a use=Tool|Kind|What it is
+table_columns	skills in a use=Skill|What it does|Tools it needs
+same_as	the tools table and the skills table are the tables of the views TOOLS.md and SKILLS.md
+row_order	tools=by kind in the order cli|mcp|plugin|service|external-app|schedule; then A to Z
+row_order	skills=A to Z
+cell_source	Tool=the status mark, a space, the plain name of the tool (the h1 of its page) as a link to the page; with no page: its name, no mark, no link
+status_mark	live=✅|installing=🔄|chosen=☑️|candidate=⬜
+cell_source	What it is=the first sentence of the plain summary of the tool page
+cell_source	What it does=the first sentence of the skill description, cut at 120 characters with ' …'
+cell_source	Tools it needs=each tool the skill names (the rule of ../workspace-view/spec-SKILLS.tsv), one on a line: the plain name as a link, ': ', then the what line of its page; None when the skill names no tool
+cell_forbidden	Tools it needs=a bare tool id with no plain name and no what line, when the tool has a page on the template
+cell_fallback	Tools it needs=for a page not on the template: the first sentence under its heading Purpose or What is it?; with no page: (a tool with no page yet)
+section	Not placed yet=one sentence, then one h3 for each gap list that has a name; under each h3 one block
+gap_lists	Tools with no use|Skills with no use|Tools with no page|Tool pages not on the template|Skills a seat loads, not on disk|Pages in tools/ that are not a tool page
+last_h3	system home only: On a workspace page, with its count sentence
+not_placed_sentence	system home=Each name here is on this Mac and has a gap. Give it a use, a page, or a folder; then it leaves this list.
+not_placed_sentence	workspace=Each name here is in use and has a gap. Give it a use, a page, or a folder; then it leaves this list.
+block_form	a code fence; first line NAMES and the count in round brackets after two spaces; names A to Z, two spaces between, three spaces before each line, wrapped before 78
+link_form	relative path from the page; a section link is # and the heading in lower case, spaces as -, other marks removed
+link_target	every link opens a file or a section that exists
+max_code_line	78
+max_table_columns	4
+forbidden_text	No records yet.|Workspace records|TODO|TBD
+blank_page	not allowed: Contents and the count block are always there
+emoji	only ✅ 🔄 ☑️ ⬜, and only as the status mark of a tool
+named_line	workspace, last line of the page=<n> skills are here because their name or their line names this workspace.

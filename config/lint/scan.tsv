@@ -1,0 +1,2 @@
+kind	pattern	reason
+exclude_path	system/runs	Run trails and lint reports are generated records; lint never reads its own output (T692).

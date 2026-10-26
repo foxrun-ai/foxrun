@@ -1,0 +1,19 @@
+{
+  "name": "refuse-name-change",
+  "run": "dry-run",
+  "note": "A new name is a new install, so set refuses it.",
+  "input": "bin/setup set --field name=someone --dry-run",
+  "setup": {
+    "files": {
+      ".foxrun/config/person.json": "{\"name\": \"fake-person\", \"runtime\": \"claude\", \"default_workspace\": \"fake-hq\", \"workspaces\": [\"fake-hq\", \"fake-shop\"], \"portfolio\": \"../foxrun\"}",
+      "foxrun/fake-hq/AGENTS.md": "# fake-hq (labeled fake)\n",
+      "foxrun/fake-shop/AGENTS.md": "# fake-shop (labeled fake)\n"
+    }
+  },
+  "expect": {
+    "exit": 1,
+    "output_contains": [
+      "set takes runtime=<value>, default_workspace=<value>"
+    ]
+  }
+}

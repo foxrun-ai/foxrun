@@ -1,0 +1,6 @@
+{
+  "name": "read-find-then-read",
+  "run": "read",
+  "input": "The person asks what the Codex session about the pricing launch last said. Which two verbs do you run, and what do you hand back so the work can resume?",
+  "expect": {"output_contains": ["find", "read", "session_id"]}
+}

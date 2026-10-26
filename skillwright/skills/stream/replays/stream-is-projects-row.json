@@ -1,0 +1,6 @@
+{
+  "name": "stream-is-projects-row",
+  "run": "read",
+  "input": "Which tracker table holds a work stream, and which work.py verb creates one?",
+  "expect": {"output_contains": ["projects", "stream-create"]}
+}

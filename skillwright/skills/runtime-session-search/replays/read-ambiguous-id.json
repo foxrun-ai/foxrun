@@ -1,0 +1,6 @@
+{
+  "name": "read-ambiguous-id",
+  "run": "read",
+  "input": "read returns choice_required because two Hermes profiles hold the same id. What do you do next?",
+  "expect": {"output_contains": ["--profile"]}
+}

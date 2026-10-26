@@ -1,0 +1,45 @@
+word	meaning	group	source
+Agent roster	The shared roster in the system home.	In the system home	Current build GLOSSARY.md; 10.12 glossary split
+Base	Builds the database and installs workspaces. Builds and checks pages.	In the system home	Current build GLOSSARY.md; 10.12 glossary split
+Cron	The clock that starts scheduled work.	In the system home	Current build GLOSSARY.md; 10.12 glossary split
+Hook	A trigger during a runtime session.	In the system home	Current build GLOSSARY.md; 10.12 glossary split
+Module	A pack with its own tables, command, and templates.	In the system home	Current build GLOSSARY.md; 10.12 glossary split
+Raw	Outside material kept as source evidence.	In the system home	Current build GLOSSARY.md; 10.12 glossary split
+Resolver	The rules that name the source and writer for a fact.	In the system home	Current build GLOSSARY.md; 10.12 glossary split
+Run	A row, a system trail, and a workspace report.	In the system home	Current build GLOSSARY.md; 10.12 glossary split
+Schema	The tables and naming rules.	In the system home	Current build GLOSSARY.md; 10.12 glossary split
+Skill	A procedure an agent follows for a task.	In the system home	Current build GLOSSARY.md; 10.12 glossary split
+Skillwright	The agent and workshop that keep the skills.	In the system home	Current build GLOSSARY.md; 10.12 glossary split
+Start page	The page an agent reads at the start.	In the system home	Current build GLOSSARY.md; 10.12 glossary split
+System home	The installed Foxrun code, shared settings, and database.	In the system home	Current build GLOSSARY.md; 10.12 glossary split
+Wiki	Knowledge pages that cite outside material.	In the system home	Current build GLOSSARY.md; 10.12 glossary split
+Atlas	The library and default home of a capture.	In the portfolio	Current build GLOSSARY.md; 10.12 glossary split
+Library	The knowledge in Atlas and workspace wikis.	In the portfolio	Current build GLOSSARY.md; 10.12 glossary split
+Portfolio	The folder that contains your workspaces.	In the portfolio	Current build GLOSSARY.md; 10.12 glossary split
+History	Frozen work, handoffs, snapshots, and run reports.	In each workspace	Current build GLOSSARY.md; 10.12 glossary split
+Notes	Living pages, one per topic.	In each workspace	Current build GLOSSARY.md; 10.12 glossary split
+Ops	Pages that show the business from source rows.	In each workspace	Current build GLOSSARY.md; 10.12 glossary split
+Specs	Living pages for things being built.	In each workspace	Current build GLOSSARY.md; 10.12 glossary split
+Team	The agents that work in one workspace.	In each workspace	Current build GLOSSARY.md; 10.12 glossary split
+Catalog	The list that controls where skills apply.	No one place	Current build GLOSSARY.md; 10.12 glossary split
+Core	The system parts every install includes.	No one place	Current build GLOSSARY.md; 10.12 glossary split
+Dream	The name chosen for the memory job.	No one place	Current build GLOSSARY.md; 10.12 glossary split
+Feeder	Code reads an outside source and refreshes its mirror on a schedule. It ships with the add-on; the outside system owns the facts; implementations can change without changing tables.	No one place	Current build GLOSSARY.md; 10.12 glossary split
+Mirror	An outside system owns these rows; a feeder refreshes them one way; local users never edit copied facts. Keep each outside ID and row age; keep local additions in a separate table linked to the mirror.	No one place	Current build GLOSSARY.md; 10.12 glossary split
+Report	Presents views and trends for a person; it owns no data and is not a database type. Its skill generates it and records runs in history; keep an exact rendered page in `outputs/` when needed.	No one place	Current build GLOSSARY.md; 10.12 glossary split
+Snapshot	A kept reply in its own frozen file.	No one place	Current build GLOSSARY.md; 10.12 glossary split
+Table	Holds rows that Person and authorized agents write and edit. The local writer accepts field changes under their rules; other surfaces submit requests.	No one place	Current build GLOSSARY.md; 10.12 glossary split
+Trend	Holds dated observations that a schedule appends and nobody changes. Its writer adds rows with an `as_of` date to preserve values for comparison over time.	No one place	Current build GLOSSARY.md; 10.12 glossary split
+Trigger	A moment that fires a command.	No one place	Current build GLOSSARY.md; 10.12 glossary split
+View	A saved database query reads existing rows; the database computes results without owning separate business data. Its module blueprint ships it; skills call it by name; agents propose it; Person approves it through shared creation.	No one place	Current build GLOSSARY.md; 10.12 glossary split
+Workspace	A place for one business or body of work.	No one place	Current build GLOSSARY.md; 10.12 glossary split
+Orchestration	Directing work across agents and runtimes, retrieving results, and managing the lifecycle of delegated work. Native runtime paths and Herdr are possible adapters; neither defines the whole capability.	Agents and work	Ruled
+Multi-Agent Run	One lead runs several agents from one brief, then reviews and closes their work.	Agents and work	Ruled
+Agent	One identity on one runtime: a Hermes profile, a Claude subagent (`.claude/agents/*.md`), or a Codex custom agent (`.codex/agents/*.toml`). The same persona on two runtimes (e.g. the Keeper) is two agents that share a name.	Agents and work	Ruled
+Agent Definition	Its own object, seven dimensions from the Anatomy of an Agent: model, contract, capabilities, stores, anchor, triggers, guardrails. Links to many Capability Records. ADR 0005.	Agents and work	Ruled
+Capability	One usable thing in eight categories: Skill, CLI, MCP, Plugin, Service, Connection, Hook, Script.	Agents and work	Ruled
+Capability Record	One object for everything an agent can use: type is skill, cli, mcp, plugin, or automation; trigger is on demand, event, or schedule; connection is a field naming the outside account. Service, hook, and script are all automation. ADR 0005.	Agents and work	Ruled
+Scope	Where an agent or capability belongs: Global (home-directory dotdirs) or one workspace. For Claude/Codex, scope is the literal location of the definition file; for Hermes, scope is the lane the profile's working directory points at.	Agents and work	Ruled
+Applies To	The affected boundary on a decision, task link, or external system record.	Agents and work	Ruled
+Records	Facts held as rows that authorized writers can change.	Memory words	Ruled; object_types/lens=records
+Collection	A collection is where one kind of record or document lives.	Setup words	Ruled

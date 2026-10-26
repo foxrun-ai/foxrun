@@ -1,0 +1,20 @@
+rule	value
+page	CLAUDE.md beside each AGENTS.md: the system home, the portfolio, atlas, each workspace
+made_by	the installer
+frontmatter_key	type
+frontmatter_key	workspace
+frontmatter_key	timestamp
+frontmatter_keys_allowed	type|workspace|timestamp
+frontmatter_format	timestamp=ISO 8601 with time and offset
+frontmatter_value	type=agents
+body	one import: @AGENTS.md
+body_max_lines	1
+forbidden	a copy of any rule of AGENTS.md
+link_form	relative path from the page
+link_target	every link opens a file, a folder, or a section that exists
+max_code_line	78
+max_table_columns	4
+sentence_max_words	20
+emoji	none
+forbidden_text	No records yet.|TODO|TBD
+purpose	see purpose.md and locations.md

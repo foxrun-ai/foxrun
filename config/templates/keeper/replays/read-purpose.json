@@ -1,0 +1,14 @@
+{
+  "name": "read-purpose",
+  "run": "read",
+  "input": "@Person@ says /keeper. Explain the actions before your first reply, including an empty boot list and no handoff.",
+  "expect": {
+    "output_contains": [
+      "--seat keeper",
+      "File:",
+      "Boot reads",
+      "handoff-boot",
+      "no handoff"
+    ]
+  }
+}

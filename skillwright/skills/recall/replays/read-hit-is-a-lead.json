@@ -1,0 +1,6 @@
+{
+  "name": "read-hit-is-a-lead",
+  "run": "read",
+  "input": "A qmd query returns a snippet that answers the question. Can you quote it as the answer right away? End with: Quote at once: <yes|no>",
+  "expect": {"output_contains": ["Quote at once: no"]}
+}

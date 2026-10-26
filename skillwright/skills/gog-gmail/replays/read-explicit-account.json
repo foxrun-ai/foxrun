@@ -1,0 +1,6 @@
+{
+  "name": "read-explicit-account",
+  "run": "read",
+  "input": "Under the gog-gmail skill, how does the agent pick the Gmail account for a search? Name the flag.",
+  "expect": {"output_contains": ["--account"]}
+}

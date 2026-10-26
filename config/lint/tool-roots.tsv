@@ -1,0 +1,13 @@
+home	path
+system	tools/cli
+system	tools/mcp
+system	tools/service
+system	tools/plugin
+system	tools/external-app
+system	tools/schedule
+workspace	tools/cli
+workspace	tools/mcp
+workspace	tools/service
+workspace	tools/plugin
+workspace	tools/external-app
+workspace	tools/schedule

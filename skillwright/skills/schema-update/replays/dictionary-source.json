@@ -1,0 +1,10 @@
+{
+  "name": "dictionary-source",
+  "run": "read",
+  "input": "Which source file defines a changed Foxrun object type or field?",
+  "expect": {
+    "output_contains": [
+      "src/base/dictionary-seed.sql"
+    ]
+  }
+}

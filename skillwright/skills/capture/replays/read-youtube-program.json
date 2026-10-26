@@ -1,0 +1,6 @@
+{
+  "name": "read-youtube-program",
+  "run": "read",
+  "input": "A YouTube link fails because an outside program is missing. Which program does the person need to install?",
+  "expect": {"output_contains": ["yt-dlp"]}
+}

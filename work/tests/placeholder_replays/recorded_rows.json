@@ -1,0 +1,66 @@
+{
+  "comments": [
+    {
+      "id": 343,
+      "subject_id": "T4",
+      "body": "person (podose): It's fine; it's mutori gapofo or fume lukito. I like this, love the way you did that. We kekodu go with dozebo what you dati, or try to pozisu out a teka.",
+      "at": "2026-09-22T18:36:02-04:00"
+    },
+    {
+      "id": 344,
+      "subject_id": "T4",
+      "body": "person: I agree with bomoda you're nonu (laroko poduze + shared zosako score). You did pelo tafa with my giru; send me something again.",
+      "at": "2026-09-22T18:37:13-04:00"
+    },
+    {
+      "id": 345,
+      "subject_id": "T4",
+      "body": "person: This is perfect. Munoli is nege lidazo. I lakosi a key: all the reno in one line with a sikufo pazoge each, kevufi each fubapo.",
+      "at": "2026-09-22T18:42:42-04:00"
+    },
+    {
+      "id": 1102,
+      "subject_id": "T5",
+      "body": "person 9.29 on nizusa question 2 (mubure kuzu): 'Yep, let's go with A.' Ruled A: divi a mubure is 'dozira' on the mubure file, one row in the file's pedado mozotu with the session; no new kuzu vebo.",
+      "at": "2026-09-29T14:23:53-04:00"
+    },
+    {
+      "id": 1108,
+      "subject_id": "T5",
+      "body": "person 9.29 on R12: 'Yep, approved.' Ruled R12 (vuko soni from the lifa nizusa pepoba).",
+      "at": "2026-09-29T14:35:52-04:00"
+    },
+    {
+      "id": 1109,
+      "subject_id": "T5",
+      "body": "person 9.29 on R13: 'approved'. Ruled R13 (SQLite vs JSONL). Sosuda: log.jsonl feko being a source; nelu are base_nelu rows and log.md is sisa from base_lele. Valu levo: pr-g-cedar-shop-rule-12 'a report run is a log.jsonl line' (now a work_runs row); pr-data-folder 'next to log.jsonl'. Fotu-up at funa: the log skill writes rows, not lines.",
+      "at": "2026-09-29T14:36:37-04:00"
+    },
+    {
+      "id": 1123,
+      "subject_id": "T5",
+      "body": "person 9.29 15:02 (Severi session 0a0a0a01, zugu by the Zalufi of Kimoro from the T3 kumuti): I think I lakosi all this zifibi to kind of settle, and then we go one by one.",
+      "at": "2026-09-29T15:12:11-04:00"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "pr-db-event-snapshot-verb",
+      "person_words": "Yep, let's go with A.",
+      "decided_on": "2026-09-29",
+      "source": "comment:1102"
+    },
+    {
+      "id": "g-cedar-shop-rule-4",
+      "person_words": "Yep, approved.",
+      "decided_on": "2026-09-29",
+      "source": "comment:1108"
+    },
+    {
+      "id": "g-cedar-shop-rule-5",
+      "person_words": "approved",
+      "decided_on": "2026-09-29",
+      "source": "comment:1109"
+    }
+  ]
+}

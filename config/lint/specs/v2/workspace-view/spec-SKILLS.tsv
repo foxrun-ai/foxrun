@@ -1,0 +1,51 @@
+rule	value
+page	~/.foxrun/workspaces/<workspace>/SKILLS.md
+source_folder	~/foxrun/<workspace>/skills/
+frontmatter_key	type
+frontmatter_key	workspace
+frontmatter_key	timestamp
+frontmatter_keys_allowed	type|workspace|timestamp
+frontmatter_value	type=index
+frontmatter_value	workspace=<the folder name of the page>
+frontmatter_format	timestamp=ISO 8601 with time and offset
+made_by	base/make_workspaces_view.py
+hand_edit	not allowed: a second run of the script must give the same bytes, except timestamp and MADE
+h1	Skills: <workspace>
+nav_line	[Team](TEAM.md) · **Skills** · [Tools](TOOLS.md)
+source_line	View of [`<source_folder>`](<link>). `base/make_workspaces_view.py` makes this page. Edit a skill, then run the script.
+block_order	h1 > nav_line > source_line > count block > needs line > one section for each use > No use yet > NO SKILL.md > NEEDED TOOLS WITH NO PAGE
+grouping	one h2 for each use, A to Z, letter case ignored; then the h2 No use yet for skills with no use; a section with no skill is left out
+use_source	front matter use of SKILL.md; when there is none, metadata.category
+needs_line	required, word for word: **Tools it needs** lists the tools that must be set up for the skill to work. Each name opens the page of the tool.
+count_block_labels	SKILLS|USES|NEED A TOOL|NO SKILL.md|MADE
+count_value	SKILLS=number of folders that hold SKILL.md
+count_value	NEED A TOOL=number of table rows with command evidence or explicit tool declarations; source silence stays unknown
+count_value	USES=number of use sections
+count_value	NO SKILL.md=number of folders without SKILL.md
+table_columns	Skill|What it does|Tools it needs
+row_source	one row for each folder directly in the source folder that holds SKILL.md, in the table of its use
+row_order	A to Z by folder name
+cell_source	Skill=the folder name, in backticks, as a link to its SKILL.md
+cell_source	What it does=the first sentence of front matter description (to the first . ! or ? that a space or the end follows); line breaks become one space
+cell_cut	What it does: when longer than 120 characters, cut at the last space before 120 and add ' …'
+cell_source	Tools it needs=each explicitly declared tool or known command invoked in SKILL.md; a passing name or configuration path is not a required dependency, one on a line: the plain name of the tool (the h1 of its page) as a link, ': ', then the what line of the page; also include tools and mcpServers declarations and a named CLI in the description; Not declared on the source page when no dependency evidence exists
+cell_fallback	Tools it needs=for a page not on the template: the first sentence under its heading Purpose or What is it?; with no page: the name and (a tool with no page yet)
+known_tool_names	the name without ending of every file and folder directly in <workspace>/tools/<kind>/ and in ~/.foxrun/tools/<kind>/; a .md counts only when its front matter has type: tool; dot files do not count
+cell_link	Tools it needs: a name is a link to its tool page when <kind>/<name>.md exists
+table_when_empty	replace the table with the sentence: No skill is in this folder yet.
+block	NO SKILL.md = every folder without SKILL.md; columns FOLDER|HOLDS; HOLDS = its first file by path, A to Z; (empty) when it has none
+block	NEEDED TOOLS WITH NO PAGE = every name in a Tools it needs cell with no tool page; columns TOOL|NEEDED BY; NEEDED BY = <n> skills
+lint_at_source	a skill whose first sentence is longer than 120 characters is a finding on the skill, not on this page
+link_form	relative path from the page to the file in the workspace home
+link_target	every link opens a file or folder that exists
+block_form	a code fence; label in capitals; count in round brackets after two spaces; column names in capitals; three spaces before each line; columns padded with spaces
+block_when_empty	leave the whole block out when its count is 0
+block_row_order	A to Z by the first column
+max_code_line	78
+max_table_columns	4
+table_cell_guard	a | in a cell is written \|; line breaks in a cell become one space
+forbidden_text	No records yet.|No work has started yet.|TODO|TBD
+emoji	only ✅ 🔄 ☑️ ⬜, and only as a status mark
+blank_page	not allowed: the count block is always there
+no_business_name	does not apply here: a page under workspaces/<workspace>/ is the view of that workspace and can name it
+purpose	see purpose.md: the reader, the question the page answers in ten seconds, and the next page

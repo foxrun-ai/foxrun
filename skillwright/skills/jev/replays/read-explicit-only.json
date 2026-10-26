@@ -1,0 +1,6 @@
+{
+  "name": "read-explicit-only",
+  "run": "read",
+  "input": "A routing task would suit Jev, but nobody named Jev and no loaded skill called it. Do you run Jev? End with: Run Jev: <yes|no>",
+  "expect": {"output_contains": ["Run Jev: no"]}
+}

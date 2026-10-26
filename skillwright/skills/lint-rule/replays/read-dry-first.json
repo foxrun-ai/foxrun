@@ -1,0 +1,6 @@
+{
+  "name": "read-dry-first",
+  "run": "read",
+  "input": "A real finding shows a gap that an existing lint kind can catch. Which script adds the rule, and which flag do you leave off on the first run?",
+  "expect": {"output_contains": ["lint_rule.py", "--write"]}
+}

@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Workspace schematic</title>
+<style>
+:root {
+  --paper: #fbfbf7; --panel: #f4f1e8; --mist: #ece9df; --ink: #101010; --muted: #5f6670; --line: #d6d2c8;
+  --gun: #25292b; --gun-ink: #f7f2e8; --gun-muted: #b9b7b0;
+  --ok: #004225; --ok-soft: #e3ece6;
+  --bad: #b3482d; --bad-deep: #681f1b; --bad-soft: #f6e5df;
+  --ask: #163d5a; --ask-soft: #dbe7ef;
+  --off: #6f716e; --off-soft: #ece9df;
+  --sans: "Instrument Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --mono: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #111111; --panel: #181818; --mist: #222222; --ink: #f7f2e8; --muted: #b8b0a3; --line: #343434;
+    --gun: #1b1e1f; --gun-ink: #f7f2e8; --gun-muted: #8f918e;
+    --ok: #86c5a2; --ok-soft: #12261c;
+    --bad: #ee8a6c; --bad-deep: #f3b19c; --bad-soft: #2e1812;
+    --ask: #9cc6e2; --ask-soft: #10222f;
+    --off: #9a9c98; --off-soft: #222222;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 64px; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.5 var(--sans); }
+button { font: inherit; color: inherit; }
+.i { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.mono { font-family: var(--mono); font-size: 0.86em; }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+
+/* bar */
+.bar { position: sticky; top: 0; z-index: 5; background: var(--gun); color: var(--gun-ink); border-bottom: 1px solid #000; }
+.bar .wrap { display: flex; align-items: center; gap: 12px; min-height: 52px; }
+.bar b { font-weight: 800; letter-spacing: -0.01em; white-space: nowrap; }
+.bar .sp { flex: 1; }
+.seg { display: inline-flex; border: 1px solid #4a4f52; border-radius: 999px; padding: 2px; }
+.seg button { white-space: nowrap; border: 0; background: transparent; color: var(--gun-muted); padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: 14px; min-height: 32px; }
+.seg button[aria-pressed="true"] { background: var(--gun-ink); color: #111; font-weight: 600; }
+button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--ask); outline-offset: 2px; }
+
+/* title block */
+.title { background: var(--gun); color: var(--gun-ink); padding: 34px 0 30px; }
+.title h1 { font-size: clamp(34px, 6vw, 60px); line-height: 0.98; margin: 0 0 14px; font-weight: 800; letter-spacing: -0.03em; }
+.title p { font: 21px/1.35 var(--serif); margin: 0; max-width: 34em; color: #e8e2d6; }
+.title p em { font-style: normal; border-bottom: 2px solid #d9694b; }
+.plate { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 26px; border: 1px solid #4a4f52; border-radius: 8px; overflow: hidden; }
+.plate div { padding: 10px 14px; border-right: 1px solid #4a4f52; min-width: 0; }
+.plate div:last-child { border-right: 0; }
+.plate span { display: block; font: 11px/1.4 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--gun-muted); }
+.plate strong { font: 500 14px/1.4 var(--mono); overflow-wrap: anywhere; }
+
+section { padding: 34px 0 6px; }
+h2 { font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; font-family: var(--mono); font-weight: 500; color: var(--muted); margin: 0 0 14px; }
+h3 { font-size: 26px; letter-spacing: -0.02em; margin: 0; font-weight: 800; }
+.lede { color: var(--muted); margin: -6px 0 16px; max-width: 46em; }
+
+/* legend */
+.legend { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.legend div { padding: 12px 14px; border-right: 1px solid var(--line); background: var(--panel); }
+.legend div:last-child { border-right: 0; }
+.legend p { margin: 6px 0 0; font-size: 14px; color: var(--muted); line-height: 1.4; }
+
+/* status tag */
+.tag { display: inline-flex; align-items: center; gap: 5px; font: 500 12px/1 var(--mono); padding: 5px 8px 5px 6px; border-radius: 999px; white-space: nowrap; border: 1px solid transparent; }
+.tag .i { width: 13px; height: 13px; stroke-width: 2.2; }
+.s-matches { color: var(--ok); background: var(--ok-soft); }
+.s-change, .s-not-on-disk { color: var(--bad-deep); background: var(--bad-soft); border-color: var(--bad); }
+.s-decide { color: var(--ask); background: var(--ask-soft); }
+.s-not-checked, .s-optional { color: var(--off); background: var(--off-soft); }
+
+/* summary */
+.sum { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.sum a { display: grid; grid-template-columns: minmax(150px, 1.1fr) 2fr 2fr 24px; gap: 18px; align-items: center; padding: 14px 16px; color: inherit; text-decoration: none; border-top: 1px solid var(--line); }
+.sum a:first-child { border-top: 0; }
+.sum a:hover { background: var(--panel); }
+.sum .name { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 17px; min-width: 0; }
+.sum .name span { overflow-wrap: anywhere; }
+.sum .cell small { display: block; font: 11px/1.3 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+.nums { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 15px; }
+.nums b { font-weight: 700; }
+.n-ok b { color: var(--ok); } .n-bad b { color: var(--bad); } .n-ask b { color: var(--ask); } .n-off b { color: var(--off); }
+.meter { display: flex; height: 6px; border-radius: 3px; overflow: hidden; background: var(--mist); margin-top: 7px; }
+.meter i { display: block; height: 100%; }
+.m-ok { background: var(--ok); } .m-bad { background: var(--bad); } .m-ask { background: var(--ask); } .m-off { background: var(--off); opacity: 0.5; }
+.go { color: var(--muted); }
+
+/* workspace */
+details.ws { border-top: 2px solid var(--ink); margin-top: 26px; }
+details.ws > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 16px 0; flex-wrap: wrap; }
+details.ws > summary::-webkit-details-marker, details.mod > summary::-webkit-details-marker { display: none; }
+details.ws > summary .chev, details.mod > summary .chev { transition: transform 0.15s; color: var(--muted); }
+details[open] > summary .chev { transform: rotate(90deg); }
+details.ws > summary .nums { margin-left: auto; font-size: 14px; }
+.part { margin: 4px 0 30px; }
+.part-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 0 0 12px; }
+.part-head h4 { margin: 0; font-size: 19px; font-weight: 700; letter-spacing: -0.01em; }
+.part-head p { margin: 0; color: var(--muted); font-size: 14px; }
+.pair { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.col { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); min-width: 0; }
+.col > header { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--line); font: 500 12px/1.3 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
+.col > header small { margin-left: auto; text-transform: none; letter-spacing: 0; color: var(--muted); font-size: 12px; }
+.switch { display: none; margin: 0 0 12px; }
+.switch .seg { border-color: var(--line); }
+.switch .seg button { color: var(--muted); }
+.switch .seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+
+/* tree */
+.tree { padding: 4px 0 8px; }
+.grp { font: 11px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding: 14px 14px 6px; }
+.ln { padding: 7px 14px; border-top: 1px solid transparent; }
+.ln + .ln { border-top-color: color-mix(in srgb, var(--line) 55%, transparent); }
+.ln .row { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.ln .nm { font: 500 14px/1.3 var(--mono); overflow-wrap: anywhere; min-width: 0; }
+.ln .ct { color: var(--muted); font-size: 13px; white-space: nowrap; }
+.ln .home { margin-left: auto; color: var(--muted); font: 12px/1.3 var(--mono); text-align: right; overflow-wrap: anywhere; min-width: 0; }
+.ln .row > .tag { margin-left: auto; }
+.ln .row > .home + .tag { margin-left: 4px; }
+.ln.d1 { padding-left: 38px; } .ln.d2 { padding-left: 62px; }
+.ln.d1 .row::before, .ln.d2 .row::before { content: ""; width: 10px; height: 1px; background: var(--line); margin-left: -14px; flex: none; }
+.ln.bad { background: var(--bad-soft); box-shadow: inset 3px 0 0 var(--bad); }
+.ln.ask { box-shadow: inset 3px 0 0 var(--ask); }
+.ln.quiet .nm, .ln.quiet .i { color: var(--off); }
+details.more > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 6px 14px 8px 38px; font-size: 13px; color: var(--muted); }
+details.more > summary::-webkit-details-marker { display: none; }
+details.more > summary .chev { transition: transform 0.15s; }
+details.more { border-top: 1px solid color-mix(in srgb, var(--line) 55%, transparent); }
+.ln.nest { padding-top: 4px; padding-bottom: 4px; }
+.ln.nest .nm { font-weight: 400; font-size: 13px; }
+.ln.nest .why { font-size: 13px; }
+.why { margin: 5px 0 1px 24px; font-size: 14px; line-height: 1.45; }
+.why .to { font: 500 13px/1.4 var(--mono); display: flex; align-items: center; gap: 5px; margin-bottom: 2px; overflow-wrap: anywhere; }
+.why .dm { display: block; color: var(--muted); font-size: 13px; margin-top: 3px; }
+.rule { font: 12px/1 var(--mono); border: 1px solid currentColor; background: transparent; border-radius: 5px; padding: 4px 6px; margin: 2px 4px 2px 0; cursor: pointer; opacity: 0.85; }
+.rule:hover { opacity: 1; }
+.rule-note { display: block; font-size: 13px; margin-top: 4px; padding: 6px 8px; border-left: 2px solid currentColor; background: color-mix(in srgb, var(--paper) 70%, transparent); }
+
+/* tables */
+details.mod { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); margin-bottom: 10px; overflow: hidden; }
+details.mod > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 11px 14px; flex-wrap: wrap; }
+details.mod > summary b { font-size: 16px; }
+details.mod > summary .tier { font: 12px/1 var(--mono); color: var(--muted); }
+details.mod > summary .nums { margin-left: auto; font-size: 13px; }
+.tb { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tb th { font: 500 11px/1.3 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 8px 14px; border-top: 1px solid var(--line); background: var(--mist); }
+.tb td { padding: 8px 14px; border-top: 1px solid color-mix(in srgb, var(--line) 55%, transparent); vertical-align: top; }
+.tb td.nm { font: 500 13.5px/1.35 var(--mono); overflow-wrap: anywhere; }
+.tb td.nm .row { display: flex; gap: 8px; align-items: flex-start; }
+.tb td.nm .i { margin-top: 2px; color: var(--muted); }
+.tb tr.coll td { font: 11px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding-top: 14px; border-top: 1px solid var(--line); }
+.tb tr.bad td { background: var(--bad-soft); }
+.tb tr.bad td:first-child { box-shadow: inset 3px 0 0 var(--bad); }
+.tb td.num { white-space: nowrap; color: var(--muted); }
+.tb td.st { text-align: right; white-space: nowrap; }
+.tb .why { margin-left: 24px; font-family: var(--sans); font-weight: 400; }
+.install { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; margin-bottom: 10px; background: var(--panel); }
+.install.bad { background: var(--bad-soft); border-color: var(--bad); }
+.install .row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.install .row .tag { margin-left: auto; }
+.install .why { margin-left: 24px; }
+.plain { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--panel); }
+.facts { display: flex; flex-wrap: wrap; gap: 6px 26px; margin: 0 0 14px; font-size: 15px; }
+.facts b { font-family: var(--mono); font-weight: 500; }
+footer { margin-top: 44px; padding: 26px 0 60px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+footer table { border-collapse: collapse; margin-top: 8px; }
+footer td { padding: 2px 16px 2px 0; vertical-align: top; overflow-wrap: anywhere; }
+.empty { padding: 18px 14px; color: var(--muted); }
+body.breaks-only .hide-ok { display: none; }
+
+@media (min-width: 861px) {
+  .tb { table-layout: fixed; }
+  .tb th:nth-child(2) { width: 170px; } .tb th:nth-child(3) { width: 130px; } .tb th:nth-child(4) { width: 250px; } .tb th:nth-child(5) { width: 170px; }
+}
+@media (max-width: 860px) {
+  .wrap { padding: 0 14px; }
+  .bar b { font-size: 14px; }
+  .seg button { padding: 6px 10px; font-size: 13px; }
+  .plate { grid-template-columns: 1fr 1fr; }
+  .plate div:nth-child(2) { border-right: 0; }
+  .plate div:nth-child(-n+2) { border-bottom: 1px solid #4a4f52; }
+  .legend { grid-template-columns: 1fr 1fr; }
+  .legend div:nth-child(2) { border-right: 0; }
+  .legend div:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+  .sum a { grid-template-columns: 1fr 1fr; gap: 10px 14px; }
+  .sum .name { grid-column: 1 / -1; }
+  .sum .go { display: none; }
+  .pair { grid-template-columns: 1fr; }
+  .switch { display: block; }
+  .pair[data-show="as-is"] .col.model, .pair[data-show="model"] .col.as-is { display: none; }
+  details.ws > summary .nums { margin-left: 0; width: 100%; }
+  .ln .home { display: none; }
+  .ln .row > .home + .tag { margin-left: auto; }
+  .ln.d1 { padding-left: 30px; } .ln.d2 { padding-left: 46px; }
+  .tb thead { display: none; }
+  .tb, .tb tbody, .tb tr, .tb td { display: block; width: 100%; }
+  .tb tr { border-top: 1px solid color-mix(in srgb, var(--line) 55%, transparent); padding: 8px 14px 9px 38px; position: relative; }
+  .tb td { border: 0; padding: 0; }
+  .tb td.nm .row { margin-left: -24px; padding-right: 118px; }
+  .tb .why { margin-left: 0; }
+  .tb td.st { position: absolute; top: 8px; right: 14px; width: auto; }
+  .tb td.num { display: inline; white-space: normal; font-size: 13px; }
+  .tb td.num[data-l]::before { content: attr(data-l) " "; color: var(--ink); }
+  .tb td.num + td.num::before { content: " · "; }
+  .tb td.num + td.num[data-l]::before { content: " · " attr(data-l) " "; color: var(--ink); }
+  .tb td.num[data-empty] { display: none; }
+  .tb tr.coll { padding: 12px 14px 6px; border-top: 1px solid var(--line); }
+  .tb tr.coll td { border: 0; padding: 0; }
+  .tb tr.bad { background: var(--bad-soft); box-shadow: inset 3px 0 0 var(--bad); }
+  .tb tr.bad td, .tb tr.bad td:first-child { background: transparent; box-shadow: none; }
+  .tb td.nm { min-height: 28px; }
+  .title { padding: 24px 0 22px; }
+  .title p { font-size: 19px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6.5a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></symbol>
+  <symbol id="i-files" viewBox="0 0 24 24"><path d="M15 2H9a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7z"/><path d="M15 2v5h5"/><path d="M4 7v13a2 2 0 0 0 2 2h9"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1.5-1.5"/></symbol>
+  <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></symbol>
+  <symbol id="i-table" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></symbol>
+  <symbol id="i-view" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-mirror" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></symbol>
+  <symbol id="i-trend" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
+  <symbol id="i-import" viewBox="0 0 24 24"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></symbol>
+  <symbol id="i-module" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></symbol>
+  <symbol id="i-workspace" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></symbol>
+  <symbol id="i-machine" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+  <symbol id="i-matches" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+  <symbol id="i-change" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-not-on-disk" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke-dasharray="3 3"/><path d="M8.5 12h7"/></symbol>
+  <symbol id="i-decide" viewBox="0 0 24 24"><path d="M9 9a3 3 0 1 1 4.4 2.6c-.9.5-1.4 1.2-1.4 2.2"/><path d="M12 18h.01"/></symbol>
+  <symbol id="i-not-checked" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M6.5 6.5l11 11"/></symbol>
+  <symbol id="i-optional" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15"/><path d="M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+</svg>
+
+<div class="bar"><div class="wrap">
+  <b>Workspace schematic</b><span class="sp"></span>
+  <div class="seg" role="group" aria-label="Which lines to show">
+    <button type="button" id="show-all" aria-pressed="true">All lines</button>
+    <button type="button" id="show-breaks" aria-pressed="false">Breaks only</button>
+  </div>
+</div></div>
+
+<header class="title"><div class="wrap">
+  <h1>Workspace schematic</h1>
+  <p>Each workspace as it is, beside what the model says. Folders on disk. Tables in the database. <em>Red marks a break</em>, with the decision it breaks.</p>
+  <div class="plate" id="plate"></div>
+</div></header>
+
+<main class="wrap" id="main">
+  <noscript><p class="empty">This page draws its data with a script. Turn scripts on for local files.</p></noscript>
+</main>
+
+<script id="schematic-data" type="application/json">__SCHEMATIC_JSON__</script>
+<script>
+(function () {
+  "use strict";
+  var main = document.getElementById("main");
+  var data;
+  try { data = JSON.parse(document.getElementById("schematic-data").textContent); }
+  catch (error) { main.appendChild(el("p", { class: "empty" }, "The page data did not load. Run the lint again.")); return; }
+
+  var BREAK = { "change": 1, "not on disk": 1 };
+  function num(n) { return Number(n).toLocaleString("en-US"); }
+  function plural(n, one, many) { return num(n) + " " + (n === 1 ? one : many); }
+  function el(tag, attrs) {
+    var node = document.createElement(tag), i, child;
+    for (var key in (attrs || {})) { if (attrs[key] !== null && attrs[key] !== undefined) node.setAttribute(key, attrs[key]); }
+    for (i = 2; i < arguments.length; i++) {
+      child = arguments[i];
+      if (child === null || child === undefined || child === false) continue;
+      if (Array.isArray(child)) child.forEach(function (c) { if (c) node.appendChild(c); });
+      else node.appendChild(typeof child === "object" ? child : document.createTextNode(String(child)));
+    }
+    return node;
+  }
+  function icon(name, cls) {
+    // The parser gives inline svg its namespace. The name comes from a fixed set.
+    var holder = document.createElement("span");
+    holder.innerHTML = '<svg class="i' + (cls ? " " + cls : "") + '" aria-hidden="true"><use href="#i-' + String(name).replace(/[^a-z-]/g, "") + '"/></svg>';
+    return holder.firstChild;
+  }
+  function slug(status) { return status.replace(/ /g, "-"); }
+  // A status is shown with its exact word. Context goes beside the tag, never in it.
+  function tag(status) { return el("span", { class: "tag s-" + slug(status) }, icon(slug(status)), status); }
+  function rules(ids) {
+    return (ids || []).map(function (id) {
+      var rule = data.rules[id] || { name: "", status: "unknown" };
+      var button = el("button", { type: "button", class: "rule", title: rule.name + " (" + rule.status + ")" }, id);
+      button.addEventListener("click", function () {
+        var box = button.parentNode, old = box.querySelector('.rule-note[data-id="' + id + '"]');
+        if (old) { old.remove(); return; }
+        box.appendChild(el("span", { class: "rule-note", "data-id": id }, id + ": " + rule.name + " (" + rule.status + ")"));
+      });
+      return button;
+    });
+  }
+  function nums(tally, words) {
+    var box = el("span", { class: "nums" });
+    box.appendChild(el("span", { class: "n-ok" }, el("b", null, num(tally.matches)), " " + (words ? words[0] : "match")));
+    box.appendChild(el("span", { class: "n-bad" }, el("b", null, num(tally.breaks)), " " + (tally.breaks === 1 ? "break" : "breaks")));
+    if (tally.decide) box.appendChild(el("span", { class: "n-ask" }, el("b", null, num(tally.decide)), " decide"));
+    if (tally.not_checked) box.appendChild(el("span", { class: "n-off" }, el("b", null, num(tally.not_checked)), " not checked"));
+    return box;
+  }
+  function meter(tally) {
+    var total = tally.matches + tally.breaks + (tally.decide || 0) + (tally.not_checked || 0) || 1;
+    function seg(cls, n) { return n ? el("i", { class: cls, style: "width:" + (100 * n / total).toFixed(2) + "%" }) : null; }
+    return el("span", { class: "meter", role: "img", "aria-label": tally.matches + " match, " + tally.breaks + " break" },
+      seg("m-ok", tally.matches), seg("m-bad", tally.breaks), seg("m-ask", tally.decide), seg("m-off", tally.not_checked));
+  }
+  function section(id, heading) {
+    var node = el("section", { id: id }, el("h2", null, heading));
+    main.appendChild(node);
+    return node;
+  }
+
+  // title plate
+  var plate = document.getElementById("plate");
+  var totals = data.summary.reduce(function (sum, row) {
+    sum.breaks += row.folders.breaks + row.tables.breaks; sum.matches += row.folders.matches + row.tables.matches; return sum;
+  }, { breaks: 0, matches: 0 });
+  [["Workspaces", String(data.summary.length)], ["Breaks", num(totals.breaks)], ["Matches", num(totals.matches)],
+   ["Blueprint", data.inputs.blueprint + " · " + data.inputs.database.schema_sha256.slice(0, 8)]].forEach(function (pair) {
+    plate.appendChild(el("div", null, el("span", null, pair[0]), el("strong", null, pair[1])));
+  });
+
+  // legend
+  var legend = section("read", "How to read a line");
+  legend.appendChild(el("div", { class: "legend" },
+    el("div", null, tag("matches"), el("p", null, "It is where the model says.")),
+    el("div", null, tag("change"), " ", tag("not on disk"), el("p", null, "A break. It differs from the model, or the model has it and the disk does not. Tap the id to see the decision.")),
+    el("div", null, tag("decide"), el("p", null, "The model is not decided for this line yet.")),
+    el("div", null, tag("not checked"), el("p", null, "The lint could not read what it needs."))));
+
+  // summary
+  var summary = section("summary", "One row per workspace");
+  var sum = el("div", { class: "sum" });
+  data.summary.forEach(function (row) {
+    sum.appendChild(el("a", { href: "#ws-" + row.workspace },
+      el("span", { class: "name" }, icon("workspace"), el("span", null, row.workspace)),
+      el("span", { class: "cell" }, el("small", null, "Folders"), nums(row.folders), meter(row.folders)),
+      el("span", { class: "cell" }, el("small", null, "Tables"), nums(row.tables), meter(row.tables)),
+      icon("arrow", "go")));
+  });
+  var dbs = data.database.summary;
+  sum.appendChild(el("a", { href: "#database" },
+    el("span", { class: "name" }, icon("database"), el("span", null, "The one database")),
+    el("span", { class: "cell" }, el("small", null, "Blueprint " + data.database.version), nums({ matches: dbs.matches, breaks: dbs.breaks, decide: dbs.decide }), meter({ matches: dbs.matches, breaks: dbs.breaks, decide: dbs.decide })),
+    el("span", { class: "cell" }, el("small", null, "Installed modules"), el("span", { class: "nums" }, el("span", null, el("b", null, num(data.database.counts.installed_module_rows)), " rows"))),
+    icon("arrow", "go")));
+  summary.appendChild(sum);
+
+  // the one database
+  var database = section("database", "The one database");
+  var c = data.database.counts;
+  database.appendChild(el("div", { class: "facts" },
+    el("span", null, el("b", null, num(c.database_tables)), " tables in data.db · ", el("b", null, num(c.blueprint_tables)), " in the blueprint"),
+    el("span", null, el("b", null, num(c.database_views)), " views in data.db · ", el("b", null, num(c.blueprint_views)), " in the blueprint"),
+    el("span", null, el("b", null, num(c.fields_database)), " fields in data.db · ", el("b", null, num(c.fields_model)), " in the blueprint")));
+  var dbTree = el("div", { class: "plain tree" });
+  data.database.lines.forEach(function (line) {
+    var bad = BREAK[line.status];
+    dbTree.appendChild(el("div", { class: "ln" + (bad ? " bad" : line.status === "decide" ? " ask" : " hide-ok") },
+      el("div", { class: "row" }, icon(line.what === "file" ? "database" : line.what), el("span", { class: "nm" }, line.name), el("span", { class: "ct" }, line.what), tag(line.status)),
+      el("div", { class: "why" }, line.line + " ", rules(line.rules))));
+  });
+  database.appendChild(dbTree);
+
+  // workspaces
+  var groups = {};
+  data.groups.forEach(function (group) { groups[group.id] = group.label; });
+
+  function dm1Line(dm) {
+    if (!dm) return null;
+    var parts = [];
+    if (dm.move) parts.push(plural(dm.move, "file moves", "files move") + (dm.homes.length ? " to " + dm.homes.map(function (h) { return h.home; }).join(", ") : ""));
+    if (dm.keep) parts.push(plural(dm.keep, "file stays", "files stay"));
+    if (dm.ask) parts.push(plural(dm.ask, "file needs", "files need") + " an answer");
+    if (!parts.length) return null;
+    if (dm.not_listed) parts.push(num(dm.not_listed) + " not listed");
+    if (dm.protected) parts.push(num(dm.protected) + " protected");
+    return el("span", { class: "dm" }, "Classification: " + parts.join(" · ") + ".");
+  }
+  function asIsLine(item) {
+    var bad = BREAK[item.status], ok = item.status === "matches";
+    var kind = item.kind === "folder" || item.kind === "folders" ? "folder" : item.kind === "link" ? "link" : item.kind === "files" ? "files" : "file";
+    var count = item.kind === "folder" ? (item.opened ? plural(item.files, "file", "files") : "not opened") : null;
+    var node = el("div", { class: "ln d" + Math.min(item.depth, 2) + (bad ? " bad" : item.status === "decide" ? " ask" : ok ? " hide-ok" : "") },
+      el("div", { class: "row" }, icon(kind), el("span", { class: "nm" }, item.name + (item.kind === "folder" ? "/" : "")),
+        count ? el("span", { class: "ct" }, count) : null,
+        ok && item.collection ? el("span", { class: "home" }, item.collection) : null, tag(item.status)));
+    if (!ok) {
+      node.appendChild(el("div", { class: "why" },
+        item.to ? el("span", { class: "to" }, icon("arrow"), item.to) : null, item.line + " ", rules(item.rules), dm1Line(item.dm1)));
+    }
+    return node;
+  }
+  function modelLine(item) {
+    var bad = item.status === "not on disk";
+    var quiet = item.status === "optional" || item.status === "not checked";
+    var node = el("div", { class: "ln d" + Math.min(item.depth, 2) + (bad ? " bad" : quiet ? " quiet hide-ok" : " hide-ok") },
+      el("div", { class: "row" }, icon(item.kind), el("span", { class: "nm" }, item.name + (item.kind === "folder" ? "/" : "")),
+        el("span", { class: "home" }, item.collection), tag(item.status)));
+    if (item.line) node.appendChild(el("div", { class: "why" }, item.line + " ", bad ? rules(item.rules) : null));
+    return node;
+  }
+  function nestedLine(item) {
+    var pad = 14 + Math.min(item.depth, 8) * 16, bad = BREAK[item.status];
+    var node = el("div", { class: "ln nest" + (bad ? " bad" : ""), style: "padding-left:" + pad + "px" },
+      el("div", { class: "row" }, icon(item.kind === "link" ? "link" : "folder"), el("span", { class: "nm" }, item.name + "/"),
+        el("span", { class: "ct" }, item.opened ? plural(item.files, "file", "files") : "not opened"), tag(item.status)));
+    // a break at any depth shows its plain line and its decision ids
+    if (item.status !== "matches" && item.line) node.appendChild(el("div", { class: "why" }, item.line + " ", rules(item.rules)));
+    return node;
+  }
+  /* filter:start */
+  // Which lines stay in the "Breaks only" view: every break, every counted decide line, and every folder above a break.
+  function breakFilter(items) {
+    var isBreak = function (item) { return item.status === "change" || item.status === "not on disk"; };
+    var above = {};
+    items.forEach(function (item) {
+      if (!isBreak(item)) return;
+      var parts = String(item.path).split("/");
+      for (var n = 1; n < parts.length; n++) above[parts.slice(0, n).join("/")] = true;
+    });
+    return items.map(function (item) {
+      return isBreak(item) || (item.status === "decide" && !item.nested) || above[item.path] === true;
+    });
+  }
+  /* filter:end */
+  function tree(items, draw) {
+    var box = el("div", { class: "tree" }), last = null;
+    var branch = null, keep = breakFilter(items);
+    items.forEach(function (item, index) {
+      var line;
+      if (item.nested) {
+        // folders below an emitted line sit in one closed branch; each keeps its own status word
+        if (!branch) {
+          branch = el("details", { class: "more hide-ok" }, el("summary", null, icon("chev", "chev"), el("span", { class: "more-n" })));
+          branch.count = 0;
+          box.appendChild(branch);
+        }
+        branch.count += 1;
+        branch.querySelector(".more-n").textContent = "Show " + plural(branch.count, "folder", "folders") + " inside";
+        line = nestedLine(item);
+        branch.appendChild(line);
+        // a branch that holds a break stays in the "Breaks only" view, and opens there
+        if (keep[index]) { branch.classList.remove("hide-ok"); branch.setAttribute("data-breaks", "1"); }
+      } else {
+        branch = null;
+        if (item.group !== last) { box.appendChild(el("div", { class: "grp" }, groups[item.group] || item.group)); last = item.group; }
+        line = draw(item);
+        box.appendChild(line);
+      }
+      line.classList.toggle("hide-ok", !keep[index]);
+      line.setAttribute("data-path", item.path);
+      line.setAttribute("data-status", item.status);
+    });
+    // a group header hides in the breaks-only view when all of its lines hide
+    Array.prototype.forEach.call(box.querySelectorAll(".grp"), function (head) {
+      var next = head.nextElementSibling, visible = false;
+      while (next && !next.classList.contains("grp")) { if (!next.classList.contains("hide-ok")) visible = true; next = next.nextElementSibling; }
+      if (!visible) head.classList.add("hide-ok");
+    });
+    return box;
+  }
+  function objectRow(object) {
+    var bad = BREAK[object.status];
+    var where = object.scope === "workspace" ? " here" : object.scope === "shared" ? " shared" : "";
+    var name = el("td", { class: "nm" }, el("div", { class: "row" }, icon(object.kind), el("span", null, object.name)));
+    if (object.status !== "matches") name.appendChild(el("div", { class: "why" }, object.line + " ", rules(object.rules)));
+    var waits = object.sources.filter(function (s) { return s.rows; }).reduce(function (n, s) { return n + s.rows; }, 0);
+    var rows = object.rows === null ? "" : plural(object.rows, "row", "rows") + where + (waits && object.load !== "loaded" ? " · " + num(waits) + " in old files" : "");
+    return el("tr", { class: bad ? "bad" : object.status === "matches" || object.status === "optional" ? "hide-ok" : "" }, name,
+      el("td", { class: "num", "data-l": "blueprint" }, object.kind + ", " + plural(object.fields_model, "field", "fields")),
+      el("td", { class: "num", "data-l": "data.db" }, object.fields_db === null ? "not there" : object.kind_db + ", " + plural(object.fields_db, "field", "fields")),
+      el("td", rows ? { class: "num" } : { class: "num", "data-empty": "1" }, rows),
+      el("td", { class: "st" }, tag(object.status)));
+  }
+  function moduleBlock(module) {
+    var counts = module.counts;
+    var body = el("tbody");
+    module.collections.forEach(function (collection) {
+      var allOk = collection.objects.every(function (o) { return o.status === "matches" || o.status === "optional"; });
+      body.appendChild(el("tr", { class: "coll" + (allOk ? " hide-ok" : "") }, el("td", { colspan: "5" }, module.name + " / " + collection.name)));
+      collection.objects.forEach(function (object) { body.appendChild(objectRow(object)); });
+    });
+    var open = counts.breaks > 0;
+    var block = el("details", { class: "mod" + (counts.breaks || counts.not_checked ? "" : " hide-ok") },
+      el("summary", null, icon("chev", "chev"), icon("module"), el("b", null, module.name), el("span", { class: "tier" }, module.tier === "no ruling" ? "tier: no ruling" : module.tier + " tier"),
+        nums({ matches: counts.matches, breaks: counts.breaks, not_checked: counts.not_checked })),
+      el("table", { class: "tb" }, el("thead", null, el("tr", null, el("th", null, "Name"), el("th", null, "Blueprint " + data.database.version), el("th", null, "Database"), el("th", null, "Rows"), el("th", null, ""))), body));
+    if (open) block.setAttribute("open", "");
+    return block;
+  }
+  function workspaceBlock(workspace, row, first) {
+    var folders = workspace.folders, tables = workspace.tables;
+    var block = el("details", { class: "ws", id: "ws-" + workspace.name },
+      el("summary", null, icon("chev", "chev"), el("h3", null, workspace.name),
+        el("span", { class: "nums" },
+          el("span", { class: "n-bad" }, "Folders ", el("b", null, num(row.folders.breaks)), row.folders.breaks === 1 ? " break" : " breaks"),
+          el("span", { class: "n-bad" }, "Tables ", el("b", null, num(row.tables.breaks)), row.tables.breaks === 1 ? " break" : " breaks"))));
+    if (first) block.setAttribute("open", "");
+
+    // folders
+    var part = el("div", { class: "part" },
+      el("div", { class: "part-head" }, el("h4", null, "Folders"), nums(row.folders),
+        el("p", null, num(folders.files.counted) + " files counted. The classification moves " + num(folders.files.move) + ", keeps " + num(folders.files.keep) + ", and asks about " + num(folders.files.ask) + ".")));
+    if (!folders.on_disk) {
+      part.appendChild(el("p", { class: "empty" }, "This workspace has no folder in this copy."));
+    } else {
+      var pair = el("div", { class: "pair", "data-show": "as-is" },
+        el("div", { class: "col as-is" }, el("header", null, icon("folder"), "As it is", el("small", null, "the disk today")), tree(folders.as_is, asIsLine)),
+        el("div", { class: "col model" }, el("header", null, icon("matches"), "The model says", el("small", null, "decisions and the workspace spec")), tree(folders.model, modelLine)));
+      var a = el("button", { type: "button", "aria-pressed": "true" }, "As it is"), b = el("button", { type: "button", "aria-pressed": "false" }, "The model says");
+      a.addEventListener("click", function () { pair.setAttribute("data-show", "as-is"); a.setAttribute("aria-pressed", "true"); b.setAttribute("aria-pressed", "false"); });
+      b.addEventListener("click", function () { pair.setAttribute("data-show", "model"); b.setAttribute("aria-pressed", "true"); a.setAttribute("aria-pressed", "false"); });
+      part.appendChild(el("div", { class: "switch" }, el("div", { class: "seg", role: "group", "aria-label": "Which tree to show" }, a, b)));
+      part.appendChild(pair);
+    }
+    block.appendChild(part);
+
+    // tables
+    var install = tables.installed, bad = BREAK[install.status];
+    var tpart = el("div", { class: "part" },
+      el("div", { class: "part-head" }, el("h4", null, "Tables"), nums(row.tables),
+        el("p", null, "The staging database beside blueprint " + data.database.version + ". " + (tables.counts.waiting_for_rows ? plural(tables.counts.waiting_for_rows, "table waits", "tables wait") + " for records." : ""))),
+      el("div", { class: "install" + (bad ? " bad" : " hide-ok") },
+        el("div", { class: "row" }, icon("module"), el("b", null, "Installed modules"),
+          el("span", { class: "ct" }, "model: " + install.expected.join(", ") + " · database: " + (install.found.length ? install.found.join(", ") : "none")), tag(install.status)),
+        bad ? el("div", { class: "why" }, install.line + " ", rules(install.rules)) : null));
+    tables.modules.forEach(function (module) { tpart.appendChild(moduleBlock(module)); });
+    block.appendChild(tpart);
+    return block;
+  }
+  var holder = section("workspaces", "Each workspace");
+  data.workspaces.forEach(function (workspace, index) { holder.appendChild(workspaceBlock(workspace, data.summary[index], index === 0)); });
+
+  // other locations
+  var machine = section("machine", "Other locations on this machine");
+  machine.appendChild(el("p", { class: "lede" }, "From the location map: " + num(data.machine.locations) + " locations outside data.db, by kind. Counts only."));
+  var mbody = el("tbody");
+  data.machine.kinds.forEach(function (kind) {
+    var bad = BREAK[kind.status];
+    var name = el("td", { class: "nm" }, el("div", { class: "row" }, icon("machine"), el("span", null, kind.kind)));
+    if (kind.line) name.appendChild(el("div", { class: "why" }, kind.line + " ", rules(kind.rules)));
+    mbody.appendChild(el("tr", { class: bad ? "bad" : kind.status === "matches" ? "hide-ok" : "" }, name,
+      el("td", { class: "num" }, plural(kind.locations, "location", "locations")),
+      el("td", { class: "num" }, num(kind.pass) + " pass · " + num(kind.fail) + " fail"),
+      el("td", kind.not_verified ? { class: "num" } : { class: "num", "data-empty": "1" }, kind.not_verified ? num(kind.not_verified) + " not verified" : ""),
+      el("td", { class: "st" }, tag(kind.status))));
+  });
+  machine.appendChild(el("div", { class: "plain" }, el("table", { class: "tb" }, el("thead", null, el("tr", null, el("th", null, "Kind"), el("th", null, "Locations"), el("th", null, "Location map verdict"), el("th", null, "Not verified"), el("th", null, ""))), mbody)));
+
+  // footer
+  var foot = el("footer", null,
+    el("div", null, "Drawn from the lint data and nothing else. " + data.notes.ignored + " Hidden folders and archive: " + data.notes.not_opened.toLowerCase()),
+    el("table", null, el("tbody", null, data.inputs.files.map(function (file) {
+      return el("tr", null, el("td", null, file.role), el("td", { class: "mono" }, file.path), el("td", { class: "mono" }, file.sha256.slice(0, 12)));
+    }).concat([el("tr", null, el("td", null, "database"), el("td", { class: "mono" }, data.inputs.database.path), el("td", { class: "mono" }, data.inputs.database.schema_sha256.slice(0, 12)))]))));
+  main.appendChild(foot);
+
+  // controls
+  var all = document.getElementById("show-all"), only = document.getElementById("show-breaks");
+  function show(breaks) {
+    document.body.classList.toggle("breaks-only", breaks);
+    // closed branches hide their lines, so a branch with a break opens in the "Breaks only" view and closes again after
+    Array.prototype.forEach.call(document.querySelectorAll('details.more[data-breaks]'), function (branch) {
+      if (breaks && !branch.open) { branch.open = true; branch.setAttribute("data-opened", "1"); }
+      else if (!breaks && branch.getAttribute("data-opened")) { branch.open = false; branch.removeAttribute("data-opened"); }
+    });
+    all.setAttribute("aria-pressed", String(!breaks)); only.setAttribute("aria-pressed", String(breaks));
+  }
+  all.addEventListener("click", function () { show(false); });
+  only.addEventListener("click", function () { show(true); });
+  function openTarget() {
+    var target = location.hash ? document.getElementById(location.hash.slice(1)) : null;
+    if (target && target.tagName === "DETAILS") { target.setAttribute("open", ""); target.scrollIntoView(); }
+  }
+  window.addEventListener("hashchange", openTarget);
+  openTarget();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "name": "duplicate-check-first",
+  "run": "read",
+  "input": "Someone says: add a task to fix the nightly backup. What do you run before work.py create? Name the table you search.",
+  "expect": {"output_contains": ["tasks"]}
+}

@@ -1,0 +1,19 @@
+{
+  "name": "foxrun",
+  "description": "Set up Foxrun, open agent threads, and ask Foxrun how it works.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Foxrun",
+    "url": "https://github.com/foxrun-ai"
+  },
+  "homepage": "https://github.com/foxrun-ai/foxrun",
+  "repository": "https://github.com/foxrun-ai/foxrun",
+  "license": "MIT",
+  "keywords": [
+    "agents",
+    "workspaces",
+    "memory",
+    "setup",
+    "threads"
+  ]
+}

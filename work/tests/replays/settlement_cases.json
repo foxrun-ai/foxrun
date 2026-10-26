@@ -1,0 +1,95 @@
+[
+  {
+    "name": "P1-long-turn-older-unrelated-comment",
+    "rows": [{"kind": "comment", "id": 1, "subject_id": "T1", "body": "person: Let me know if you want the old accounting report; we can review it later.", "at": "2026-09-29T13:00:00Z"}],
+    "turns": [{"text": "Let me know if the new inventory report should show stock by country and owner.", "timestamp": "2026-09-29T14:00:00Z", "assistant_before": "Should the new inventory report show stock by country and owner?"}],
+    "expected_matches": [false], "expected_recorded": [], "expected_unpromoted": []
+  },
+  {
+    "name": "P2-yes-later-unrelated-row",
+    "rows": [{"kind": "comment", "id": 2, "subject_id": "T2", "body": "person: yes", "at": "2026-09-29T14:01:00Z"}],
+    "turns": [{"text": "yes", "timestamp": "2026-09-29T14:00:30Z", "assistant_before": "Should I approve T1?"}],
+    "expected_matches": [false], "expected_recorded": [], "expected_unpromoted": [1]
+  },
+  {
+    "name": "P2b-yes-decision-days-later",
+    "rows": [{"kind": "decision", "id": "g-cedar-shop-rule-13", "person_words": "yes", "decided_on": "2026-10-02T14:01:00Z", "source": null}],
+    "turns": [{"text": "yes", "timestamp": "2026-09-29T14:01:00Z", "assistant_before": "Should I record g-cedar-shop-rule-13?"}],
+    "expected_matches": [false], "expected_recorded": [], "expected_unpromoted": [1]
+  },
+  {
+    "name": "P3-two-approved-one-approval-row",
+    "rows": [{"kind": "approval", "id": 3, "subject_id": "T8", "person_words": "approved", "given_at": "2026-09-29T14:02:00Z"}],
+    "turns": [{"text": "approved", "timestamp": "2026-09-29T14:00:00Z", "assistant_before": "Should I approve T8?"}, {"text": "approved", "timestamp": "2026-09-29T14:01:00Z", "assistant_before": "Should I approve T8?"}],
+    "expected_matches": [true, true], "expected_recorded": ["3"], "expected_unpromoted": [2]
+  },
+  {
+    "name": "P4-pricing-tier-unrelated-decision",
+    "rows": [{"kind": "decision", "id": "g-cedar-shop-rule-16", "person_words": "we go with B for the risk level", "decided_on": "2026-09-29T14:03:00Z", "source": null}],
+    "turns": [{"text": "we go with B for the pricing tier", "timestamp": "2026-09-29T14:02:00Z", "assistant_before": "Should I settle pricing tier B?"}],
+    "expected_matches": [false], "expected_recorded": [], "expected_unpromoted": [1]
+  },
+  {
+    "name": "P5-approved-other-item-same-task",
+    "rows": [{"kind": "comment", "id": 5, "subject_id": "T5", "body": "person on R15: 'approved'", "at": "2026-09-29T14:15:00-04:00"}],
+    "turns": [{"text": "approved", "timestamp": "2026-09-29T14:00:00-04:00", "assistant_before": "Should I approve T5 R14?"}],
+    "expected_matches": [false], "expected_recorded": [], "expected_unpromoted": [1]
+  },
+  {
+    "name": "P6-unrelated-backfill-long-turn",
+    "rows": [{"kind": "comment", "id": 6, "subject_id": "T6", "body": "Backfill is final; run the migration tonight after review.", "at": "2026-09-29T16:00:00-04:00"}],
+    "turns": [{"text": "Okay sounds good, run the migration tonight, that is final.", "timestamp": "2026-09-29T14:00:00-04:00", "assistant_before": "Should I run the migration tonight?"}],
+    "expected_matches": [false], "expected_recorded": [], "expected_unpromoted": [1]
+  },
+  {
+    "name": "P7-pasted-agent-status-is-not-person-comment",
+    "rows": [{"kind": "comment", "id": 7, "subject_id": "T4", "body": "The reviewer found 730 activity rows are echoes of comments and receipts, stored twice.", "at": "2026-09-29T14:01:00Z"}],
+    "turns": [{"text": "The rule is to review this pasted agent status: The reviewer found 730 activity rows are echoes of comments and receipts, stored twice.", "timestamp": "2026-09-29T14:00:00Z", "assistant_before": ""}],
+    "expected_matches": [false], "expected_recorded": [], "expected_unpromoted": [1]
+  },
+  {
+    "name": "P8-common-eight-words-date-only-decision",
+    "rows": [{"kind": "decision", "id": "g-cedar-shop-rule-17", "person_words": "we go with the shared receipt for every workspace record without review", "decided_on": "2026-09-29", "source": null}],
+    "turns": [{"text": "The rule is we go with the shared receipt for every workspace task after review.", "timestamp": "2026-09-29T14:00:00Z", "assistant_before": ""}],
+    "expected_matches": [false], "expected_recorded": [], "expected_unpromoted": [1]
+  },
+  {
+    "name": "P9-date-mismatch-in-lead-mode",
+    "rows": [{"kind": "comment", "id": 9, "subject_id": "T9", "body": "person: The rule is we approved the new event shape for every workspace record today.", "at": "2026-09-28T14:00:00Z"}],
+    "turns": [{"text": "The rule is we approved the new event shape for every workspace record today.", "timestamp": "2026-09-29T14:00:00Z", "assistant_before": ""}],
+    "expected_matches": [false], "expected_recorded": [], "expected_unpromoted": [], "expected_date_mismatch": [1]
+  },
+  {
+    "name": "P10-quoted-proposal-person-rejects",
+    "rows": [{"kind": "decision", "id": "g-cedar-shop-rule-18", "person_words": "Every skill writes its own receipt to the shared log at the end of each run.", "decided_on": "2026-09-29", "source": null}],
+    "turns": [{"text": "The rule is to reject this proposal: “Every skill writes its own receipt to the shared log at the end of each run.” Keep it open.", "timestamp": "2026-09-29T14:00:00Z", "assistant_before": ""}],
+    "expected_matches": [false], "expected_recorded": [], "expected_unpromoted": [1]
+  },
+  {
+    "name": "P11-unquoted-paste-echoed-by-assistant",
+    "rows": [{"kind": "comment", "id": 11, "subject_id": "T3", "body": "Status for person: The reviewer found 730 activity rows are echoes of comments and receipts stored twice in the tracker.", "at": "2026-09-29T14:01:00Z"}],
+    "turns": [{"text": "The rule is to reject this pasted status. The reviewer found 730 activity rows are echoes of comments and receipts stored twice in the tracker.", "timestamp": "2026-09-29T14:00:00Z", "assistant_before": "The reviewer found 730 activity rows are echoes of comments and receipts stored twice in the tracker."}],
+    "expected_matches": [false], "expected_recorded": [], "expected_unpromoted": [1]
+  },
+  {
+    "name": "P12-filler-comment-two-hours-later",
+    "rows": [{"kind": "comment", "id": 12, "subject_id": "T7", "body": "person: All right, sounds good. That's fine for now.", "at": "2026-09-29T16:00:00Z"}],
+    "turns": [{"text": "All right, sounds good. That's fine for now. The rule is to set the new pricing at twenty nine dollars.", "timestamp": "2026-09-29T14:00:00Z", "assistant_before": "Should we set the new pricing?"}],
+    "expected_matches": [false], "expected_recorded": [], "expected_unpromoted": [1]
+  },
+  {
+    "name": "P13-short-unlinked-date-only-decision",
+    "rows": [{"kind": "decision", "id": "g-cedar-shop-rule-20", "person_words": "Approved.", "decided_on": "2026-09-29", "source": null}],
+    "turns": [{"text": "Pricing page is approved, ship it.", "timestamp": "2026-09-29T14:00:00Z", "assistant_before": ""}],
+    "expected_matches": [false], "expected_recorded": [], "expected_unpromoted": [1]
+  },
+  {"name": "U175-comment-881-eight-word-run", "real_index": 175, "expected_match": true},
+  {"name": "U515-approval-1-eight-word-run", "real_index": 515, "expected_match": true},
+  {"name": "U434-decision-pr-g-cedar-shop-rule-9", "real_index": 434, "expected_match": true},
+  {
+    "name": "U464-decision-pr-g-cedar-shop-rule-2",
+    "session": "d034d308",
+    "real_turn": {"text": "That memory rule was perfect. I love that. That also allows us to contain and control memory.md's. I love that. 100% approve of it. The decisions piece again, that won't be until we start talking about wiki. Scripts, we need to talk through that. So we already have, like I don't ever have an SRT, I guess app code. I don't know. I always see that in people's directories. I thought we had an automations somewhere. Where did those go? I don't remember. I thought like the whole skills automations. I don't. It probably goes hand in hand. That's what I was getting at, right? Didn't we have like uh I guess there's nothing in dot agents. You know, fuck it, fuck it, fuck it. Let's talk about dot agents, dot Claude, dot Codex and scripts. Together, I think they they all go hand to hand, and maybe an SRT piece. They probably need to live higher in the vault, just visually, because they govern everything. They're probably, you know, I'm even thinking log goes all the way at the bottom above arc. I don't know, I don't know. Maybe I'm tripping. So yeah, what um how we do this? Because right now you have blanks, and again it's less about we already remember we went through that exercise of creating the shape, we made a call, but there's still shit that's going to live here now, right, at the root of the workspace.", "timestamp": "2026-09-17T20:24:35.477Z", "assistant_before": "That memory rule was perfect."},
+    "kind": "decision", "row": {"id": "pr-g-cedar-shop-rule-1", "person_words": "they put on a new skin... I don't know how that'll fuck up their memory.md that's supposed to be global. I never thought of that. | 9.17: That memory rule was perfect. 100% approve of it. That also allows us to contain and control memory.md's.", "decided_on": "2026-09-17", "source": "chat d034d308"}, "expected_match": true
+  }
+]

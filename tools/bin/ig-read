@@ -1,0 +1,208 @@
+#!/bin/bash
+# ig-read - Read Instagram post/reel/profile data via ScrapeCreators.
+# Usage: ig-read <post|comments|profile|transcript> <url-or-handle> [options]
+
+set -euo pipefail
+
+SECRET_READER="${AGENT_SECRET_READ:-}"
+
+show_help() {
+    cat <<'HELP'
+ig-read - Read-only Instagram review JSON via ScrapeCreators
+
+Usage:
+    ig-read post <instagram-post-or-reel-url> [--trim] [--region US]
+    ig-read comments <instagram-post-or-reel-url> [--cursor CURSOR]
+    ig-read profile <handle-or-profile-url> [--trim]
+    ig-read transcript <instagram-reel-url>
+    ig-read --help
+
+Options:
+    --trim           Ask ScrapeCreators for a trimmed response when supported.
+    --region CODE    2-letter proxy region for post/reel lookup, e.g. US.
+    --cursor VALUE   Comments pagination cursor from a previous response.
+    --help           Show this help.
+
+Boundaries:
+    Read-only. Does not post, like, comment, follow, DM, capture, file notes,
+    call /last30days, or write to CRM/Capture/Obsidian.
+
+Provider:
+    Needs the ScrapeCreators CLI already installed: `scrapecreators` on PATH,
+    or SCRAPECREATORS_BIN set to its path. Install a version you checked, for
+    example `npm install -g @scrapecreators/cli@<version>`. ig-read never
+    downloads or runs a package itself.
+
+Credentials:
+    Uses SCRAPECREATORS_API_KEY from the environment.
+    Or set SCRAPECREATORS_API_KEY_REF to a secret-store reference and
+    AGENT_SECRET_READ to the command that reads it (it gets the reference
+    as its one argument and prints the key).
+HELP
+}
+
+die() {
+    echo "Error: $*" >&2
+    exit 1
+}
+
+require_value() {
+    local option="$1"
+    local value="${2:-}"
+    [[ -n "$value" && "$value" != -* ]] || die "$option requires a value"
+}
+
+load_api_key() {
+    if [[ -n "${SCRAPECREATORS_API_KEY:-}" ]]; then
+        export SCRAPECREATORS_API_KEY
+        return
+    fi
+
+    if [[ -n "${SCRAPECREATORS_API_KEY_REF:-}" ]]; then
+        [[ -n "$SECRET_READER" ]] || die "SCRAPECREATORS_API_KEY_REF is set but AGENT_SECRET_READ is not"
+        SCRAPECREATORS_API_KEY="$("$SECRET_READER" "$SCRAPECREATORS_API_KEY_REF" 2>/dev/null || true)"
+        if [[ -n "${SCRAPECREATORS_API_KEY:-}" ]]; then
+            export SCRAPECREATORS_API_KEY
+            return
+        fi
+        die "SCRAPECREATORS_API_KEY_REF could not be read"
+    fi
+
+    die "SCRAPECREATORS_API_KEY is not set. Set it directly or set SCRAPECREATORS_API_KEY_REF."
+}
+
+# The provider is found before the key is loaded, and it is never downloaded here (T750 F08):
+# an unpinned `npx -y` fetch would run new code with the key in its environment.
+provider_cmd() {
+    if [[ -n "${SCRAPECREATORS_BIN:-}" ]]; then
+        [[ -x "$SCRAPECREATORS_BIN" && ! -d "$SCRAPECREATORS_BIN" ]] \
+            || die "SCRAPECREATORS_BIN is not an executable file: $SCRAPECREATORS_BIN"
+        printf '%s\n' "$SCRAPECREATORS_BIN"
+        return
+    fi
+
+    if command -v scrapecreators >/dev/null 2>&1; then
+        command -v scrapecreators
+        return
+    fi
+
+    die "the ScrapeCreators CLI is not installed. Install a version you checked, e.g. npm install -g @scrapecreators/cli@<version>, or set SCRAPECREATORS_BIN. ig-read never downloads it."
+}
+
+run_provider() {
+    "$PROVIDER" --json --no-color "$@"
+}
+
+normalize_handle() {
+    local value="$1"
+    value="${value#@}"
+    value="${value%%\?*}"
+    value="${value%%#*}"
+    value="${value%/}"
+
+    if [[ "$value" =~ ^https?://(www\.)?instagram\.com/([^/?#]+)$ ]]; then
+        value="${BASH_REMATCH[2]}"
+    elif [[ "$value" == *instagram.com* ]]; then
+        die "not a profile URL: $1"
+    fi
+
+    [[ -n "$value" ]] || die "profile handle required"
+    [[ "$value" != "p" && "$value" != "reel" && "$value" != "stories" && "$value" != "explore" && "$value" != "accounts" ]] \
+        || die "not a profile handle: $value"
+    [[ "$value" != */* && "$value" != *:* && "$value" != *\?* && "$value" != *#* ]] \
+        || die "not a profile handle: $value"
+
+    printf '%s\n' "$value"
+}
+
+mode="${1:-}"
+
+case "$mode" in
+    --help|-h|"")
+        show_help
+        [[ -n "$mode" ]] && exit 0
+        exit 1
+        ;;
+    post|comments|profile|transcript)
+        ;;
+    *)
+        die "unknown mode: $mode. Run 'ig-read --help' for usage."
+        ;;
+esac
+
+shift
+target="${1:-}"
+[[ -n "$target" ]] || die "missing URL or handle. Run 'ig-read --help' for usage."
+[[ "$target" != -* ]] || die "missing URL or handle before option: $target"
+shift
+
+trim=false
+region=""
+cursor=""
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --trim)
+            trim=true
+            shift
+            ;;
+        --region)
+            require_value "--region" "${2:-}"
+            region="$2"
+            shift 2
+            ;;
+        --cursor)
+            require_value "--cursor" "${2:-}"
+            cursor="$2"
+            shift 2
+            ;;
+        --download-media|--download_media)
+            die "--download-media is intentionally unsupported by ig-read"
+            ;;
+        --help|-h)
+            show_help
+            exit 0
+            ;;
+        -*)
+            die "unknown option: $1"
+            ;;
+        *)
+            die "unexpected argument: $1"
+            ;;
+    esac
+done
+
+PROVIDER="$(provider_cmd)"
+load_api_key
+
+case "$mode" in
+    post)
+        args=(instagram post --url "$target")
+        [[ "$trim" == true ]] && args+=(--trim)
+        [[ -n "$region" ]] && args+=(--region "$region")
+        [[ -z "$cursor" ]] || die "--cursor is only supported for comments"
+        run_provider "${args[@]}"
+        ;;
+    comments)
+        args=(instagram post-comments --url "$target")
+        [[ -n "$cursor" ]] && args+=(--cursor "$cursor")
+        [[ "$trim" == false ]] || die "--trim is not supported for comments"
+        [[ -z "$region" ]] || die "--region is only supported for post"
+        run_provider "${args[@]}"
+        ;;
+    profile)
+        handle="$(normalize_handle "$target")"
+        args=(instagram profile --handle "$handle")
+        [[ "$trim" == true ]] && args+=(--trim)
+        [[ -z "$cursor" ]] || die "--cursor is only supported for comments"
+        [[ -z "$region" ]] || die "--region is only supported for post"
+        run_provider "${args[@]}"
+        ;;
+    transcript)
+        args=(instagram media-transcript --url "$target")
+        [[ "$trim" == false ]] || die "--trim is not supported for transcript"
+        [[ -z "$cursor" ]] || die "--cursor is only supported for comments"
+        [[ -z "$region" ]] || die "--region is only supported for post"
+        run_provider "${args[@]}"
+        ;;
+esac

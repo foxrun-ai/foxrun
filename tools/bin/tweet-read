@@ -1,0 +1,97 @@
+#!/bin/bash
+# tweet-read — Read a tweet by URL using X API v2 (bearer token)
+# Usage: tweet-read <tweet_url>
+#        tweet-read https://x.com/user/status/123456789
+# Requires: X_BEARER_TOKEN, or X_BEARER_TOKEN_REF plus AGENT_SECRET_READ
+# (the command that reads a secret-store reference and prints the token).
+set -euo pipefail
+
+URL="${1:-}"
+
+if [[ -z "$URL" || "$URL" == "--help" || "$URL" == "-h" ]]; then
+  echo "Usage: tweet-read <tweet_url>"
+  echo "Example: tweet-read https://x.com/user/status/123456789"
+  echo "Token: X_BEARER_TOKEN, or X_BEARER_TOKEN_REF read by the command in AGENT_SECRET_READ."
+  [[ -n "$URL" ]] && exit 0
+  exit 1
+fi
+
+if [[ -z "${X_BEARER_TOKEN:-}" && -n "${X_BEARER_TOKEN_REF:-}" ]]; then
+  if [[ -z "${AGENT_SECRET_READ:-}" ]]; then
+    echo "Error: X_BEARER_TOKEN_REF is set but AGENT_SECRET_READ is not" >&2
+    exit 1
+  fi
+  X_BEARER_TOKEN="$("$AGENT_SECRET_READ" "$X_BEARER_TOKEN_REF" 2>/dev/null || true)"
+fi
+
+if [[ -z "${X_BEARER_TOKEN:-}" ]]; then
+  echo "Error: X_BEARER_TOKEN is not set and no X_BEARER_TOKEN_REF could be read" >&2
+  exit 1
+fi
+
+# Extract tweet ID from URL (the URL is an argument, never part of the code)
+TWEET_ID=$(python3 -c '
+import re, sys
+m = re.search(r"/status/(\d+)", sys.argv[1])
+print(m.group(1) if m else "")
+' "$URL")
+
+if [[ -z "$TWEET_ID" ]]; then
+  echo "Error: Could not extract tweet ID from URL" >&2
+  exit 1
+fi
+
+# The token never goes on a command line, where process lists and traces show it (T750 F09).
+# printf is a shell builtin: it writes the header to curl's config on stdin through a pipe.
+case "$X_BEARER_TOKEN" in
+  *[!A-Za-z0-9%._~+/=-]*)
+    echo "Error: X_BEARER_TOKEN has characters a bearer token does not use" >&2
+    exit 1
+    ;;
+esac
+
+printf 'header = "Authorization: Bearer %s"\n' "$X_BEARER_TOKEN" | curl -s -K - \
+  "https://api.x.com/2/tweets/${TWEET_ID}?tweet.fields=author_id,text,created_at,public_metrics&expansions=author_id&user.fields=name,username,public_metrics" \
+  | python3 -c "
+import json, sys
+
+d = json.load(sys.stdin)
+
+if 'errors' in d and 'data' not in d:
+    err = d['errors'][0]
+    print(f'Error: {err.get(\"detail\", err.get(\"message\", \"Unknown error\"))}')
+    sys.exit(1)
+
+t = d.get('data', {})
+if not t:
+    print('Tweet not found.')
+    sys.exit(1)
+
+# Get author from includes
+users = {u['id']: u for u in d.get('includes', {}).get('users', [])}
+author = users.get(t.get('author_id', ''), {})
+name = author.get('name', '?')
+handle = author.get('username', '?')
+followers = author.get('public_metrics', {}).get('followers_count', 0)
+
+text = t.get('text', '')
+metrics = t.get('public_metrics', {})
+likes = metrics.get('like_count', 0)
+retweets = metrics.get('retweet_count', 0)
+replies = metrics.get('reply_count', 0)
+views = metrics.get('impression_count', 0)
+created = t.get('created_at', '')
+
+def compact(n):
+    if n >= 1_000_000: return f'{n/1_000_000:.1f}M'
+    if n >= 1_000: return f'{n/1_000:.1f}K'
+    return str(n)
+
+print(f'@{handle} ({name}) — {compact(followers)} followers')
+print(f'{created}')
+print()
+print(text)
+print()
+print(f'{compact(likes)} likes | {compact(retweets)} RTs | {compact(replies)} replies | {compact(views)} views')
+print(f'https://x.com/{handle}/status/{t[\"id\"]}')
+"

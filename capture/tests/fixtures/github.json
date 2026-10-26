@@ -1,0 +1,22 @@
+{
+  "status": "ok",
+  "reader": "gh",
+  "source": "github",
+  "url": "https://github.com/atlas-demo/local-library?utm_source=fixture",
+  "canonical_url": "https://github.com/atlas-demo/local-library",
+  "id": "atlas-demo-local-library",
+  "title": "Local Library",
+  "author": "atlas-demo",
+  "author_handle": "atlas-demo",
+  "published": null,
+  "fetched_at": "2026-10-08T05:01:00-04:00",
+  "text": "# Local Library\n\nLocal Library saves Markdown sources on disk.\nIt uses Python and SQLite.\n\n## Use\n\nRun `library save <url>` to save a source.\nRun `library check` to compare file hashes.\nNotes stay separate from source titles.\nImages stay beside their source files.\nRepeat links increase a seen count.\nThe tool needs no paid service.\nThe MIT licence permits reuse.\n",
+  "summary": "Local Library saves sources on disk.\nIt stores source text as Markdown.\nIt uses Python.\nIt stores rows in SQLite.\nThe save command accepts a URL.\nThe check command compares file hashes.\nNotes stay separate from titles.\nImages stay beside source files.\nRepeat links increase the seen count.\nThe tool needs no paid service and uses the MIT licence.",
+  "transcript": null,
+  "comments": [],
+  "media": [],
+  "metrics": {},
+  "repo": {"stars": 42, "language": "Python", "licence": "MIT", "last_commit": "2026-10-07T16:00:00+00:00"},
+  "tree": ["README.md", "library.py", "tests/"],
+  "error": null
+}

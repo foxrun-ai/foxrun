@@ -1,0 +1,8 @@
+{
+  "managed_by": "agent-new",
+  "runtime": "claude",
+  "model_role": "tier",
+  "defaults": "config/models.yaml",
+  "overrides": "config/models.yaml",
+  "availability": "core"
+}

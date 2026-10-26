@@ -1,0 +1,100 @@
+{
+  "tiers": {
+    "judgment": {
+      "hermes": {
+        "model": "claude-opus-5-5",
+        "provider": "anthropic",
+        "service_tier": "priority"
+      },
+      "claude": {
+        "model": "claude-opus-5-5"
+      },
+      "codex": {
+        "model": "gpt-6-astra",
+        "service_tier": "priority"
+      }
+    },
+    "work": {
+      "hermes": {
+        "model": "gpt-6-astra",
+        "provider": "openai-codex",
+        "service_tier": "priority"
+      },
+      "claude": {
+        "model": "claude-opus-5-5"
+      },
+      "codex": {
+        "model": "gpt-6-astra",
+        "service_tier": "priority"
+      }
+    },
+    "cheap": {
+      "hermes": {
+        "model": "gpt-6.1-sol",
+        "provider": "openai-codex",
+        "service_tier": "priority"
+      },
+      "claude": {
+        "model": "claude-haiku-5-5"
+      },
+      "codex": {
+        "model": "gpt-6.1-sol",
+        "service_tier": "priority"
+      }
+    },
+    "code": {
+      "hermes": null,
+      "claude": {
+        "model": "claude-opus-5-5"
+      },
+      "codex": {
+        "model": "gpt-6.1-sol",
+        "service_tier": "priority"
+      }
+    }
+  },
+  "limits": {
+    "child_timeout_seconds": 600,
+    "max_concurrent_children": 8,
+    "max_spawn_depth": 1,
+    "retries": 1,
+    "escalate_to": "chief-of-staff"
+  },
+  "approvals": {
+    "always_person": [
+      "money",
+      "sends",
+      "catalog",
+      "deletes",
+      "profile_apply",
+      "skill_write"
+    ]
+  },
+  "runtime_modes": {
+    "hermes": {
+      "profile": "own ~/.hermes/profiles/<id>; needed for a bot, Kanban lane, or cron owner",
+      "child": "delegate_task from the lead with the identity brief; inherits lead's tools; model = lead's delegation.model",
+      "kanban": "Kanban assignee; requires a profile",
+      "none": "identity not used in Hermes"
+    },
+    "claude": "project agent at ${FOXRUN_PORTFOLIO:-$HOME/foxrun}/.claude/agents/<id>.md (thin loader \u2192 identity file)",
+    "codex": "project agent at ${FOXRUN_PORTFOLIO:-$HOME/foxrun}/.codex/agents/<id>.toml (thin loader \u2192 identity file)"
+  },
+  "format": 1,
+  "models": [],
+  "allowed": [
+    "claude-opus-5-5",
+    "gpt-6-astra",
+    "gpt-6.1-sol",
+    "claude-haiku-5-5"
+  ],
+  "banned": [
+    "gpt-6-sol",
+    "terra",
+    "claude-sonnet"
+  ],
+  "legacy_auxiliary_model_tags": [
+    "legacy-judge",
+    "terra"
+  ]
+}

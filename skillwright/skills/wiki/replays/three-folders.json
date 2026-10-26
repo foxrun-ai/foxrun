@@ -1,0 +1,6 @@
+{
+  "name": "three-folders",
+  "run": "read",
+  "input": "Which wiki folder holds a page about one named thing, and which holds an answer worth keeping?",
+  "expect": {"output_contains": ["entities", "queries"]}
+}

@@ -1,0 +1,77 @@
+[
+  {
+    "name": "pr-work-who-checks",
+    "kind": "decision",
+    "row": {
+      "id": "pr-work-who-checks",
+      "person_words": "Okay. Sounds good. I think. Lesugi it.",
+      "decided_on": "2026-09-29",
+      "source": "comment:1138"
+    },
+    "turn": {
+      "text": "Okay. Sounds good. I think. Lesugi it.",
+      "timestamp": "2026-09-29T17:40:54-04:00",
+      "assistant_before": ""
+    }
+  },
+  {
+    "name": "comment-1165",
+    "kind": "comment",
+    "row": {
+      "id": 1165,
+      "subject_id": "T5",
+      "body": "person 9.29 on kebo the final design: 'All right, sounds good, fidinu. We're good.' Tape a Falo worker to ruto target-v4 and columns-v4 from all 9.29 zima and the lifa Pese 3 pepoba.",
+      "at": "2026-09-29T19:33:24-04:00"
+    },
+    "turn": {
+      "text": "All right, sounds good, fidinu. We're good.",
+      "timestamp": "2026-09-29T19:32:24-04:00",
+      "assistant_before": ""
+    }
+  },
+  {
+    "name": "pr-db-cross-review",
+    "kind": "decision",
+    "row": {
+      "id": "pr-db-cross-review",
+      "person_words": "All right. Yeah, that sounds good.",
+      "decided_on": "2026-09-28",
+      "source": "comment:1024"
+    },
+    "turn": {
+      "text": "All right. Yeah, that sounds good.",
+      "timestamp": "2026-09-28T20:06:47-04:00",
+      "assistant_before": ""
+    }
+  },
+  {
+    "name": "comment-965",
+    "kind": "comment",
+    "row": {
+      "id": 965,
+      "subject_id": "T9",
+      "body": "person: Gono boza, I think I like it. I think I like it. All right, run it.",
+      "at": "2026-09-28T16:04:10-04:00"
+    },
+    "turn": {
+      "text": "Gono boza, I think I like it. I think I like it. All right, run it.",
+      "timestamp": "2026-09-28T16:03:10-04:00",
+      "assistant_before": ""
+    }
+  },
+  {
+    "name": "g-cedar-shop-rule-7",
+    "kind": "decision",
+    "row": {
+      "id": "g-cedar-shop-rule-7",
+      "person_words": "I think I'm approved. Let's go. Next.",
+      "decided_on": "2026-09-20",
+      "source": "sagu 0b0b0b02"
+    },
+    "turn": {
+      "text": "I think I'm approved. Let's go. Next.",
+      "timestamp": "2026-09-20T14:00:00-04:00",
+      "assistant_before": ""
+    }
+  }
+]

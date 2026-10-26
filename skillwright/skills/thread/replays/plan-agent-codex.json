@@ -1,0 +1,25 @@
+{
+  "name": "plan-agent-codex",
+  "run": "dry-run",
+  "note": "An agent thread in Codex: title from the default emoji, model from the asked tier.",
+  "input": "bin/thread make architect --workspace fake-hq --runtime codex --tier work --dry-run",
+  "setup": {
+    "files": {
+      ".foxrun/config/models.yaml": "{\n  \"tiers\": {\n    \"judgment\": {\n      \"claude\": {\n        \"model\": \"fake-claude-judgment\"\n      },\n      \"codex\": {\n        \"model\": \"fake-codex-judgment\"\n      },\n      \"hermes\": null\n    },\n    \"work\": {\n      \"claude\": {\n        \"model\": \"fake-claude-work\"\n      },\n      \"codex\": {\n        \"model\": \"fake-codex-work\"\n      },\n      \"hermes\": null\n    },\n    \"cheap\": {\n      \"claude\": {\n        \"model\": \"fake-claude-cheap\"\n      },\n      \"codex\": {\n        \"model\": \"fake-codex-cheap\"\n      },\n      \"hermes\": null\n    },\n    \"code\": {\n      \"claude\": {\n        \"model\": \"fake-claude-code\"\n      },\n      \"codex\": {\n        \"model\": \"fake-codex-code\"\n      },\n      \"hermes\": null\n    }\n  },\n  \"allowed\": [\n    \"fake-claude-judgment\",\n    \"fake-claude-work\",\n    \"fake-claude-cheap\",\n    \"fake-claude-code\",\n    \"fake-codex-judgment\",\n    \"fake-codex-work\",\n    \"fake-codex-cheap\",\n    \"fake-codex-code\"\n  ],\n  \"banned\": [\n    \"fake-banned\"\n  ]\n}",
+      ".foxrun/agents/architect.md": "---\n{\"id\": \"architect\", \"display_name\": \"Architect\", \"tier\": \"judgment\", \"runtimes\": [\"claude\", \"codex\"]}\n---\n# Architect (labeled fake seat)\n",
+      ".foxrun/agents/chief-of-staff.md": "---\n{\"id\": \"chief-of-staff\", \"display_name\": \"Chief of Staff\", \"tier\": \"judgment\", \"runtimes\": [\"claude\", \"codex\"]}\n---\n# Chief of Staff (labeled fake seat)\n",
+      "foxrun/fake-hq/AGENTS.md": "# fake-hq (labeled fake workspace)\n",
+      "foxrun/fake-shop/team/lead-fake-shop.md": "---\n{\"id\": \"lead-fake-shop\", \"tier\": \"work\", \"runtimes\": [\"claude\", \"codex\"]}\n---\n# Lead (labeled fake)\n"
+    }
+  },
+  "expect": {
+    "exit": 0,
+    "output_contains": [
+      "\"title\": \"🏛️ fake-hq · Architect\"",
+      "\"model\": \"fake-codex-work\"",
+      "\"emoji_state\": \"default\"",
+      "\"made\": false",
+      "foxrun.py start --workspace fake-hq --seat architect"
+    ]
+  }
+}

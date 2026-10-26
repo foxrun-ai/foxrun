@@ -1,0 +1,7 @@
+{
+  "name": "refuse-invalid-batch",
+  "run": "dry-run",
+  "input": "scripts/jev.mjs --progress {tmp}/progress.jsonl {tmp}/invalid.json",
+  "setup": { "files": { "invalid.json": "{" } },
+  "expect": { "exit": 1, "output_contains": ["invalid_input"] }
+}

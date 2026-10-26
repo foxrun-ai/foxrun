@@ -1,0 +1,13 @@
+{
+  "name": "read-vet-before-adopt",
+  "run": "read",
+  "input": "The person asks to install a new CLI. What must capability verify and show before any install?",
+  "expect": {
+    "output_contains": [
+      "vet",
+      "version",
+      "install command",
+      "undo"
+    ]
+  }
+}

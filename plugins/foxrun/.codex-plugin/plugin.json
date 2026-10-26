@@ -1,0 +1,38 @@
+{
+  "name": "foxrun",
+  "description": "Set up Foxrun, open agent threads, and ask Foxrun how it works.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Foxrun",
+    "url": "https://github.com/foxrun-ai"
+  },
+  "homepage": "https://github.com/foxrun-ai/foxrun",
+  "repository": "https://github.com/foxrun-ai/foxrun",
+  "license": "MIT",
+  "keywords": [
+    "agents",
+    "workspaces",
+    "memory",
+    "setup",
+    "threads"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Foxrun",
+    "shortDescription": "Set up Foxrun and open agent threads",
+    "longDescription": "Foxrun keeps your agents' work in one place: workspaces, memory, and tracked tasks. This plugin carries three skills. setup installs the Foxrun core with uv, then reruns its questions, threads, hooks, and backup. thread opens a titled agent session in its workspace. ask answers how Foxrun does something from its own pages.",
+    "developerName": "Foxrun",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/foxrun-ai/foxrun",
+    "defaultPrompt": [
+      "Set up Foxrun.",
+      "Make a thread for my workspace lead.",
+      "How does Foxrun keep memory between sessions?"
+    ]
+  }
+}

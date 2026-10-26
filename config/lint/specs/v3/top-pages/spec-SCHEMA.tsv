@@ -1,0 +1,30 @@
+rule	value
+page	<system home>/SCHEMA.md; a workspace has none at its top
+made_by	a script, from the rows of object_types; a ruling says it is built from rows
+today	the page on disk on 2026-10-13 is the old page written by hand; it is not built from rows
+frontmatter_key	type
+frontmatter_key	workspace
+frontmatter_key	timestamp
+frontmatter_keys_allowed	type|workspace|timestamp
+frontmatter_format	timestamp=ISO 8601 with time and offset
+frontmatter_value	type=doc
+frontmatter_value	workspace=system
+h1	Schema: system
+block_order	h1 > intro > Contents > count block > Front matter > one h2 for each module
+contents	required: Front matter, then one line for each module with its count, each a link
+count_block_labels	MODULES|STORED THINGS|one line for each kind|MADE
+table_columns	Front matter=Key|Form|Meaning
+table_columns	one module=Name|Kind|One of them is
+row_order	modules A to Z; names A to Z
+cell_source	Kind=database_type; when it is empty, supertype
+cell_source	One of them is=the first sentence of description, without a leading 'SQLite table.' and without a file name in brackets at the end
+check	STORED THINGS equals the number of rows in object_types
+no_business_name	the page in the system home holds no workspace name and no name on the extra list (see ../tool-page/spec.tsv)
+link_form	relative path from the page
+link_target	every link opens a file, a folder, or a section that exists
+max_code_line	78
+max_table_columns	4
+sentence_max_words	20
+emoji	none
+forbidden_text	No records yet.|TODO|TBD
+purpose	see purpose.md and locations.md

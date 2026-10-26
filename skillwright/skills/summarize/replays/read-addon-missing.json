@@ -1,0 +1,6 @@
+{
+  "name": "read-addon-missing",
+  "run": "read",
+  "input": "command -v summarize prints nothing. What do you tell the person, and do you install it?",
+  "expect": {"output_contains": ["Add-on"]}
+}

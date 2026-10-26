@@ -1,0 +1,15 @@
+rule	value
+page	<workspace>/specs/<name>.md
+made_by	a person; a proposed build spec, checked before execution
+frontmatter_key	type
+frontmatter_key	workspace
+frontmatter_key	timestamp
+frontmatter_value	type=spec
+h1	the name of the change
+heading_order	Problem > Result > Scope > Sources > Changes > Checks > Rollback > Open questions
+headings_fixed	yes
+headings_required	Problem|Result|Scope|Sources|Changes|Checks|Rollback|Open questions
+max_code_line	78
+max_table_columns	4
+forbidden_text	TODO|TBD
+link_target	every source link opens its current source

@@ -1,0 +1,6 @@
+{
+  "name": "read-fence-length",
+  "run": "read",
+  "input": "The target message contains a fenced code block made of three backticks. How many backticks does the outer fence use? Answer with the number only.",
+  "expect": {"output_contains": ["4"]}
+}

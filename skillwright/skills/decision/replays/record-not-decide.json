@@ -1,0 +1,6 @@
+{
+  "name": "record-not-decide",
+  "run": "read",
+  "input": "The person just ruled on a naming question. Which work.py verb records it, and which field holds their exact words?",
+  "expect": {"output_contains": ["decision-add", "--person-words"]}
+}

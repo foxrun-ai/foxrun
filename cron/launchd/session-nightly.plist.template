@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Template. cron/schedule.py replaces each @NAME@ value and the clock from config/dream.json. -->
+<plist version="1.0">
+<dict>
+	<key>ProcessType</key>
+	<string>Background</string>
+	<key>LowPriorityIO</key>
+	<true/>
+	<key>Label</key>
+	<string>com.foxrun.session-nightly</string>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>HOME</key>
+		<string>@USER_HOME@</string>
+		<key>PATH</key>
+		<string>/opt/homebrew/bin:/usr/local/bin:@USER_HOME@/.local/bin:/usr/bin:/bin</string>
+		<key>PYTHONDONTWRITEBYTECODE</key>
+		<string>1</string>
+		<key>FOXRUN_HOME</key>
+		<string>@FOXRUN_HOME@</string>
+		<key>FOXRUN_PORTFOLIO</key>
+		<string>@FOXRUN_PORTFOLIO@</string>
+	</dict>
+	<key>ProgramArguments</key>
+	<array>
+		<string>@PYTHON@</string>
+		<string>-B</string>
+		<string>@FOXRUN_HOME@/cron/nightly.py</string>
+	</array>
+	<key>StartCalendarInterval</key>
+	<dict>
+		<key>Hour</key>
+		<integer>2</integer>
+		<key>Minute</key>
+		<integer>30</integer>
+	</dict>
+	<key>StandardOutPath</key>
+	<string>@LOG_DIR@/stdout.log</string>
+	<key>StandardErrorPath</key>
+	<string>@LOG_DIR@/stderr.log</string>
+	<key>WorkingDirectory</key>
+	<string>@FOXRUN_HOME@</string>
+</dict>
+</plist>

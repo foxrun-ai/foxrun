@@ -1,0 +1,6 @@
+{
+  "name": "read-tracker-local",
+  "run": "read",
+  "input": "An agent will keep a listing-compliance tracker, one row per product key, on this machine only, outside the Foxrun tracker. Where does it live? Answer in the one-block shape.",
+  "expect": {"output_contains": ["SQLite"]}
+}

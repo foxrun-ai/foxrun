@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Result",
+  "type": "object",
+  "required": ["identity", "identity_version", "run_id", "deliverable", "evidence", "unresolved", "cost"],
+  "properties": {
+    "identity": {"type": "string"},
+    "identity_version": {"type": "integer"},
+    "run_id": {"type": "string"},
+    "runtime": {"type": "string", "enum": ["hermes", "claude", "codex"]},
+    "deliverable": {"type": "string"},
+    "evidence": {"type": "array", "items": {"type": "string"}, "description": "sources read, checks run; 'the worker said so' is not evidence"},
+    "unresolved": {"type": "array", "items": {"type": "string"}},
+    "cost": {"type": "object", "properties": {"seconds": {"type": "number"}, "usd": {"type": "number"}}}
+  }
+}

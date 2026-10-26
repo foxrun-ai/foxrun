@@ -1,0 +1,27 @@
+rule	value
+page	<system home>/DOCUMENTATION.md
+approved	he approved this form on 2026-10-13; the page on disk is the example
+made_by	a person, for now
+frontmatter_key	type
+frontmatter_key	workspace
+frontmatter_key	timestamp
+frontmatter_keys_allowed	type|workspace|timestamp
+frontmatter_format	timestamp=ISO 8601 with time and offset
+frontmatter_value	type=doc
+h1	Documentation
+block_order	h1 > intro > how each description is written > one h2 for each folder
+h2_form	the path of the folder with ~
+table_columns	File|Description
+description_form	sentence 1 starts with a verb and says what it does; sentence 2 starts with Use it to; then the trigger in round brackets
+trigger_words	user command|hook: <name>|cron <time>|script: <names>|read by <who>
+row_rule	every file and folder directly in the folder has one row, or is in a row that names a group; every name in a row exists
+today	the page on disk has no front matter and names ~/.foxrun; the build is ~/.foxrun
+no_business_name	the page in the system home holds no workspace name and no name on the extra list (see ../tool-page/spec.tsv)
+link_form	relative path from the page
+link_target	every link opens a file, a folder, or a section that exists
+max_code_line	78
+max_table_columns	4
+sentence_max_words	20
+emoji	none
+forbidden_text	No records yet.|TODO|TBD
+purpose	see purpose.md and locations.md

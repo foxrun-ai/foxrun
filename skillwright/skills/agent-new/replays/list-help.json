@@ -1,0 +1,7 @@
+{
+  "name": "list-help",
+  "run": "dry-run",
+  "note": "With no installed program in the temporary home, the wrapper must stop with exit 2 and name the missing file.",
+  "input": "bin/agent-new list --dry-run",
+  "expect": {"exit": 2, "output_contains": ["agents/tools/agent_new.py not found"]}
+}

@@ -1,0 +1,18 @@
+{
+  "name": "workspace-rule-from-agents",
+  "run": "dry-run",
+  "note": "A workspace question starts with the nearest AGENTS.md.",
+  "input": "bin/ask-sources \"where do orders live\" --cwd {tmp}/foxrun/fake-shop",
+  "setup": {
+    "files": {
+      ".foxrun/DOCUMENTATION.md": "# Documentation (labeled fake)\n\n## ~/.foxrun/cron\n\nThe nightly job runs at 02:30 and pushes the state backup.\n",
+      "foxrun/fake-shop/AGENTS.md": "# fake-shop (labeled fake)\n\nOrders live in the orders table.\n"
+    }
+  },
+  "expect": {
+    "exit": 0,
+    "output_contains": [
+      "\"start_with\": \"{tmp}/foxrun/fake-shop/AGENTS.md\""
+    ]
+  }
+}

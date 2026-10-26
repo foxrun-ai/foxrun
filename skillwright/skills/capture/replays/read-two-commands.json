@@ -1,0 +1,6 @@
+{
+  "name": "read-two-commands",
+  "run": "read",
+  "input": "Name the two capture tool commands you run, in order, to save one link.",
+  "expect": {"output_contains": ["capture-read", "capture-write"]}
+}

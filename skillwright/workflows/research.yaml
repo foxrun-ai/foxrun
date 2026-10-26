@@ -1,0 +1,111 @@
+{
+  "version": 1,
+  "flow": "research",
+  "kind": "workflow",
+  "purpose": "Answer one question: three researchers look on their own, then a writer merges what they found.",
+  "inputs": {
+    "question": {
+      "required": true,
+      "what": "The question, in neutral words"
+    }
+  },
+  "lead": "writer",
+  "worker_minutes": 30,
+  "members": {
+    "sources": {
+      "seat": "toolsmith",
+      "what": "Finds primary sources for the question.",
+      "runtime": "codex",
+      "effort": "high",
+      "access": "read",
+      "tier": "code"
+    },
+    "practice": {
+      "seat": "keeper",
+      "what": "Searches saved sessions for relevant examples and reports gaps.",
+      "runtime": "codex",
+      "effort": "high",
+      "access": "read",
+      "tier": "work"
+    },
+    "doubt": {
+      "seat": "architect",
+      "what": "Checks risks, limits, and evidence against the easy answer.",
+      "runtime": "claude",
+      "effort": "high",
+      "access": "read",
+      "tier": "judgment"
+    },
+    "writer": {
+      "seat": "skillwright",
+      "what": "Checks and merges the findings; records the material answer with log.",
+      "runtime": "codex",
+      "effort": "medium",
+      "access": "write",
+      "tier": "cheap"
+    }
+  },
+  "graph": {
+    "find-sources": {
+      "member": "sources",
+      "needs": [],
+      "input": [
+        "question"
+      ],
+      "output": "What the primary sources say, each fact with its source.",
+      "done_when": {
+        "file": "sources.md"
+      },
+      "return": "writer"
+    },
+    "find-practice": {
+      "member": "practice",
+      "needs": [],
+      "input": [
+        "question"
+      ],
+      "output": "Relevant examples from saved agent sessions, with sources; name any gap without inventing examples.",
+      "done_when": {
+        "file": "practice.md"
+      },
+      "return": "writer",
+      "skill": "runtime-session-search"
+    },
+    "find-doubt": {
+      "member": "doubt",
+      "needs": [],
+      "input": [
+        "question"
+      ],
+      "output": "Risks, limits, and evidence against the easy answer, each with its source.",
+      "done_when": {
+        "file": "doubt.md"
+      },
+      "return": "writer"
+    },
+    "merge": {
+      "member": "writer",
+      "needs": [
+        "find-sources",
+        "find-practice",
+        "find-doubt"
+      ],
+      "input": [
+        "question",
+        "sources.md",
+        "practice.md",
+        "doubt.md"
+      ],
+      "output": "One answer first. Then the facts that hold it, each with its source. Then what is still open. Record the material answer on the existing task when one is supplied. Never create a task just to log.",
+      "done_when": {
+        "file": "answer.md"
+      },
+      "return": "person",
+      "skill": "log"
+    }
+  },
+  "rules": [
+    "Each researcher works alone. It reads no other finding.",
+    "A fact without a source is not a fact. Say where each one comes from."
+  ]
+}

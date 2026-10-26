@@ -1,0 +1,4 @@
+key	required	format	values
+type	yes	kebab	agents|home|index|log|scratch|source|output|snapshot|handoff|doc|template|topic|capture|person|idea|bug|note|project|guide|workflow|state|glossary|tool|deal|collab|feature|expansion|restock|shop|content|listing|compliance|tracker|audit|evidence-ledger|runbook|brief|research|ideas|resource|bill|thread|pipeline|spec
+workspace	yes	workspace	
+timestamp	yes	iso8601	

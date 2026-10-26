@@ -1,0 +1,6 @@
+{
+  "name": "read-blocking-edges",
+  "run": "read",
+  "input": "Besides its slice, what does each ticket declare, and where do those go on a real tracker?",
+  "expect": {"output_contains": ["block"]}
+}

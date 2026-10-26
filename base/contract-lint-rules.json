@@ -1,0 +1,177 @@
+{
+  "format": "foxrun-contract-lint-rules/v1",
+  "recognized_contracts": {
+    "AGENTS.md": {
+      "required": true,
+      "frontmatter_status": "forbid",
+      "max_lines": 80,
+      "tool_inventory": "pointer_only"
+    },
+    "soul.md": {
+      "required": false,
+      "frontmatter_status": "forbid",
+      "max_lines": null,
+      "tool_inventory": "prohibit"
+    },
+    "RESOLVER.md": {
+      "required": true,
+      "frontmatter_status": "forbid",
+      "max_lines": 80,
+      "tool_inventory": "prohibit"
+    },
+    "SCHEMA.md": {
+      "required": false,
+      "frontmatter_status": "forbid",
+      "max_lines": 80,
+      "tool_inventory": "prohibit"
+    },
+    "GLOSSARY.md": {
+      "required": true,
+      "frontmatter_status": "forbid",
+      "max_lines": null,
+      "tool_inventory": "prohibit"
+    },
+    "CLAUDE.md": {
+      "required": true,
+      "frontmatter_status": "forbid",
+      "max_lines": 80,
+      "tool_inventory": "pointer_only"
+    },
+    "CAPABILITIES.md": {
+      "required": false,
+      "frontmatter_status": "forbid",
+      "max_lines": null,
+      "tool_inventory": "allow"
+    },
+    "index.md": {
+      "required": true,
+      "frontmatter_status": "forbid",
+      "max_lines": null,
+      "tool_inventory": "allow"
+    },
+    "tools/CAPABILITIES.md": {
+      "required": true,
+      "frontmatter_status": "forbid",
+      "max_lines": null,
+      "tool_inventory": "allow"
+    }
+  },
+  "size_policy": {
+    "label": "existing 80-line checker policy for listed legacy contract types; configurable, not an approved one-screen definition",
+    "severity": "warning"
+  },
+  "stale_names": [
+    {
+      "kind": "skill",
+      "name": "fx-log",
+      "replacement": "log",
+      "contracts": [
+        "AGENTS.md",
+        "soul.md",
+        "RESOLVER.md",
+        "SCHEMA.md",
+        "GLOSSARY.md",
+        "CLAUDE.md",
+        "CAPABILITIES.md",
+        "index.md"
+      ]
+    },
+    {
+      "kind": "skill",
+      "name": "fx-handoff",
+      "replacement": "handoff",
+      "contracts": [
+        "AGENTS.md",
+        "soul.md",
+        "RESOLVER.md",
+        "SCHEMA.md",
+        "GLOSSARY.md",
+        "CLAUDE.md",
+        "CAPABILITIES.md",
+        "index.md"
+      ]
+    }
+  ],
+  "banned_words": [
+    "fleet",
+    "strategy-pack",
+    "great question",
+    "you're absolutely right",
+    "foxrun-dev"
+  ],
+  "declared_absent_headings": [
+    "What Is Not Built Yet",
+    "File homes"
+  ],
+  "absent_path_cues": [
+    "Do not create",
+    "Never create"
+  ],
+  "banned_word_prohibition_cues": [
+    "Never say",
+    "Do not say",
+    "Don't say",
+    "Never write",
+    "Do not write",
+    "Don't write",
+    "No"
+  ],
+  "instruction_verbs": [
+    "run",
+    "read",
+    "open",
+    "use",
+    "see",
+    "call",
+    "invoke",
+    "load",
+    "follow",
+    "check",
+    "edit",
+    "write",
+    "create",
+    "delete",
+    "send",
+    "ask"
+  ],
+  "live_spec_dirs": [
+    "specs"
+  ],
+  "spec_policy": {
+    "frontmatter_status": "forbid",
+    "max_lines": null,
+    "tool_inventory": "allow"
+  },
+  "parser_limits": {
+    "max_file_bytes": 1048576,
+    "markdown_links": "literal inline links plus one-line full, collapsed, and defined shortcut reference links; duplicate and explicit unresolved references are uncheckable",
+    "wikilinks": "file targets only; headings and blocks are removed before resolution",
+    "paths": "inline code and plain text; a path needs a start of ~/ ./ ../ or /, a folder before the name, a trailing slash, or a known file ending; inline code with a slash and no such signal counts only when it is on disk; a plain name with no folder is not read as a path; text in angle brackets is a placeholder and is not checked",
+    "commands": "inline code with a dollar-space prompt, or with a flag, placeholder, quoted value, or script path after a lowercase first word; a plain line that starts with Run and names a command; single-line commands in sh, bash, zsh, and shell fences; the whole executable name is checked, dots included; dynamic, builtin, and control syntax is not checked and never evaluated",
+    "skills": "dollar-prefixed and slash-prefixed names, and exact stale names in inline code; other bare inline names are not checked",
+    "banned_words": "whole words, any letter case, on every line outside a code fence, quotation marks included; one exception: inside double quotes after a banned_word_prohibition_cues phrase on the same line",
+    "absent_paths": "inline-code paths listed right after an absent_path_cues phrase must stay absent; a path in backticks that is missing on a line under a declared_absent_headings section may be absent; links, imports, and scripts there are always checked",
+    "instructions": "a sentence that holds an instruction_verbs word and no checked form is counted per file as an unchecked instruction; it is never a finding",
+    "yaml": "top-level scalar frontmatter keys only",
+    "approvals": "coverage requires an explicit read-only binding of contract path, SHA-256, and approval identifier"
+  },
+  "protected_parts": [
+    "archive",
+    "_archive",
+    "credentials",
+    "secrets",
+    "settings",
+    ".git",
+    ".claude",
+    ".codex",
+    ".hermes"
+  ],
+  "protected_file_patterns": [
+    "^\\.env",
+    "(^|[-_.])credentials?([-_.]|$)",
+    "(^|[-_.])secrets?([-_.]|$)",
+    "(^|[-_.])token([-_.]|$)",
+    "(^|[-_.])auth([-_.]|$)",
+    "\\.(pem|key|p12)$"
+  ]
+}

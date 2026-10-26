@@ -1,0 +1,70 @@
+[
+  {
+    "name": "U369-comment-1054",
+    "turn": {
+      "text": "Yes",
+      "timestamp": "2026-09-29T13:48:46.466Z",
+      "assistant_before": " It makes complete sense, and it changes my pick. Here's the architecture in plain terms.\n\n**Three layers:**\n1. **The originals** live with the platforms: iMessage on your phone, Gmail, Instagram. They own the real messages.\n2. **small-talk is the app.** It fetches from those platforms, understands the conversations, and drafts replies for any part of your life: Cedar Shop, another business, or personal.\n3. **`data.db` is your memory, for all your workspaces,** not just the businesses. personal-workspace is one of those workspaces too.\n\n**How it flows under the decisions you already made:**\n- small-talk fetches a new text → writes it into `data.db` (conversations and messages), **tagged with its workspace**: cedar-shop, personal-workspace, and so on.\n- small-talk then reads from `data.db` to draft your reply. You send.\n- small-talk's own file keeps only its app machinery: sync checkpoints and draft scores.\n- **So there's one copy of every conversation,** and no second copy in small-talk.\n\n**Why my pick changed to B:**\n- Reviewer and Legacy-judge picked A to keep personal texts \"out of the business file.\" But `data.db` isn't a business file. It holds every workspace, personal-workspace included.\n- A would split your messages across two stores (business in `data.db`, personal in small-talk). That's two homes for the same kind of fact, which is the thing we're killing.\n- B matches your vision: one app, one memory, every conversation tagged by the part of your life it belongs to.\n\n**B:** all conversations go into `data.db`, tagged per conversation, with untagged ones defaulting to personal-workspace. Yes? "
+    },
+    "rows": [
+      {
+        "kind": "comment",
+        "id": 1054,
+        "subject_id": "T5",
+        "body": "person 9.29, personal texts (option B after the architecture explanation: small-talk is the app for business and personal; data.db holds every workspace including personal-workspace; one copy of every conversation): 'Yes'",
+        "at": "2026-09-29T09:48:54-04:00"
+      }
+    ],
+    "expected_row_id": "1054"
+  },
+  {
+    "name": "U470-comment-1139",
+    "turn": {
+      "text": "Yep, approved.",
+      "timestamp": "2026-09-29T21:45:23.227Z",
+      "assistant_before": " Yes, I jumped ahead:\n- **Runs** are in the \"all three agree\" batch, which gets one yes later.\n- **Goals** belong with question 9, the remaining lists.\n\nBack to question 3 only: **tasks, projects and programs share one list of 8:** backlog, todo, in-progress, blocked, in-review, done, canceled, superseded. Yes? "
+    },
+    "rows": [
+      {
+        "kind": "comment",
+        "id": 1139,
+        "subject_id": "T5",
+        "body": "person 9.29 on program statuses (queue Q3), after asking why not backlog and whether all work objects can share one set: 'Yep, approved.' Ruled: tasks, projects, and programs share one list of 8: backlog, todo, in-progress, blocked, in-review, done, canceled, superseded. Runs and goals come later in the queue.",
+        "at": "2026-09-29T17:45:30-04:00"
+      },
+      {
+        "kind": "decision",
+        "id": "pr-work-one-status-list",
+        "person_words": "Yep, approved.",
+        "decided_on": "2026-09-29",
+        "source": "comment:1139"
+      }
+    ],
+    "expected_row_id": "pr-work-one-status-list"
+  },
+  {
+    "name": "U474-comment-1142",
+    "turn": {
+      "text": "Okay, sounds good.",
+      "timestamp": "2026-09-29T22:14:55.309Z",
+      "assistant_before": " Here's a rule that keeps the pile small. **A proposal is only for things you didn't ask for.**\n\n- **You ask for it, with the details → no proposal.** Your words are the yes. I confirm in one line, do it, and your words get saved as the approval. Example: \"move $50 from Dining to Groceries\" → done.\n- **A skill does its defined job within its limits → no proposal.** It just records what it changed. Example: the daily treasury skill sorts transactions by its rules → done, and you see the result.\n- **An agent decides on its own to change something → proposal.** Example: treasury notices Dining is overspent and suggests moving $50 → it waits for your yes.\n- **Sends, money moves and deletes → always your yes.** But a direct ask counts as that yes. For a send, I still show you the exact text first.\n\nSo your review pile holds only things an agent thought of on its own. Yes? "
+    },
+    "rows": [
+      {
+        "kind": "comment",
+        "id": 1142,
+        "subject_id": "T5",
+        "body": "person 9.29 on when a proposal is needed (queue Q7): worried about 'being overzealous with proposals and there being a backlog of shit I have to review ... if I'm asking for something to be done, it gets done ... If it's unprovoked, okay, maybe then yeah. But if it's via a skill that's deterministic, really well defined, do I need a proposal?' Then: 'Okay, sounds good.' Ruled: proposals only for unasked changes; treasury budget suggestions are normal proposals; cleanup work is tasks.",
+        "at": "2026-09-29T18:15:04-04:00"
+      },
+      {
+        "kind": "decision",
+        "id": "g-cedar-shop-rule-14",
+        "person_words": "... if I'm asking for something to be done, it gets done, unless you just give me a little confirmation and boom ... If it's unprovoked, okay, maybe then yeah. But if it's via a skill that's deterministic, really well defined, do I need a proposal? ... Okay, sounds good.",
+        "decided_on": "2026-09-29",
+        "source": "comment:1142"
+      }
+    ],
+    "expected_row_id": "g-cedar-shop-rule-14"
+  }
+]

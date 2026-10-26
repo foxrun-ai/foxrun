@@ -1,0 +1,25 @@
+{
+  "status": "ok",
+  "reader": "fxtwitter",
+  "source": "x",
+  "url": "https://x.com/atlas_demo/status/10001?utm_source=fixture",
+  "canonical_url": "https://x.com/atlas_demo/status/10001",
+  "id": "10001",
+  "title": "Two posts about a source library",
+  "author": "Atlas Demo",
+  "author_handle": "atlas_demo",
+  "published": "2026-10-01T10:00:00-04:00",
+  "fetched_at": "2026-10-08T05:00:00-04:00",
+  "text": "1. Keep the original source.\nA library starts with evidence.\n\n2. Keep his note separate.\nA title does not replace his words.",
+  "transcript": null,
+  "comments": [],
+  "media": [
+    {"url": "https://example.invalid/library.png", "path": "media/library.png", "kind": "image"},
+    {"url": "https://example.invalid/note.png", "path": "media/note.png", "kind": "image"}
+  ],
+  "media_dir": "media",
+  "media_token": "fixture-media-token",
+  "metrics": {"likes": 12, "reposts": 2},
+  "repo": {},
+  "error": null
+}

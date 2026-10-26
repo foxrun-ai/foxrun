@@ -1,0 +1,6 @@
+home	path	reason
+system	tools/cli/defuddle.md	Product tool page (T563): the tool installs outside the system home with its own installer.
+system	tools/cli/instaloader.md	Product tool page (T563): the tool installs outside the system home with its own installer.
+system	tools/cli/pdftotext.md	Product tool page (T563): the tool installs outside the system home with its own installer.
+system	tools/cli/printing-press.md	Product tool page (T563): the tool installs outside the system home with its own installer.
+system	tools/cli/yt-dlp.md	Product tool page (T563): the tool installs outside the system home with its own installer.

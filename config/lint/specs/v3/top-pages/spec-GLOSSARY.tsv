@@ -1,0 +1,37 @@
+rule	value
+page	<home>/GLOSSARY.md: the words of the setup in the system home; a workspace holds only its own words
+made_by	a script, from the glossary rows
+frontmatter_key	type
+frontmatter_key	workspace
+frontmatter_key	timestamp
+frontmatter_keys_allowed	type|workspace|timestamp
+frontmatter_value	workspace=the workspace folder name; system in the system home
+frontmatter_format	timestamp=ISO 8601 with time and offset
+frontmatter_value	type=glossary
+h1	Glossary: <workspace>
+intro	system home=The words of the setup, each with one meaning. Use one word for one thing. A workspace keeps its own words in its own `GLOSSARY.md`.
+intro	workspace=The words of this workspace, each with one meaning. Use one word for one thing. The words of the setup are in the system [`GLOSSARY.md`](<link>).
+block_order	h1 > intro > count block > one section for each group
+count_block_labels	WORDS|GROUPS|MADE
+check	WORDS equals the number of table rows; GROUPS equals the number of h2
+group_source	the group of the word's row; while the rows have no group: the place rule
+place_rule	a word is In the system home, In the portfolio, In each workspace, or In this workspace when a folder, or else a page, directly there has its name or its name + s; else No one place
+heading_order	In the system home > In the portfolio > In each workspace > In this workspace > No one place
+table_columns	Word|Meaning|Where
+row_order	A to Z by word, letter case ignored
+cell_form	Word=bold; first letter in capitals
+cell_form	Meaning=one sentence or two; 20 words or fewer each; it does not start with the word
+cell_source	Where=a link to the folder or page the word names; a path with <workspace> in backticks and no link when it is in each workspace; — when there is no one place
+unique	a word is on the page one time; a word of the system glossary is not on a workspace page
+forbidden_form	a line of the form Word: meaning outside a table
+forbidden_headings	At a glance|Pointers|Approved tags
+page_max_lines	none
+link_form	relative path from the page
+link_target	every link opens a file, a folder, or a section that exists
+max_code_line	78
+max_table_columns	4
+sentence_max_words	20
+emoji	none
+forbidden_text	No work has started yet.|No records yet.|Install complete.|TODO|TBD
+purpose	see purpose.md: the reader, the question the page answers in ten seconds, and the next page
+no_business_name	the page in the system home holds no workspace name and no name on the extra list (see ../tool-page/spec.tsv)

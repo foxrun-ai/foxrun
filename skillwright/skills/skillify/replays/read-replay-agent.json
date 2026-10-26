@@ -1,0 +1,6 @@
+{
+  "name": "read-replay-agent",
+  "run": "read",
+  "input": "Which command runs a skill's read replay cases in a fresh Claude session? Give the exact flag.",
+  "expect": {"output_contains": ["--replay-agent claude"]}
+}

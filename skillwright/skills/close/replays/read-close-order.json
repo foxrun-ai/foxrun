@@ -1,0 +1,6 @@
+{
+  "name": "read-close-order",
+  "run": "read",
+  "input": "The person says close. Which skill writes the restart note, and which command rebuilds the start page at the end?",
+  "expect": {"output_contains": ["handoff", "state.py build"]}
+}

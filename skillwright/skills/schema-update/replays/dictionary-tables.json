@@ -1,0 +1,12 @@
+{
+  "name": "dictionary-tables",
+  "run": "read",
+  "input": "Which tables hold the data dictionary, and in which database on a standard install?",
+  "expect": {
+    "output_contains": [
+      "object_types",
+      "fields",
+      "~/.foxrun/data.db"
+    ]
+  }
+}

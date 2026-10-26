@@ -1,0 +1,6 @@
+{
+  "name": "close-needs-fix-link",
+  "run": "read",
+  "input": "You want to close a bug as fixed. What must exist first, and which verb makes it?",
+  "expect": {"output_contains": ["link", "fix"]}
+}

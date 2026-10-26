@@ -1,0 +1,27 @@
+#!/bin/sh
+export FOXRUN_HOME="${FOXRUN_HOME:-$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)}"
+export PYTHONDONTWRITEBYTECODE=1
+payload=$(cat)
+# Hermes has no compact event: pre_auxiliary_call fires for every side call. Go on only for the
+# first try of a compression call; titles, vision, and retries get nothing.
+if ! printf '%s' "$payload" | python3 -c 'import json, sys
+try:
+    d = json.load(sys.stdin)
+except ValueError:
+    d = {}
+e = (d.get("extra") or {}) if isinstance(d, dict) else {}
+go = not isinstance(d, dict) or d.get("hook_event_name") != "pre_auxiliary_call" or (
+    e.get("aux_task") == "compression" and not e.get("retry_count"))
+sys.exit(0 if go else 1)' 2>/dev/null; then
+    printf '%s\n' '{}'
+    exit 0
+fi
+if [ -f "$FOXRUN_HOME/hooks/write_handoff.py" ]; then
+    printf '%s' "$payload" | python3 "$FOXRUN_HOME/hooks/write_handoff.py" "$@" || :
+fi
+if [ -f "$FOXRUN_HOME/memory/before_compact.py" ]; then
+    printf '%s' "$payload" | python3 "$FOXRUN_HOME/memory/before_compact.py" "$@" || :
+else
+    printf '%s\n' 'Memory handoff check is unavailable.'
+fi
+exit 0

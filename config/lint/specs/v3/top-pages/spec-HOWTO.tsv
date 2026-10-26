@@ -1,0 +1,28 @@
+rule	value
+page	<system home>/INSTALL.md and <system home>/GUIDE.md
+made_by	a person; the lint checks the form, the links, and the command width
+frontmatter_key	type
+frontmatter_key	workspace
+frontmatter_key	timestamp
+frontmatter_keys_allowed	type|workspace|timestamp
+frontmatter_format	timestamp=ISO 8601 with time and offset
+frontmatter_value	type=doc
+h1	what the reader does, such as Install Foxrun
+block_order	h1 > intro > Before you start > Steps > Options > Not in this version > Next
+heading_order	Steps > Options > Not in this version > Next
+headings_required	Steps|Next
+table_columns	Before you start=Before you start|Value
+section	Steps=one sh fence, each command under a # line with its number; then the table Step|What it does
+command_rule	every command line is 78 characters or fewer; a long command is split with a backslash
+table_columns	Options=Flag|What it does
+table_columns	Next=To|Open
+forbidden_form	a run of 4 or more one-sentence lines with no blank line, table, or list
+no_business_name	the page in the system home holds no workspace name and no name on the extra list (see ../tool-page/spec.tsv)
+link_form	relative path from the page
+link_target	every link opens a file, a folder, or a section that exists
+max_code_line	78
+max_table_columns	4
+sentence_max_words	20
+emoji	none
+forbidden_text	No records yet.|TODO|TBD
+purpose	see purpose.md and locations.md

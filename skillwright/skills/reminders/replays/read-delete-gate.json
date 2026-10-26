@@ -1,0 +1,6 @@
+{
+  "name": "read-delete-gate",
+  "run": "read",
+  "input": "The person says to clean up old reminders. Before the agent deletes a reminder with remindctl, what must it run first, and what does it need from the person?",
+  "expect": {"output_contains": ["--dry-run", "yes"]}
+}

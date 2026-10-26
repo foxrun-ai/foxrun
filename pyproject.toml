@@ -1,0 +1,34 @@
+# Foxrun as a uv tool (T873): uv tool install git+https://github.com/foxrun-ai/foxrun
+# The package ships the files in product-manifest.tsv; packaging/hatch_build.py reads it.
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[project]
+name = "foxrun"
+dynamic = ["version"]
+description = "Foxrun: an operating system for your agents in Claude Code and Codex."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+dependencies = []
+
+[project.scripts]
+foxrun = "foxrun:main"
+
+[project.urls]
+Homepage = "https://github.com/foxrun-ai/foxrun"
+Source = "https://github.com/foxrun-ai/foxrun"
+
+[tool.hatch.version]
+path = "VERSION"
+pattern = "^(?P<version>[0-9][^\\s]*)\\s*$"
+
+[tool.hatch.build.hooks.custom]
+path = "packaging/hatch_build.py"
+
+[tool.hatch.build.targets.wheel]
+bypass-selection = true
+
+[tool.hatch.build.targets.sdist]
+only-include = ["pyproject.toml", "packaging"]

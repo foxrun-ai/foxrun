@@ -1,0 +1,290 @@
+{
+  "blueprint": false,
+  "files": [
+    {
+      "from": "templates/AGENTS.md",
+      "to": "AGENTS.md",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/RESOLVER.md",
+      "to": "RESOLVER.md",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/SCHEMA.md",
+      "to": "wiki/SCHEMA.md",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/wiki/TOPICS.md",
+      "to": "wiki/TOPICS.md",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/GLOSSARY.md",
+      "to": "GLOSSARY.md",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/docs/specs/.gitkeep",
+      "to": "specs/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/notes/.gitkeep",
+      "to": "notes/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/snapshots/.gitkeep",
+      "to": "history/snapshots/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/handoffs/.gitkeep",
+      "to": "history/handoffs/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/outputs/.gitkeep",
+      "to": "history/outputs/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "config/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "history/daily/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "history/runs/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "src/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "raw/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "team/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "ops/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "tools/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/STATE.md",
+      "to": "STATE.md",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/LOG.md",
+      "to": "history/LOG.md",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "skills/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "ops/functions/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "wiki/concepts/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "wiki/entities/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "wiki/comparisons/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "wiki/queries/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "raw/articles/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "raw/decks/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "raw/documents/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "raw/exports/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "raw/github/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "raw/images/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "raw/instagram/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "raw/reddit/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "raw/spreadsheets/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "raw/transcripts/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "raw/video/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "raw/x/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "raw/youtube/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "tools/cli/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "tools/external-app/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "tools/mcp/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "tools/plugin/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "tools/schedule/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/archive/.gitkeep",
+      "to": "tools/service/.gitkeep",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/EMPTY.md",
+      "to": "team/TEAM.md",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/EMPTY.md",
+      "to": "tools/CAPABILITIES.md",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/EMPTY.md",
+      "to": "CAPABILITIES.md",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/EMPTY.md",
+      "to": "ops/DASHBOARD.md",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/EMPTY.md",
+      "to": "ops/decisions.md",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/EMPTY.md",
+      "to": "ops/goals.md",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/EMPTY.md",
+      "to": "ops/issues.md",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/EMPTY.md",
+      "to": "ops/measures.md",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/EMPTY.md",
+      "to": "ops/programs.md",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/EMPTY.md",
+      "to": "ops/streams.md",
+      "if_exists": "skip"
+    },
+    {
+      "from": "templates/EMPTY.md",
+      "to": "ops/tasks.md",
+      "if_exists": "skip"
+    }
+  ]
+}

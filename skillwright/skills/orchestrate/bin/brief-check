@@ -1,0 +1,125 @@
+#!/usr/bin/env python3
+"""Check the minimum source anchors in a second-opinion brief."""
+
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+import re
+import subprocess
+import sys
+
+
+HEADING = re.compile(r"^#{1,6}\s+(.+?)\s*#*\s*$")
+FENCE = re.compile(r"^\s{0,3}(`{3,}|~{3,})")
+DECISIONS_SELECT = re.compile(r"^\s*(?:sqlite3\b[^\n]*?[\"'])?\s*select\s+\S", re.IGNORECASE)
+DECISIONS_FROM = re.compile(r"\bfrom\s+decisions\b", re.IGNORECASE)
+DECISION_ID = re.compile(r"(?<![a-z0-9-])(?:g|pr)-[a-z0-9]+(?:-[a-z0-9]+)*(?![a-z0-9-])")
+PERSON_COMMENT = re.compile(
+    r"^\s*(?:>\s*)?(?:[-*]\s*)?(?:\d+\|)?[A-Z][a-z]+(?:\s*:\s*\S|\s+\d{1,2}\.\d{1,2}\b.+|\s*\([^\n)]+\)\s*:\s*\S|\s+said\b.+)",
+    re.MULTILINE,
+)
+BUSINESS_TERM = re.compile(
+    r"\b(?:life\s*cycle|lifecycle|status\s+lists?|statuses|status\s+values|allowed\s+statuses|allowed\s+values|status\s+column\s+values|kind\s+lists?|opportunity\s+kinds?|kind\s+of\s+(?:opportunity|contact|deal))\b"
+    r"|(?<!all )\bkinds\b"
+    r"|(?<!ci )(?<!build )(?<!test )\bstages?\b"
+    r"|(?<!deploy )(?<!ci )(?<!build )\bpipeline\b",
+    re.IGNORECASE,
+)
+OWNING_LEAD = re.compile(r"\bowning[ -]lead(?:['’]s)?[ -]+sources\b", re.IGNORECASE)
+PLACEHOLDER = re.compile(r"^(?:tbd|none|n/?a|todo|not found yet)\b|^\?+$", re.IGNORECASE)
+DECISIONS_DB = Path.home() / ".foxrun/data.db"
+
+
+def sections(brief: str) -> list[tuple[str, str]]:
+    headings = []
+    offset = 0
+    fence_char = ""
+    fence_length = 0
+    for line in brief.splitlines(keepends=True):
+        marker = FENCE.match(line)
+        if marker:
+            run = marker.group(1)
+            if not fence_char:
+                fence_char, fence_length = run[0], len(run)
+            elif run[0] == fence_char and len(run) >= fence_length:
+                fence_char, fence_length = "", 0
+        elif not fence_char:
+            heading = HEADING.match(line.rstrip("\r\n"))
+            if heading:
+                headings.append((heading.group(1).strip().casefold(), offset, offset + len(line)))
+        offset += len(line)
+    return [
+        (heading, brief[end:headings[index + 1][1] if index + 1 < len(headings) else len(brief)].strip())
+        for index, (heading, _, end) in enumerate(headings)
+    ]
+
+
+def known_decision_ids() -> set[str] | None:
+    if not DECISIONS_DB.is_file():
+        return None
+    result = subprocess.run(
+        ["sqlite3", "-readonly", str(DECISIONS_DB), "select id from decisions"],
+        capture_output=True, text=True, check=False,
+    )
+    return set(result.stdout.splitlines()) if result.returncode == 0 else set()
+
+
+def has_decisions(body: str) -> bool:
+    lines = body.splitlines()
+    for index, line in enumerate(lines):
+        if DECISIONS_SELECT.match(line) and DECISIONS_FROM.search("\n".join(lines[index:index + 6])):
+            return True
+    ids = DECISION_ID.findall(body)
+    if not ids:
+        return False
+    known = known_decision_ids()
+    return any(decision_id in known for decision_id in ids) if known is not None else True
+
+
+def has_sources(body: str) -> bool:
+    lines = [re.sub(r"^\s*(?:>\s*)?(?:[-*]\s*)?", "", line).strip(" .") for line in body.splitlines()]
+    return any(line and not PLACEHOLDER.match(line) for line in lines)
+
+
+def check(brief: str) -> list[str]:
+    parts = sections(brief)
+    missing = []
+    if not any(has_decisions(body) for _, body in parts):
+        missing.append("decisions section with a decisions query or decision IDs")
+    if not any(
+        PERSON_COMMENT.search(body)
+        for heading, body in parts
+        if re.search(r"(?:the\s+)?[a-z][a-z-]*(?:['’]s)?\s+(?:logged\s+)?words|words\s+from\s+(?:the\s+)?[a-z][a-z-]*", heading)
+    ):
+        missing.append("the person's logged words section with a person comment")
+    if BUSINESS_TERM.search(brief) and not any(
+        has_sources(body) for heading, body in parts if OWNING_LEAD.search(heading)
+    ):
+        missing.append("owning-lead sources section for the business lifecycle or list")
+    return missing
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__, usage="brief-check <brief.md> [--json]")
+    parser.add_argument("brief", type=Path, help="Markdown brief to check")
+    parser.add_argument("--json", action="store_true", help="print the result as JSON")
+    args = parser.parse_args(argv)
+    try:
+        brief = args.brief.read_text(encoding="utf-8")
+    except OSError as error:
+        print(f"brief-check: {error}", file=sys.stderr)
+        return 2
+    missing = check(brief)
+    print(json.dumps({"ok": not missing, "missing": missing}))
+    if missing:
+        for item in missing:
+            print(f"brief-check: missing {item}", file=sys.stderr)
+    else:
+        print("brief-check: pass", file=sys.stderr)
+    return 1 if missing else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

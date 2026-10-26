@@ -1,0 +1,1616 @@
+{
+  "choice_additions": [
+    {
+      "table": "work_links",
+      "column": "target_type",
+      "allowed_values": [
+        "value"
+      ],
+      "reason": "A tagged task links one base_values.id. The ruled next-action and promise sets need the existing value object type.",
+      "rulings": [
+        "pr-db-promise-is-task",
+        "pr-db-deal-next-step-whose-move",
+        "pr-db-hidden-id"
+      ]
+    },
+    {
+      "table": "work_changes",
+      "column": "subject_type",
+      "allowed_values": [
+        "account-market",
+        "approval",
+        "attachment",
+        "change",
+        "comment",
+        "deliverable-content",
+        "draft-fact",
+        "field",
+        "handle-snapshot",
+        "link",
+        "measure-observation",
+        "module",
+        "object-type",
+        "page",
+        "receipt",
+        "restock-recommendation",
+        "value",
+        "capability"
+      ],
+      "reason": "Every table command leaves one change row. The compiler already permits these existing table object types; the dictionary must show the same choices.",
+      "rulings": [
+        "one-door-per-home",
+        "pr-db-event-milestones",
+        "capabilities-table-in-the-database-and-tool-docs-in-agent-team",
+        "capability-sets",
+        "tool-cards-live-in-agent-team-docs-tools"
+      ]
+    }
+  ],
+  "required_guards": [
+    {
+      "table": "base_approvals",
+      "column": "actor",
+      "predicate": "coalesce(foxrun_context('import'),0)=0 OR NEW.authorization_valid=1",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "new",
+      "source_requirement": "New approval event; incomplete imported history cannot authorize.",
+      "rulings": [
+        "event-supertype",
+        "pr-db-ids-keep-numbers",
+        "pr-db-collection-governance"
+      ]
+    },
+    {
+      "table": "base_approvals",
+      "column": "occurred_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0 OR NEW.authorization_valid=1",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "new",
+      "source_requirement": "New approval event; incomplete imported history cannot authorize.",
+      "rulings": [
+        "pr-db-event-seq",
+        "pr-db-event-action-column",
+        "time-from-machine-clock",
+        "event-actions",
+        "pr-db-ids-keep-numbers",
+        "pr-db-collection-governance"
+      ]
+    },
+    {
+      "table": "base_approvals",
+      "column": "recorded_at",
+      "predicate": "1",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "reason": "time-from-machine-clock: an import gets recorded_at from the machine clock. Unknown source occurrence time may remain NULL.",
+      "rulings": [
+        "pr-db-event-seq",
+        "pr-db-event-action-column",
+        "time-from-machine-clock",
+        "pr-db-ids-keep-numbers",
+        "pr-db-collection-governance"
+      ]
+    },
+    {
+      "table": "base_approvals",
+      "column": "session",
+      "predicate": "foxrun_context('writer')='agent'",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "agent",
+      "source_requirement": "writer_kind = 'agent'",
+      "rulings": [
+        "pr-db-event-seq",
+        "pr-db-event-action-column",
+        "time-from-machine-clock",
+        "pr-db-event-milestones",
+        "pr-db-ids-keep-numbers",
+        "pr-db-collection-governance"
+      ]
+    },
+    {
+      "table": "base_approvals",
+      "column": "source",
+      "predicate": "foxrun_context('writer') IN ('feeder','cron')",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "feeder",
+      "source_requirement": "writer_kind IN ('feeder','cron')",
+      "rulings": [
+        "event-actions",
+        "pr-db-ids-keep-numbers",
+        "pr-db-collection-governance"
+      ]
+    },
+    {
+      "table": "base_approvals",
+      "column": "subject_id",
+      "predicate": "coalesce(foxrun_context('import'),0)=0 OR NEW.authorization_valid=1",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "new",
+      "source_requirement": "New approval event; incomplete imported history cannot authorize.",
+      "rulings": [
+        "pr-db-ids-keep-numbers",
+        "pr-db-collection-governance"
+      ]
+    },
+    {
+      "table": "base_approvals",
+      "column": "version",
+      "predicate": "coalesce(foxrun_context('import'),0)=0 OR NEW.authorization_valid=1",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "new",
+      "source_requirement": "New approval event; incomplete imported history cannot authorize.",
+      "rulings": [
+        "pr-db-edit-not-yes",
+        "pr-db-ids-keep-numbers",
+        "pr-db-collection-governance"
+      ]
+    },
+    {
+      "table": "base_decisions",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-decision-table",
+        "pr-db-collection-governance"
+      ]
+    },
+    {
+      "table": "base_decisions",
+      "column": "updated_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-decision-table",
+        "pr-db-collection-governance"
+      ]
+    },
+    {
+      "table": "base_inbox_items",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-proposals-to-approval",
+        "pr-db-collection-inbox"
+      ]
+    },
+    {
+      "table": "base_inbox_items",
+      "column": "updated_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-proposals-to-approval",
+        "pr-db-collection-inbox"
+      ]
+    },
+    {
+      "table": "base_installs",
+      "column": "installed_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "pr-db-installed-module-word",
+        "pr-db-collections-accepted"
+      ]
+    },
+    {
+      "table": "base_installs",
+      "column": "updated_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "pr-db-event-milestones",
+        "pr-db-collections-accepted"
+      ]
+    },
+    {
+      "table": "base_modules",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-collections-accepted"
+      ]
+    },
+    {
+      "table": "base_modules",
+      "column": "updated_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-collections-accepted"
+      ]
+    },
+    {
+      "table": "base_proposals",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-proposals-to-approval",
+        "pr-db-collection-governance"
+      ]
+    },
+    {
+      "table": "base_proposals",
+      "column": "status",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "new",
+      "source_requirement": "New proposal; historical unsupported state may remain NULL.",
+      "rulings": [
+        "pr-db-status-lists-batch",
+        "pr-db-proposals-to-approval",
+        "pr-db-collection-governance"
+      ]
+    },
+    {
+      "table": "base_proposals",
+      "column": "updated_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-proposals-to-approval",
+        "pr-db-collection-governance"
+      ]
+    },
+    {
+      "table": "base_receipts",
+      "column": "occurred_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "pr-db-event-seq",
+        "pr-db-event-action-column",
+        "time-from-machine-clock",
+        "event-actions",
+        "pr-base-timeline",
+        "pr-db-collections-accepted"
+      ]
+    },
+    {
+      "table": "base_receipts",
+      "column": "recorded_at",
+      "predicate": "1",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "reason": "time-from-machine-clock: an import gets recorded_at from the machine clock. Unknown source occurrence time may remain NULL.",
+      "rulings": [
+        "pr-db-event-seq",
+        "pr-db-event-action-column",
+        "time-from-machine-clock",
+        "pr-base-timeline",
+        "pr-db-collections-accepted"
+      ]
+    },
+    {
+      "table": "base_receipts",
+      "column": "session",
+      "predicate": "foxrun_context('writer')='agent'",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "agent",
+      "source_requirement": "writer_kind = 'agent'",
+      "rulings": [
+        "pr-db-event-seq",
+        "pr-db-event-action-column",
+        "time-from-machine-clock",
+        "pr-db-event-milestones",
+        "pr-base-timeline",
+        "pr-db-collections-accepted"
+      ]
+    },
+    {
+      "table": "base_receipts",
+      "column": "source",
+      "predicate": "foxrun_context('writer') IN ('feeder','cron')",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "feeder",
+      "source_requirement": "writer_kind IN ('feeder','cron')",
+      "rulings": [
+        "event-actions",
+        "pr-base-timeline",
+        "pr-db-collections-accepted"
+      ]
+    },
+    {
+      "table": "base_values",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "pr-db-pipelines-tables",
+        "pr-db-collections-accepted"
+      ]
+    },
+    {
+      "table": "design_briefs",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-design-module-shape",
+        "pr-db-collection-creative"
+      ]
+    },
+    {
+      "table": "design_briefs",
+      "column": "updated_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-design-module-shape",
+        "pr-db-collection-creative"
+      ]
+    },
+    {
+      "table": "design_content",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "db-design-rule-r11",
+        "pr-db-collection-creative"
+      ]
+    },
+    {
+      "table": "design_content",
+      "column": "updated_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "db-design-rule-r11",
+        "pr-db-collection-creative"
+      ]
+    },
+    {
+      "table": "treasury_budget_snapshots",
+      "column": "as_of",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "pr-trend-type",
+        "pr-db-collection-cash-plan"
+      ]
+    },
+    {
+      "table": "treasury_budget_snapshots",
+      "column": "fetched_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "pr-db-collection-cash-plan"
+      ]
+    },
+    {
+      "table": "treasury_cancellations",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-collection-money-movement"
+      ]
+    },
+    {
+      "table": "treasury_cancellations",
+      "column": "status",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row or supported imported pair; conflicting imported pair remains NULL.",
+      "rulings": [
+        "pr-db-status-lists-batch",
+        "pr-db-collection-money-movement"
+      ]
+    },
+    {
+      "table": "treasury_cancellations",
+      "column": "updated_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-collection-money-movement"
+      ]
+    },
+    {
+      "table": "treasury_recurring_series",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-collection-cash-plan"
+      ]
+    },
+    {
+      "table": "treasury_recurring_series",
+      "column": "currency",
+      "predicate": "NEW.\"expected_amount_minor\" IS NOT NULL",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "amount",
+      "source_requirement": "Any *_minor or cost_micro amount on this row is nonnull.",
+      "rulings": [
+        "pr-db-collection-cash-plan"
+      ]
+    },
+    {
+      "table": "treasury_recurring_series",
+      "column": "source_system",
+      "predicate": "foxrun_context('writer')='feeder'",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "imported",
+      "source_requirement": "Imported from a feeder; NULL denotes our own local record.",
+      "rulings": [
+        "pr-db-collection-cash-plan"
+      ]
+    },
+    {
+      "table": "treasury_recurring_series",
+      "column": "updated_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-collection-cash-plan"
+      ]
+    },
+    {
+      "table": "treasury_scheduled_transactions",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-treasury-shape",
+        "pr-db-collection-cash-plan"
+      ]
+    },
+    {
+      "table": "treasury_scheduled_transactions",
+      "column": "currency",
+      "predicate": "NEW.\"amount_minor\" IS NOT NULL",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "amount",
+      "source_requirement": "Any *_minor or cost_micro amount on this row is nonnull.",
+      "rulings": [
+        "pr-db-treasury-shape",
+        "pr-db-collection-cash-plan"
+      ]
+    },
+    {
+      "table": "treasury_scheduled_transactions",
+      "column": "source_system",
+      "predicate": "foxrun_context('writer')='feeder'",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "imported",
+      "source_requirement": "Imported from a feeder; NULL denotes our own local record.",
+      "rulings": [
+        "pr-db-treasury-shape",
+        "pr-db-collection-cash-plan"
+      ]
+    },
+    {
+      "table": "treasury_scheduled_transactions",
+      "column": "status",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row; incomplete historical closure evidence may remain NULL.",
+      "rulings": [
+        "pr-db-status-lists-batch",
+        "pr-db-treasury-shape",
+        "pr-db-collection-cash-plan"
+      ]
+    },
+    {
+      "table": "treasury_scheduled_transactions",
+      "column": "updated_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-treasury-shape",
+        "pr-db-collection-cash-plan"
+      ]
+    },
+    {
+      "table": "treasury_transactions",
+      "column": "currency",
+      "predicate": "0",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "amount",
+      "source_requirement": "Any *_minor or cost_micro amount on this row is nonnull.",
+      "not_applicable": "The table has no *_minor or cost_micro field. The conditional amount requirement cannot apply.",
+      "rulings": [
+        "pr-db-treasury-shape",
+        "pr-db-collection-money-movement"
+      ]
+    },
+    {
+      "table": "treasury_transactions",
+      "column": "fetched_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "pr-mirror",
+        "pr-db-product-sheet-source",
+        "pr-db-treasury-shape",
+        "pr-db-collection-money-movement"
+      ]
+    },
+    {
+      "table": "treasury_transfer_legs",
+      "column": "currency",
+      "predicate": "0",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "amount",
+      "source_requirement": "Any *_minor or cost_micro amount on this row is nonnull.",
+      "not_applicable": "The table has no *_minor or cost_micro field. The conditional amount requirement cannot apply.",
+      "rulings": [
+        "pr-db-collection-money-movement"
+      ]
+    },
+    {
+      "table": "treasury_transfer_legs",
+      "column": "fetched_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "pr-db-collection-money-movement"
+      ]
+    },
+    {
+      "table": "work_attachments",
+      "column": "occurred_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "pr-db-event-seq",
+        "pr-db-event-action-column",
+        "time-from-machine-clock",
+        "event-actions",
+        "pr-db-ids-keep-numbers",
+        "pr-db-collection-activity"
+      ]
+    },
+    {
+      "table": "work_attachments",
+      "column": "recorded_at",
+      "predicate": "1",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "reason": "time-from-machine-clock: an import gets recorded_at from the machine clock. Unknown source occurrence time may remain NULL.",
+      "rulings": [
+        "pr-db-event-seq",
+        "pr-db-event-action-column",
+        "time-from-machine-clock",
+        "pr-db-ids-keep-numbers",
+        "pr-db-collection-activity"
+      ]
+    },
+    {
+      "table": "work_attachments",
+      "column": "session",
+      "predicate": "foxrun_context('writer')='agent'",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "agent",
+      "source_requirement": "writer_kind = 'agent'",
+      "rulings": [
+        "pr-db-event-seq",
+        "pr-db-event-action-column",
+        "time-from-machine-clock",
+        "pr-db-event-milestones",
+        "pr-db-ids-keep-numbers",
+        "pr-db-collection-activity"
+      ]
+    },
+    {
+      "table": "work_attachments",
+      "column": "source",
+      "predicate": "foxrun_context('writer') IN ('feeder','cron')",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "feeder",
+      "source_requirement": "writer_kind IN ('feeder','cron')",
+      "rulings": [
+        "event-actions",
+        "pr-db-ids-keep-numbers",
+        "pr-db-collection-activity"
+      ]
+    },
+    {
+      "table": "work_bugs",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-collection-issues"
+      ]
+    },
+    {
+      "table": "work_bugs",
+      "column": "status",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "new",
+      "source_requirement": "New bug; historical unsupported state may remain NULL and cannot count as closed.",
+      "rulings": [
+        "pr-db-collection-issues"
+      ]
+    },
+    {
+      "table": "work_bugs",
+      "column": "updated_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-collection-issues"
+      ]
+    },
+    {
+      "table": "work_changes",
+      "column": "occurred_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "pr-db-event-seq",
+        "pr-db-event-action-column",
+        "time-from-machine-clock",
+        "event-actions",
+        "pr-db-ids-keep-numbers",
+        "pr-db-work-changes-name",
+        "pr-db-event-milestones",
+        "pr-db-collection-activity"
+      ]
+    },
+    {
+      "table": "work_changes",
+      "column": "recorded_at",
+      "predicate": "1",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "reason": "time-from-machine-clock: an import gets recorded_at from the machine clock. Unknown source occurrence time may remain NULL.",
+      "rulings": [
+        "pr-db-event-seq",
+        "pr-db-event-action-column",
+        "time-from-machine-clock",
+        "pr-db-ids-keep-numbers",
+        "pr-db-work-changes-name",
+        "pr-db-event-milestones",
+        "pr-db-collection-activity"
+      ]
+    },
+    {
+      "table": "work_changes",
+      "column": "session",
+      "predicate": "foxrun_context('writer')='agent'",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "agent",
+      "source_requirement": "writer_kind = 'agent'",
+      "rulings": [
+        "pr-db-event-seq",
+        "pr-db-event-action-column",
+        "time-from-machine-clock",
+        "pr-db-event-milestones",
+        "pr-db-ids-keep-numbers",
+        "pr-db-work-changes-name",
+        "pr-db-collection-activity"
+      ]
+    },
+    {
+      "table": "work_changes",
+      "column": "source",
+      "predicate": "foxrun_context('writer') IN ('feeder','cron')",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "feeder",
+      "source_requirement": "writer_kind IN ('feeder','cron')",
+      "rulings": [
+        "event-actions",
+        "pr-db-ids-keep-numbers",
+        "pr-db-work-changes-name",
+        "pr-db-event-milestones",
+        "pr-db-collection-activity"
+      ]
+    },
+    {
+      "table": "work_comments",
+      "column": "occurred_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "pr-db-event-seq",
+        "pr-db-event-action-column",
+        "time-from-machine-clock",
+        "event-actions",
+        "pr-db-ids-keep-numbers",
+        "pr-db-collection-activity"
+      ]
+    },
+    {
+      "table": "work_comments",
+      "column": "recorded_at",
+      "predicate": "1",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "reason": "time-from-machine-clock: an import gets recorded_at from the machine clock. Unknown source occurrence time may remain NULL.",
+      "rulings": [
+        "pr-db-event-seq",
+        "pr-db-event-action-column",
+        "time-from-machine-clock",
+        "pr-db-ids-keep-numbers",
+        "pr-db-collection-activity"
+      ]
+    },
+    {
+      "table": "work_comments",
+      "column": "session",
+      "predicate": "foxrun_context('writer')='agent'",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "agent",
+      "source_requirement": "writer_kind = 'agent'",
+      "rulings": [
+        "pr-db-event-seq",
+        "pr-db-event-action-column",
+        "time-from-machine-clock",
+        "pr-db-event-milestones",
+        "pr-db-ids-keep-numbers",
+        "pr-db-collection-activity"
+      ]
+    },
+    {
+      "table": "work_comments",
+      "column": "source",
+      "predicate": "foxrun_context('writer') IN ('feeder','cron')",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "feeder",
+      "source_requirement": "writer_kind IN ('feeder','cron')",
+      "rulings": [
+        "event-actions",
+        "pr-db-ids-keep-numbers",
+        "pr-db-collection-activity"
+      ]
+    },
+    {
+      "table": "work_functions",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-work-collections"
+      ]
+    },
+    {
+      "table": "work_functions",
+      "column": "updated_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-work-collections"
+      ]
+    },
+    {
+      "table": "work_goals",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-work-collections"
+      ]
+    },
+    {
+      "table": "work_goals",
+      "column": "updated_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-work-collections"
+      ]
+    },
+    {
+      "table": "work_incidents",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-collection-issues"
+      ]
+    },
+    {
+      "table": "work_incidents",
+      "column": "updated_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-collection-issues"
+      ]
+    },
+    {
+      "table": "work_lessons",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-feedback-to-lessons",
+        "lessons-loop",
+        "pr-db-work-collections"
+      ]
+    },
+    {
+      "table": "work_lessons",
+      "column": "updated_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-feedback-to-lessons",
+        "lessons-loop",
+        "pr-db-work-collections"
+      ]
+    },
+    {
+      "table": "work_links",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "pr-db-ids-keep-numbers",
+        "pr-db-collection-activity"
+      ]
+    },
+    {
+      "table": "work_links",
+      "column": "target_type",
+      "predicate": "NEW.target_id IS NOT NULL",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "target",
+      "source_requirement": "target_id is present, including the existing external source endpoint variant.",
+      "rulings": [
+        "pr-db-ids-keep-numbers",
+        "pr-db-collection-activity",
+        "pr-db-pages-registry"
+      ]
+    },
+    {
+      "table": "work_measure_history",
+      "column": "recorded_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-work-collections"
+      ]
+    },
+    {
+      "table": "work_measures",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-work-collections"
+      ]
+    },
+    {
+      "table": "work_measures",
+      "column": "updated_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-work-collections"
+      ]
+    },
+    {
+      "table": "work_programs",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-work-collections"
+      ]
+    },
+    {
+      "table": "work_programs",
+      "column": "updated_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-work-collections"
+      ]
+    },
+    {
+      "table": "work_projects",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-work-collections"
+      ]
+    },
+    {
+      "table": "work_projects",
+      "column": "updated_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-work-collections"
+      ]
+    },
+    {
+      "table": "work_runs",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-runs-record",
+        "pr-db-work-collections"
+      ]
+    },
+    {
+      "table": "work_runs",
+      "column": "currency",
+      "predicate": "NEW.\"cost_micro\" IS NOT NULL",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "amount",
+      "source_requirement": "Any *_minor or cost_micro amount on this row is nonnull.",
+      "rulings": [
+        "agent-efficiency-decides-storage"
+      ]
+    },
+    {
+      "table": "work_runs",
+      "column": "started_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "pr-db-runs-record",
+        "pr-db-work-collections"
+      ]
+    },
+    {
+      "table": "work_runs",
+      "column": "updated_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-runs-record",
+        "pr-db-work-collections"
+      ]
+    },
+    {
+      "table": "work_tasks",
+      "column": "reviewed_by",
+      "predicate": "NEW.reviewer='lead'",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "fixture": "reviewer",
+      "source_requirement": "reviewer='lead'; stable assigned lead identity",
+      "insert_exception": {
+        "scope": "Only INSERT of an old tracker task with no reviewed_by, by the @import_system_tracker@ feeder, inside its active source-note load run. Every other insert and every update obeys the normal requirement. Existing source reference and run mark the load; no new field.",
+        "predicate": "(coalesce(foxrun_context('import'),0)=1 AND foxrun_context('writer')='feeder' AND foxrun_context('actor')='staging-loader' AND foxrun_context('piece')='@import_system_tracker@' AND NEW.workspace='@system_workspace@' AND NEW.reviewed_by IS NULL AND foxrun_context('source')=foxrun_context('import_source')||':tasks:'||json_array(NEW.number) AND EXISTS(SELECT 1 FROM work_runs r JOIN work_tasks t ON t.id=r.subject_id WHERE r.id=foxrun_context('run') AND r.workspace=NEW.workspace AND r.subject_type='task' AND r.tool='@import_system_tool@' AND r.actor='staging-loader' AND r.status='running' AND t.workspace='@system_workspace@' AND t.number='@import_system_task@')) OR (coalesce(foxrun_context('import'),0)=1 AND foxrun_context('writer')='feeder' AND foxrun_context('actor')='staging-loader' AND foxrun_context('piece')='@import_shop_tracker@' AND NEW.workspace='@shop_workspace@' AND NEW.reviewed_by IS NULL AND foxrun_context('source')=foxrun_context('import_source')||':tasks:'||json_array(NEW.number) AND EXISTS(SELECT 1 FROM work_runs r JOIN work_tasks t ON t.id=r.subject_id WHERE r.id=foxrun_context('run') AND r.workspace='@system_workspace@' AND r.subject_type='task' AND r.tool='m5_load.py' AND r.actor='staging-loader' AND r.status='running' AND t.workspace='@system_workspace@' AND t.number='@import_shop_task@'))",
+        "m5_scope": "Cedar Shop only; approval 204 on source-note; same lead calls; only the active m5_load.py run under @system_workspace@:source-note; same source mark; no ordinary write or update exception.",
+        "rulings": [
+          "@import_approval@",
+          "@import_comment@"
+        ]
+      },
+      "rulings": [
+        "agent-efficiency-decides-storage",
+        "pr-db-renames-batch-1",
+        "pr-work-reviewer-word",
+        "@import_approval@",
+        "@import_comment@"
+      ]
+    },
+    {
+      "table": "work_tasks",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-ids-keep-numbers",
+        "pr-db-treasury-shape",
+        "pr-db-work-collections"
+      ]
+    },
+    {
+      "table": "work_tasks",
+      "column": "updated_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-ids-keep-numbers",
+        "pr-db-treasury-shape",
+        "pr-db-work-collections"
+      ]
+    },
+    {
+      "table": "work_themes",
+      "column": "created_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-work-collections"
+      ]
+    },
+    {
+      "table": "work_themes",
+      "column": "updated_at",
+      "predicate": "coalesce(foxrun_context('import'),0)=0",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "New row. Imported history preserves unknown timestamps as NULL; missing mirror freshness holds the import unresolved.",
+      "rulings": [
+        "time-from-machine-clock",
+        "pr-db-work-collections"
+      ]
+    },
+    {
+      "table": "work_comments",
+      "column": "flag",
+      "predicate": "1",
+      "operations": [
+        "INSERT"
+      ],
+      "fixture": "new",
+      "source_requirement": "Every ordinary INSERT; only this tracker load in its active source-note run may preserve an absent flag.",
+      "insert_exception": {
+        "call": 1,
+        "mark": "the lead's call of 2026-10-07 (task source-note comment); a two-way door",
+        "predicate": "(coalesce(foxrun_context('import'),0)=1 AND foxrun_context('writer')='feeder' AND foxrun_context('actor')='staging-loader' AND foxrun_context('piece')='@import_system_tracker@' AND NEW.workspace='@system_workspace@' AND foxrun_context('source')=foxrun_context('import_source')||':comments:'||json_extract(NEW.refs,'$[0].source_key') AND EXISTS(SELECT 1 FROM work_runs r JOIN work_tasks t ON t.id=r.subject_id WHERE r.id=foxrun_context('run') AND r.workspace=NEW.workspace AND r.subject_type='task' AND r.tool='@import_system_tool@' AND r.actor='staging-loader' AND r.status='running' AND t.workspace='@system_workspace@' AND t.number='@import_system_task@') AND json_extract(NEW.refs,'$[0].source_database')=foxrun_context('import_source') AND json_extract(NEW.refs,'$[0].source_table')='comments') OR (coalesce(foxrun_context('import'),0)=1 AND foxrun_context('writer')='feeder' AND foxrun_context('actor')='staging-loader' AND foxrun_context('piece')='@import_shop_tracker@' AND NEW.workspace='@shop_workspace@' AND foxrun_context('source')=foxrun_context('import_source')||':comments:'||json_extract(NEW.refs,'$[0].source_key') AND EXISTS(SELECT 1 FROM work_runs r JOIN work_tasks t ON t.id=r.subject_id WHERE r.id=foxrun_context('run') AND r.workspace='@system_workspace@' AND r.subject_type='task' AND r.tool='m5_load.py' AND r.actor='staging-loader' AND r.status='running' AND t.workspace='@system_workspace@' AND t.number='@import_shop_task@') AND json_extract(NEW.refs,'$[0].source_database')=foxrun_context('import_source') AND json_extract(NEW.refs,'$[0].source_table')='comments')",
+        "m5_scope": "Cedar Shop only; approval 204 on source-note; same lead calls; only the active m5_load.py run under @system_workspace@:source-note; same source mark; no ordinary write or update exception."
+      },
+      "rulings": [
+        "card-fields-first-principles",
+        "pr-db-ids-keep-numbers",
+        "pr-db-collection-activity"
+      ]
+    }
+  ],
+  "parent_guards": [
+    {
+      "table": "work_tasks",
+      "name": "self",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "predicate": "NEW.parent=NEW.id",
+      "cases": [
+        "UPDATE work_tasks SET parent=:parent WHERE id=:parent"
+      ],
+      "message": "subtask must have one standalone parent",
+      "rulings": [
+        "subtask-word",
+        "subtasks-outside-programs"
+      ]
+    },
+    {
+      "table": "work_tasks",
+      "name": "depth",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "predicate": "NEW.parent IS NOT NULL AND EXISTS(SELECT 1 FROM work_tasks p WHERE p.id=NEW.parent AND p.parent IS NOT NULL)",
+      "cases": [
+        "UPDATE work_tasks SET parent=:child WHERE id=:other"
+      ],
+      "message": "subtask must have one standalone parent",
+      "rulings": [
+        "subtask-word",
+        "subtasks-outside-programs"
+      ]
+    },
+    {
+      "table": "work_tasks",
+      "name": "workspace",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "predicate": "(NEW.parent IS NOT NULL AND EXISTS(SELECT 1 FROM work_tasks p WHERE p.id=NEW.parent AND p.workspace IS NOT NEW.workspace)) OR EXISTS(SELECT 1 FROM work_tasks c WHERE c.parent=NEW.id AND c.workspace IS NOT NEW.workspace)",
+      "cases": [
+        "UPDATE work_tasks SET workspace='sample-finance' WHERE id=:child",
+        "UPDATE work_tasks SET workspace='sample-finance' WHERE id=:parent",
+        "UPDATE work_tasks SET parent=:parent WHERE id=:wrong_workspace"
+      ],
+      "message": "subtask must have one standalone parent",
+      "rulings": [
+        "subtask-word",
+        "subtasks-outside-programs"
+      ]
+    },
+    {
+      "table": "work_tasks",
+      "name": "program",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "predicate": "0",
+      "cases": [
+        "UPDATE work_tasks SET project=:program_project WHERE id=:parent",
+        "UPDATE work_tasks SET project=:program_project WHERE id=:child",
+        "UPDATE work_tasks SET parent=:program_task WHERE id=:other"
+      ],
+      "message": "subtask must have one standalone parent",
+      "rule": "Product schema constraint.",
+      "rulings": [
+        "subtask-word",
+        "subtasks-outside-programs",
+        "pr-work-checklist-is-subtask"
+      ]
+    },
+    {
+      "table": "work_tasks",
+      "name": "children",
+      "operations": [
+        "INSERT",
+        "UPDATE"
+      ],
+      "predicate": "NEW.parent IS NOT NULL AND EXISTS(SELECT 1 FROM work_tasks c WHERE c.parent=NEW.id)",
+      "cases": [
+        "UPDATE work_tasks SET parent=:other WHERE id=:parent"
+      ],
+      "message": "subtask must have one standalone parent",
+      "rulings": [
+        "subtask-word",
+        "subtasks-outside-programs"
+      ]
+    },
+    {
+      "table": "work_projects",
+      "name": "subtask_program",
+      "operations": [
+        "UPDATE"
+      ],
+      "predicate": "0",
+      "cases": [
+        "UPDATE work_projects SET program=:program WHERE id=:parent_project",
+        "UPDATE work_projects SET program=:program WHERE id=:child_project"
+      ],
+      "message": "subtask must have one standalone parent",
+      "rule": "Product schema constraint.",
+      "rulings": [
+        "subtask-word",
+        "subtasks-outside-programs",
+        "pr-work-checklist-is-subtask"
+      ]
+    }
+  ],
+  "state_guards": [
+    {
+      "table": "base_approvals",
+      "name": "draft_yes_needs_his_words",
+      "operations": [
+        "INSERT"
+      ],
+      "rule": "Product schema constraint.",
+      "predicate": "NEW.subject_type='draft' AND NEW.authorization_valid=1 AND (coalesce(length(trim(NEW.person_words)),0)=0 OR coalesce(length(trim(NEW.source)),0)=0)",
+      "message": "a yes on a draft needs his words and the place he said them",
+      "mark": "reading",
+      "answer": "@system_workspace@/outputs/2026-10-06-architect-answers-chief-batch-11.md, answer 2.5; @system_workspace@/outputs/2026-10-06-architect-answers-chief-batch-11-second-run.md, answer 2.B: the Architect's reading, not a Person ruling",
+      "rulings": [
+        "pr-db-page-click-approval",
+        "who-writes-to-the-database"
+      ]
+    },
+    {
+      "table": "base_approvals",
+      "name": "draft_yes_is_his",
+      "operations": [
+        "INSERT"
+      ],
+      "rule": "Product schema constraint.",
+      "predicate": "NEW.subject_type='draft' AND NEW.authorization_valid=1 AND lower(trim(coalesce(NEW.actor,'')))<>'@person@'",
+      "message": "Authorization requires @Person@",
+      "mark": "reading",
+      "answer": "@system_workspace@/outputs/2026-10-06-architect-answers-chief-batch-11-second-run.md, answer 2.B (the actor stays person): the Architect's reading, not a Person ruling; the second read of b584e04 (F/source-note-read/architect/result.md)",
+      "rulings": [
+        "event-actions",
+        "pr-db-page-click-approval"
+      ]
+    },
+    {
+      "table": "work_tasks",
+      "name": "done_needs_assigned_check",
+      "operations": [
+        "INSERT"
+      ],
+      "predicate": "NEW.status='done' AND NOT ((lower(coalesce(NEW.owner,''))='@person@' AND lower(coalesce(foxrun_context('actor'),''))='@person@') OR EXISTS(SELECT 1 FROM work_changes c WHERE c.workspace=NEW.workspace AND c.subject_type='task' AND c.subject_id=NEW.id AND c.action='verified' AND c.subject_version=CAST(NEW.version AS TEXT) AND lower(c.actor)=lower(CASE WHEN NEW.reviewer='@person@' THEN '@person@' ELSE NEW.reviewed_by END)))",
+      "message": "done task requires its assigned check",
+      "rule": "Product schema constraint.",
+      "insert_exception": {
+        "call": 3,
+        "mark": "the lead's call of 2026-10-07 (task source-note comment); a two-way door",
+        "predicate": "(coalesce(foxrun_context('import'),0)=1 AND foxrun_context('writer')='feeder' AND foxrun_context('actor')='staging-loader' AND foxrun_context('piece')='@import_system_tracker@' AND NEW.workspace='@system_workspace@' AND foxrun_context('source')=foxrun_context('import_source')||':tasks:'||json_array(NEW.number) AND EXISTS(SELECT 1 FROM work_runs r JOIN work_tasks t ON t.id=r.subject_id WHERE r.id=foxrun_context('run') AND r.workspace=NEW.workspace AND r.subject_type='task' AND r.tool='@import_system_tool@' AND r.actor='staging-loader' AND r.status='running' AND t.workspace='@system_workspace@' AND t.number='@import_system_task@')) OR (coalesce(foxrun_context('import'),0)=1 AND foxrun_context('writer')='feeder' AND foxrun_context('actor')='staging-loader' AND foxrun_context('piece')='@import_shop_tracker@' AND NEW.workspace='@shop_workspace@' AND foxrun_context('source')=foxrun_context('import_source')||':tasks:'||json_array(NEW.number) AND EXISTS(SELECT 1 FROM work_runs r JOIN work_tasks t ON t.id=r.subject_id WHERE r.id=foxrun_context('run') AND r.workspace='@system_workspace@' AND r.subject_type='task' AND r.tool='m5_load.py' AND r.actor='staging-loader' AND r.status='running' AND t.workspace='@system_workspace@' AND t.number='@import_shop_task@'))",
+        "m5_scope": "Cedar Shop only; approval 204 on source-note; same lead calls; only the active m5_load.py run under @system_workspace@:source-note; same source mark; no ordinary write or update exception."
+      },
+      "mark": "the lead's call of 2026-10-07 (task source-note comment); a two-way door",
+      "rulings": [
+        "pr-work-one-status-list",
+        "work-objects-v2",
+        "card-fields-first-principles",
+        "literal-status-backlog",
+        "pr-db-ids-keep-numbers",
+        "pr-db-treasury-shape",
+        "pr-db-work-collections"
+      ]
+    },
+    {
+      "table": "work_tasks",
+      "name": "done_needs_assigned_check",
+      "operations": [
+        "UPDATE"
+      ],
+      "predicate": "NEW.status='done' AND NOT ((lower(coalesce(NEW.owner,''))='@person@' AND lower(coalesce(foxrun_context('actor'),''))='@person@') OR EXISTS(SELECT 1 FROM work_changes c WHERE c.workspace=NEW.workspace AND c.subject_type='task' AND c.subject_id=NEW.id AND c.action='verified' AND c.subject_version=CAST(OLD.version AS TEXT) AND lower(c.actor)=lower(CASE WHEN NEW.reviewer='@person@' THEN '@person@' ELSE NEW.reviewed_by END)))",
+      "message": "done task requires its assigned check",
+      "rule": "Product schema constraint.",
+      "mark": "the lead's call of 2026-10-07 (task source-note comment); a two-way door",
+      "rulings": [
+        "pr-work-one-status-list",
+        "work-objects-v2",
+        "card-fields-first-principles",
+        "literal-status-backlog",
+        "pr-db-ids-keep-numbers",
+        "pr-db-treasury-shape",
+        "pr-db-work-collections"
+      ]
+    }
+  ],
+  "state_moves_open": [],
+  "value_set_guards": [],
+  "schema_context": {
+    "rule": "Product schema constraint.",
+    "mark": "Architect's reading, not a Person ruling",
+    "answer": "@system_workspace@/outputs/2026-10-07-architect-answers-chief-batch-24.md, answers 2.3 to 2.5",
+    "definitions": [
+      "base_modules",
+      "base_object_types",
+      "base_fields"
+    ],
+    "caller": "No caller authentication mechanism is chosen; answer 2.5 leaves it to the lead Architect."
+  }
+}

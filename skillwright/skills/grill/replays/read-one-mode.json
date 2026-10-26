@@ -1,0 +1,6 @@
+{
+  "name": "read-one-mode",
+  "run": "read",
+  "input": "The person says: let's do Q&A. Which grill mode runs, and how many questions do you ask in the first message? End with: Mode: <name>",
+  "expect": {"output_contains": ["Mode: one"]}
+}

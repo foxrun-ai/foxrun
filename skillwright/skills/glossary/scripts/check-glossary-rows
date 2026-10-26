@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+"""Reject direct glossary-file writes in the complete domain instruction set. Read-only."""
+import argparse
+from pathlib import Path
+import re
+
+
+def check(folder):
+    folder=Path(folder)
+    files=[folder/'SKILL.md']
+    if (folder/'domain.md').is_file():files.append(folder/'domain.md')
+    problems=[]
+    required=['words table','checked write command','Stop before writing','regenerate','Never create or edit `GLOSSARY.md` by hand']
+    for path in files:
+        body=path.read_text()
+        for phrase in required:
+            if phrase not in body:problems.append(path.name+': missing '+phrase)
+        # Check full sentences, including a glossary mention before the writing verb.
+        for line in body.splitlines():
+            if re.search(r'(?:Never|Do not|must not|cannot|not an authored)',line,re.I):continue
+            if re.search(r'\b(?:create|edit|update|write|author|overwrite|append|touch)\b[^\n.!?]*(?:GLOSSARY\.md|glossary[- ]file)',line,re.I) or re.search(r'GLOSSARY\.md[^\n.!?]*\b(?:create|edit|update|write|author|overwrite|append|touch)\b',line,re.I):
+                problems.append(path.name+': direct glossary-file write: '+line)
+            if re.search(r'creat\w* (?:them|the docs|these files) lazily',line,re.I):
+                problems.append(path.name+': lazy creation includes the generated glossary')
+    return problems
+
+
+def main():
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--dry-run',action='store_true')
+    parser.add_argument('--skill',type=Path,default=Path(__file__).resolve().parents[1]);args=parser.parse_args()
+    problems=check(args.skill)
+    if problems:
+        for problem in problems:print(problem)
+        return 1
+    print('words table -> checked write command -> regenerate; missing commands stop; no direct GLOSSARY.md writes')
+    return 0
+
+if __name__=='__main__':raise SystemExit(main())

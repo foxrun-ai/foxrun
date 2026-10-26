@@ -1,0 +1,6 @@
+{
+  "name": "read-pending-stays-pending",
+  "run": "read",
+  "input": "Make a /tldr of this: 'Drafted the vendor email, not sent yet. Fixed the login bug, tests pass. Need the person to pick a launch date.' End with one line: Email status: <word>",
+  "expect": {"output_contains": ["Email status: Drafted"]}
+}

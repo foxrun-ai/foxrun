@@ -1,0 +1,6 @@
+{
+  "name": "read-mac-only",
+  "run": "read",
+  "input": "Does the apple-notes skill run on Linux, and does it need an Add-on? Name the built-in command it uses.",
+  "expect": {"output_contains": ["osascript"]}
+}

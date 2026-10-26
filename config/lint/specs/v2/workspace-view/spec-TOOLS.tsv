@@ -1,0 +1,49 @@
+rule	value
+page	~/.foxrun/workspaces/<workspace>/TOOLS.md
+source_folder	~/foxrun/<workspace>/tools/
+frontmatter_key	type
+frontmatter_key	workspace
+frontmatter_key	timestamp
+frontmatter_keys_allowed	type|workspace|timestamp
+frontmatter_value	type=index
+frontmatter_value	workspace=<the folder name of the page>
+frontmatter_format	timestamp=ISO 8601 with time and offset
+made_by	base/make_workspaces_view.py
+hand_edit	not allowed: a second run of the script must give the same bytes, except timestamp and MADE
+h1	Tools: <workspace>
+nav_line	[Team](TEAM.md) · [Skills](SKILLS.md) · **Tools**
+source_line	View of [`<source_folder>`](<link>). `base/make_workspaces_view.py` makes this page. Edit a tool page, then run the script.
+block_order	h1 > nav_line > source_line > count block > one section for each use > No use yet > From the shelf > FILES WITH NO PAGE > EMPTY KIND FOLDERS > ALSO IN tools/
+grouping	one h2 for each use, A to Z; then the h2 No use yet for tool pages that are not on the template; a section with no tool is left out
+count_block_labels	TOOL PAGES|ON THE TEMPLATE|FILES, NO PAGE|MADE
+count_value	ON THE TEMPLATE=tool pages with the front matter keys name, what, kind, use, status
+count_value	TOOL PAGES=number of table rows
+count_value	FILES, NO PAGE=number of rows in the block FILES WITH NO PAGE
+kind_folders	cli|mcp|plugin|service|external-app|schedule
+table_columns	Tool|Kind|What it is
+row_source	one row for each <kind>/<name>.md whose front matter has type: tool (see ../tool-page/spec.tsv)
+row_order	in each section: by kind in the order of kind_folders; then A to Z by name
+cell_source	Tool=the status mark, a space, then the plain name of the tool (the h1 of its page) as a link to the tool page
+status_mark	live=✅|installing=🔄|chosen=☑️|candidate=⬜
+cell_source	Kind=front matter kind; it must be the same as the folder name
+cell_source	What it is=the first sentence of the plain summary of the tool page: how the tool helps, in plain words
+no_use_yet_line	These pages are not on the tool page template. Each line is the first sentence under `Purpose` or `What is it?` on the page.
+cell_fallback	What it is, in No use yet=the first sentence under the heading Purpose or What is it? of the page; (not on the page) when there is none
+table_when_empty	replace the table with the sentence: No tool page is in this folder yet.
+block	FILES WITH NO PAGE = every file or folder directly in a kind folder with no <name>.md beside it, and every .md there without type: tool; columns KIND|FILE; dot files do not count
+block	EMPTY KIND FOLDERS = kind folders that hold only dot files; names on one line, two spaces between
+block	ALSO IN tools/ = every file directly in the source folder, without dot files; columns NAME|ITS TITLE; ITS TITLE = the text of its first h1; (no title) when it has none; cut at 50 characters
+link_form	relative path from the page to the file in the workspace home
+link_target	every link opens a file or folder that exists
+block_form	a code fence; label in capitals; count in round brackets after two spaces; column names in capitals; three spaces before each line; columns padded with spaces
+block_when_empty	leave the whole block out when its count is 0
+block_row_order	A to Z by the first column
+max_code_line	78
+max_table_columns	4
+table_cell_guard	a | in a cell is written \|; line breaks in a cell become one space
+forbidden_text	No records yet.|No work has started yet.|TODO|TBD
+emoji	only ✅ 🔄 ☑️ ⬜, and only as a status mark
+blank_page	not allowed: the count block is always there
+no_business_name	does not apply here: a page under workspaces/<workspace>/ is the view of that workspace and can name it
+purpose	see purpose.md: the reader, the question the page answers in ten seconds, and the next page
+shelf_section	From the shelf = every row of ~/.foxrun/config/tools.yaml whose applies_to is global or names this workspace, and that has no page in this folder; columns Tool|Kind|What it is; What it is = the page's what, then Owner: and Why: from the row; the count line FROM THE SHELF sits before MADE; both are left out when no tool is pushed; applies_to is global, off, or a list of workspace names, and a row without it is off

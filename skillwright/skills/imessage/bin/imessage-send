@@ -1,0 +1,76 @@
+#!/usr/bin/env python3
+"""Send one iMessage through `imsg send`, or rehearse it with --rehearsal.
+
+--rehearsal does every step up to the send, stops before it, and prints JSON
+with `would_send`: the exact recipient and text that would have gone. It never
+runs imsg. Without --rehearsal, it runs the same `imsg send` command. Send only
+after the person approved the exact text and recipient.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+from pathlib import Path
+import shutil
+import sys
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(prog="imessage-send", description=__doc__.splitlines()[0])
+    target = parser.add_mutually_exclusive_group(required=True)
+    target.add_argument("--to", help="phone number or email")
+    target.add_argument("--chat-id", help="chat rowid from `imsg chats --json`")
+    parser.add_argument("--text", default="", help="message body")
+    parser.add_argument("--file", help="path to an attachment")
+    parser.add_argument("--service", choices=("imessage", "sms", "auto"), default="auto")
+    parser.add_argument("--no-sms-fallback", action="store_true", help="pass --no-sms-fallback to imsg")
+    parser.add_argument(
+        "--rehearsal",
+        "--dry-run",
+        dest="rehearsal",
+        action="store_true",
+        help="stop before the send and print what would have gone as JSON; never runs imsg",
+    )
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    if not args.text and not args.file:
+        parser.error("give --text, --file, or both")
+    if args.file and not Path(args.file).expanduser().is_file():
+        parser.error(f"attachment not found: {args.file}")
+    command = ["imsg", "send"]
+    command += ["--to", args.to] if args.to else ["--chat-id", args.chat_id]
+    if args.text:
+        command += ["--text", args.text]
+    if args.file:
+        command += ["--file", str(Path(args.file).expanduser())]
+    command += ["--service", args.service]
+    if args.no_sms_fallback:
+        command.append("--no-sms-fallback")
+    would_send = {
+        "to": args.to,
+        "chat_id": args.chat_id,
+        "text": args.text,
+        "file": command[command.index("--file") + 1] if args.file else None,
+        "service": args.service,
+    }
+    if args.rehearsal:
+        print(json.dumps({"ok": True, "rehearsal": True, "sent": False, "would_send": would_send, "command": command}))
+        print("imessage-send: rehearsal; stopped before the send; nothing sent", file=sys.stderr)
+        return 0
+    binary = shutil.which("imsg")
+    if binary is None:
+        print(json.dumps({"ok": False, "error": "imsg not found on PATH; it is an Add-on"}))
+        return 1
+    sys.stdout.flush()
+    os.execv(binary, command)
+    return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

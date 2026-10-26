@@ -1,0 +1,22 @@
+{
+  "name": "foxrun",
+  "owner": {
+    "name": "Foxrun"
+  },
+  "metadata": {
+    "description": "Foxrun plugins for Claude Code: setup, thread, and ask.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "foxrun",
+      "description": "Set up Foxrun, open agent threads, and ask Foxrun how it works.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Foxrun"
+      },
+      "homepage": "https://github.com/foxrun-ai/foxrun",
+      "source": "./plugins/foxrun"
+    }
+  ]
+}

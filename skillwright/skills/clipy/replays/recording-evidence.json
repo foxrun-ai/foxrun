@@ -1,0 +1,11 @@
+{
+  "name": "recording-evidence",
+  "run": "read",
+  "input": "What must you inspect before claiming what a Clipy screen recording shows?",
+  "expect": {
+    "output_contains": [
+      "frame images",
+      "pointer"
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+rule	value
+page	<workspace>/index.md; the same form at the top of the portfolio, with workspaces as the folders
+made_by	a script, from the folders on disk
+frontmatter_key	type
+frontmatter_key	workspace
+frontmatter_key	timestamp
+frontmatter_keys_allowed	type|workspace|timestamp
+frontmatter_value	workspace=the workspace folder name; system in the system home
+frontmatter_format	timestamp=ISO 8601 with time and offset
+frontmatter_value	type=index
+h1	Index: <workspace>
+intro	The map of this workspace. A script makes it from the folders on disk. Start here to find a page.
+block_order	h1 > intro > count block > Pages > Folders > Tree > Extra at the top
+heading_order	Pages > Folders > Tree > Extra at the top
+headings_allowed	Pages|Folders|Tree|Extra at the top
+count_block_labels	PAGES AT THE TOP|FOLDERS|FILES|MADE
+count_rule	dot files and dot folders are never counted or shown
+table_columns	Pages=Page|What it says
+row_order	Pages=AGENTS.md|CLAUDE.md|index.md|STATE.md|RESOLVER.md|GLOSSARY.md; then every other .md at the top, A to Z
+cell_source	What it says=the first sentence of the first paragraph under the h1 of the page, cut at 120 characters; the h1 when there is no sentence; This page. for index.md
+no_sentence	a first line that is a heading, a table, a list, a quote, a code fence, a bold label, or starts with @
+table_columns	Folders=Folder|What it holds|Files|Its page
+row_order	Folders=team|skills|tools|ops|src|config|wiki|history|notes|specs|raw; then every other folder, A to Z
+cell_source	What it holds=the Thing of the row in the system RESOLVER.md whose Path is `<workspace>/<folder>/`; (not on disk) when there is no row
+cell_source	Files=count of files in the folder and under it
+cell_source	Its page=the page in capitals in the folder, first of TEAM.md|CAPABILITIES.md|DASHBOARD.md|TOPICS.md|LOG.md; — when none
+section	Tree=one sentence, then one code fence: each folder and the folders directly in it, each with its file count
+tree_rule	a folder with more than 8 folders in it shows one line: <n> folders
+section	Extra at the top=the two sentences, then the blocks PAGES and OTHER FILES; a block with count 0 is left out; the section is left out when both are 0
+extra_rule	PAGES=every .md at the top that is not one of the six; OTHER FILES=every other file at the top
+page_max_lines	120
+forbidden	a list of every file
+link_form	relative path from the page
+link_target	every link opens a file, a folder, or a section that exists
+max_code_line	78
+max_table_columns	4
+sentence_max_words	20
+emoji	none
+forbidden_text	No work has started yet.|No records yet.|Install complete.|TODO|TBD
+purpose	see purpose.md: the reader, the question the page answers in ten seconds, and the next page

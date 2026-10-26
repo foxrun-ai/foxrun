@@ -1,0 +1,6 @@
+{
+  "name": "read-addon-missing",
+  "run": "read",
+  "input": "command -v remindctl prints nothing. What does the reminders skill tell the person?",
+  "expect": {"output_contains": ["Add-on"]}
+}

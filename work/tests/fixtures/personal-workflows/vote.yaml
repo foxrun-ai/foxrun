@@ -1,0 +1,94 @@
+# Workflow: vote. A plain consensus: three voices answer alone, each reads the others and votes on each open point,
+# a counter tallies the votes, and the lead writes one answer for the person to rule on.
+# Run it: python3 work/flow.py run vote --input question="<the question>" [--task <id>]
+# Then the person reads result.md: python3 work/flow.py run --resume <run> --yes result --words "<the exact words>"
+# The page vote.md beside this file says what each part does and how to change it.
+version: 1
+flow: vote
+kind: workflow
+purpose: "Settle one question: three voices answer alone, read each other, vote on each open point, and the lead proposes one answer."
+inputs:
+  question: {required: true, what: "One question, or its numbered points, in neutral words"}
+lead: lead
+worker_minutes: 30
+members:
+  lead: {what: "Compares the answers and writes the proposed result. Takes no side.", runtime: claude, access: read}
+  voice-a: {what: "One voice. Answers alone first, then votes.", voice: true, runtime: claude, access: read}
+  voice-b: {what: "One voice. Answers alone first, then votes.", voice: true, runtime: claude, access: read}
+  voice-c: {what: "One voice. Answers alone first, then votes.", voice: true, runtime: claude, access: read}
+  counter: {what: "Counts the votes. Judges nothing.", runtime: claude, access: read}
+graph:
+  # The three first answers start at the same time. Each voice reads the question only.
+  answer-a:
+    member: voice-a
+    needs: []
+    input: [question]
+    output: "Your first answer, written alone, with your reasons."
+    done_when: {file: answer-a.md}
+    return: lead
+  answer-b:
+    member: voice-b
+    needs: []
+    input: [question]
+    output: "Your first answer, written alone, with your reasons."
+    done_when: {file: answer-b.md}
+    return: lead
+  answer-c:
+    member: voice-c
+    needs: []
+    input: [question]
+    output: "Your first answer, written alone, with your reasons."
+    done_when: {file: answer-c.md}
+    return: lead
+  compare:
+    member: lead
+    needs: [answer-a, answer-b, answer-c]
+    input: [answer-a.md, answer-b.md, answer-c.md]
+    output: "Where all agree. Then each open point on its own line, P1, P2, and so on, with each side quoted."
+    done_when: {file: compare.md}
+    return: lead
+  vote-a:
+    member: voice-a
+    needs: [compare]
+    input: [answer-a.md, answer-b.md, answer-c.md, compare.md]
+    output: "One line for each open point: P<number>: AGREE, or P<number>: DISAGREE, with the evidence."
+    done_when: {file: vote-a.md}
+    return: lead
+  vote-b:
+    member: voice-b
+    needs: [compare]
+    input: [answer-a.md, answer-b.md, answer-c.md, compare.md]
+    output: "One line for each open point: P<number>: AGREE, or P<number>: DISAGREE, with the evidence."
+    done_when: {file: vote-b.md}
+    return: lead
+  vote-c:
+    member: voice-c
+    needs: [compare]
+    input: [answer-a.md, answer-b.md, answer-c.md, compare.md]
+    output: "One line for each open point: P<number>: AGREE, or P<number>: DISAGREE, with the evidence."
+    done_when: {file: vote-c.md}
+    return: lead
+  # verdict: pass = every voice says AGREE on every point. verdict: fail = a point is split; the compare and votes run again.
+  tally:
+    member: counter
+    needs: [vote-a, vote-b, vote-c]
+    input: [compare.md, vote-a.md, vote-b.md, vote-c.md]
+    output: "First line verdict: pass when every voice says AGREE on every point, else verdict: fail. Then one line for each point with its votes."
+    verdict: true
+    done_when: {file: tally.md}
+    return: lead
+  result:
+    member: lead
+    needs: [tally]
+    input: [tally.md, compare.md, the answers, the votes, the older rounds in runner/attempts/]
+    output: "The one proposed answer, and each split point with both sides. Nothing is ruled."
+    gate: ruling
+    done_when: {file: result.md}
+    return: person
+# One repair round after the first vote: two rounds in all. A point still split then goes to the person with both sides.
+loop:
+  repair: {on: tally, repeat: [compare, vote-a, vote-b, vote-c, tally], max_rounds: 1}
+rules:
+  - "A voice writes its first answer from the question only. It reads no other answer."
+  - "Do not fold. Do not hold a position only because it was yours."
+  - "The result is a proposal. The person rules."

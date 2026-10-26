@@ -1,0 +1,20 @@
+{
+  "name": "boot-pick-seat",
+  "run": "dry-run",
+  "note": "Two seats share one workspace; the architect seat must get only its own newest handoff.",
+  "input": "bin/handoff-boot --dry-run --json --vault {tmp}/vault --cwd {tmp}/vault/agent-os --seat architect",
+  "setup": {
+    "files": {
+      "vault/agent-os/history/handoffs/2026-09-26-001-chief-of-staff-night.md": "---\ntype: handoff\nsession: s1\ntags: [chief-of-staff]\n---\n\nnight\n",
+      "vault/agent-os/history/handoffs/2026-09-26-002-architect-boot.md": "---\ntype: handoff\nsession: s1\ntags: [architect, boot]\n---\n\nboot\n",
+      "vault/agent-os/history/handoffs/2026-09-26-003-chief-of-staff-boot.md": "---\ntype: handoff\nsession: s1\ntags: [chief-of-staff]\n---\n\nboot\n"
+    }
+  },
+  "expect": {
+    "exit": 0,
+    "output_contains": [
+      "\"picked\": \"{tmp}/vault/agent-os/history/handoffs/2026-09-26-002-architect-boot.md\"",
+      "\"seat_from\": \"flag\""
+    ]
+  }
+}

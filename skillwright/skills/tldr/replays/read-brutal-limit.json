@@ -1,0 +1,6 @@
+{
+  "name": "read-brutal-limit",
+  "run": "read",
+  "input": "What is the most bullets a /tldr brutal readout may have? Answer with the number only.",
+  "expect": {"output_contains": ["5"]}
+}

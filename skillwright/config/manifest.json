@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "skills": [
+    {
+      "name": "log",
+      "source": "product",
+      "path": "skills/log"
+    },
+    {
+      "name": "to-tickets",
+      "source": "product",
+      "path": "skills/to-tickets"
+    },
+    {
+      "name": "handoff",
+      "source": "product",
+      "path": "skills/handoff"
+    },
+    {
+      "name": "capture",
+      "source": "product",
+      "path": "skills/capture"
+    }
+  ]
+}

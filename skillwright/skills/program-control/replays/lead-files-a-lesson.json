@@ -1,0 +1,7 @@
+{
+  "name": "lead-files-a-lesson",
+  "run": "read",
+  "input": "The person just corrected how agents work: 'Never use the word yours in file names.' You lead the workspace demo, tracker ~/.foxrun/data.db. Where does this correction go, and what is the exact command? Answer in two short lines.",
+  "note": "A correction about how agents work is a lessons row through work.py lesson-add, not a handoff line.",
+  "expect": {"output_contains": ["lesson-add", "--rule", "--source"]}
+}

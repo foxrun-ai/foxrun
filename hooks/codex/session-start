@@ -1,0 +1,7 @@
+#!/bin/sh
+set -eu
+FOXRUN_HOME=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
+export FOXRUN_HOME
+export PYTHONDONTWRITEBYTECODE=1
+# Restores the seat context, then logs the session as a run (the logger never fails the hook).
+exec python3 "$FOXRUN_HOME/hooks/codex/codex_session_start.sh" "$@"

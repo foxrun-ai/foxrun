@@ -1,0 +1,14 @@
+{
+  "name": "missing-decisions",
+  "run": "dry-run",
+  "input": "bin/brief-check {tmp}/brief.md",
+  "setup": {
+    "files": {
+      "brief.md": "# Function homes\n## Person's logged words\nPerson 9.27: function folders were excluded.\n## Current source of truth\nRead the model page.\n"
+    }
+  },
+  "expect": {
+    "exit": 1,
+    "output_contains": ["missing decisions section"]
+  }
+}

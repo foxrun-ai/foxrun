@@ -1,0 +1,6 @@
+{
+  "name": "read-door-first",
+  "run": "read",
+  "input": "Someone asks whether to stop a tool trial that has run for two weeks. Which check runs first, and which resolver makes the call?",
+  "expect": {"output_contains": ["two-way", "kill criteria"]}
+}

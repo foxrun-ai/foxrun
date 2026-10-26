@@ -1,0 +1,6 @@
+{
+  "name": "read-modes",
+  "run": "read",
+  "input": "Name the three research modes, and the command that checks a draft's citations.",
+  "expect": {"output_contains": ["quick", "deep", "docs", "verify"]}
+}

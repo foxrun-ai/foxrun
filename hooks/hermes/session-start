@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+export FOXRUN_HOME="${FOXRUN_HOME:-$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)}"
+export PYTHONDONTWRITEBYTECODE=1
+exec python3 "$FOXRUN_HOME/memory/session_start.py" "$@"

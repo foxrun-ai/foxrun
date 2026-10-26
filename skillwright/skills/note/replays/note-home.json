@@ -1,0 +1,6 @@
+{
+  "name": "note-home",
+  "run": "read",
+  "input": "Where does a new note go, and what checks it before the write?",
+  "expect": {"output_contains": ["notes/", "lint_gate.py"]}
+}

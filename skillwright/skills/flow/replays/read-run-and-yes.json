@@ -1,0 +1,6 @@
+{
+  "name": "read-run-and-yes",
+  "run": "read",
+  "input": "A flow run says State: waits for the person at the step result. Which command records the person's yes?",
+  "expect": {"output_contains": ["--resume", "--yes", "--words"]}
+}

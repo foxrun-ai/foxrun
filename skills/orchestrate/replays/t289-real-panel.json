@@ -1,0 +1,14 @@
+{
+  "name": "t289-real-panel",
+  "run": "dry-run",
+  "input": "bin/brief-check {tmp}/brief.md",
+  "setup": {
+    "files": {
+      "brief.md": "# T289 Level 3 panel, pass 2: every property of every table (independent)\n\nYou are one of three independent reviewers (Fable 5.1, Astra, the Adviser). Read ~/.local/state/foxrun/runs/2026-09-29-level3/common.md first. Do not read the other reviewers' folders under 2026-09-29-level3/ until the cross-review.\n\nJob: settle Level 3 (g-db-level3-checks) for every table in target-v2.jsonl after the 9.29 renames: for each column, its name, our type (from the model key), required or not, its value list if it has one, and its link if it points at another table.\n\nStatus values: list the allowed statuses for work_tasks, work_projects, work_programs, work_runs, work_bugs, work_incidents, and every other table with a status, from current rows plus decisions (T289 item 9).\n\n## The design as it stands (the rows win)\n\n- Target: `~/.local/state/foxrun/runs/2026-09-29-db-refine/target-v2.jsonl` (one data.db, table-name prefix = module; 96 rows: tables and views), `leaving-v2.json` (what stays with a tool or drops), `changes.md`, `object-types.md`, `collections.md`, `questions.md` in the same folder.\n\nRead every decision before you judge anything. Check `replaces` before calling anything settled:\n\n```\nsqlite3 -readonly ~/archive/agent-os/agent-os.sqlite \"select id,status,replaces,statement from decisions where status in ('ruled','soft') and decided_on >= '2026-09-17' order by decided_on, rowid\"\n```\n\n## Person's logged words\nPerson 9.29: Nothing live changes: every output is a proposal file in your run folder.\n\n## How to write\n\nPlain English, short sentences, one idea each. Use literal names: table, column, file.\n"
+    }
+  },
+  "expect": {
+    "exit": 1,
+    "output_contains": ["missing owning-lead sources section"]
+  }
+}

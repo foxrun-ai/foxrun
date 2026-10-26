@@ -1,0 +1,36 @@
+home	pattern	spec	except_patterns
+system	CLAUDE.md	v3/top-pages/spec-CLAUDE.tsv	
+workspace	CLAUDE.md	v3/top-pages/spec-CLAUDE.tsv	
+system	STATE.md	v3/top-pages/spec-STATE.tsv	
+workspace	STATE.md	v3/top-pages/spec-STATE.tsv	
+system	GLOSSARY.md	v3/top-pages/spec-GLOSSARY.tsv	
+workspace	GLOSSARY.md	v3/top-pages/spec-GLOSSARY.tsv	
+portfolio	CLAUDE.md	v3/top-pages/spec-CLAUDE.tsv	
+atlas	CLAUDE.md	v3/top-pages/spec-CLAUDE.tsv	
+portfolio	index.md	v3/top-pages/spec-index.tsv	
+workspace	index.md	v3/top-pages/spec-index.tsv	
+atlas	LIBRARY.md	v3/top-pages/spec-LIBRARY.tsv	
+atlas	TOPICS.md	v3/top-pages/spec-TOPICS.tsv	
+atlas	history/LOG.md	v3/top-pages/spec-LOG.tsv	
+system	README.md	v3/top-pages/spec-README.tsv	
+system	RESOLVER.md	v3/top-pages/spec-RESOLVER-system.tsv	
+system	SCHEMA.md	v3/top-pages/spec-SCHEMA.tsv	
+system	DOCUMENTATION.md	v3/top-pages/spec-DOCUMENTATION.tsv	
+system	CHANGELOG.md	v3/top-pages/spec-CHANGELOG.tsv	
+system	INSTALL.md	v3/top-pages/spec-HOWTO.tsv	
+system	GUIDE.md	v3/top-pages/spec-HOWTO.tsv	
+workspace	RESOLVER.md	v3/top-pages/spec-RESOLVER.tsv	
+workspace	ops/DASHBOARD.md	v3/top-pages/spec-DASHBOARD.tsv	
+workspace	wiki/TOPICS.md	v3/top-pages/spec-TOPICS.tsv	
+workspace	history/LOG.md	v3/top-pages/spec-LOG.tsv	
+workspace	team/TEAM.md	v2/team/spec.tsv	
+system	tools/CAPABILITIES.md	v2/capabilities/spec.tsv	
+system	tools/*/*.md	v3/tool-page/spec.tsv	tools/*/index.md|tools/*/README.md|tools/*/CAPABILITIES.md|tools/*/bin-inventory.md|tools/*/mattpocock-skills.md
+system	**/README.md	v3/top-pages/spec-README.tsv	
+workspace	tools/CAPABILITIES.md	v2/capabilities/spec.tsv	
+workspace	tools/*/*.md	v3/tool-page/spec.tsv	tools/*/index.md|tools/*/README.md|tools/*/CAPABILITIES.md|tools/*/bin-inventory.md|tools/*/mattpocock-skills.md
+workspace	**/README.md	v3/top-pages/spec-README.tsv	
+system	workspaces/*/TEAM.md	v2/workspace-view/spec-TEAM.tsv	
+system	workspaces/*/SKILLS.md	v2/workspace-view/spec-SKILLS.tsv	
+system	workspaces/*/TOOLS.md	v2/workspace-view/spec-TOOLS.tsv	
+workspace	specs/**/*.md	build-spec/spec.tsv	specs/AGENTS.md|specs/CLAUDE.md

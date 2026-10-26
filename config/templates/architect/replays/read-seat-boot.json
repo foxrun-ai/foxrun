@@ -1,0 +1,14 @@
+{
+  "name": "read-seat-boot",
+  "run": "read",
+  "input": "@Person@ says: be the architect. What do you read first, and what is the first boot read? A personal seat copy exists. Which start output names the file you read?",
+  "note": "The start command names the resolved identity on its File: line; read it before the seat handoff.",
+  "expect": {
+    "output_contains": [
+      "File:",
+      "base.paths.resolve_seat",
+      "--seat architect",
+      "handoff-boot"
+    ]
+  }
+}

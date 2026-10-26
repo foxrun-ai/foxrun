@@ -1,0 +1,6 @@
+{
+  "name": "read-one-skill",
+  "run": "read",
+  "input": "The post-merge hook did not start a ship for the skill named log. Give the exact command that ships only that skill.",
+  "expect": {"output_contains": ["skill_ship.py ship --skill log"]}
+}

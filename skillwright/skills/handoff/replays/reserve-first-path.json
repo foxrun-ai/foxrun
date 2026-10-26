@@ -1,0 +1,22 @@
+{
+  "name": "reserve-first-path",
+  "run": "dry-run",
+  "note": "handoff-path has no --dry-run; it writes only into the workspace it is given, which is the temporary folder here.",
+  "input": "bin/handoff-path {tmp}/ws replay-probe",
+  "setup": {
+    "dirs": [
+      "ws"
+    ]
+  },
+  "expect": {
+    "exit": 0,
+    "output_contains": [
+      "{tmp}/ws/history/handoffs/",
+      "-001-replay-probe.md"
+    ],
+    "files": [
+      "ws/history/handoffs/*-001-replay-probe.md",
+      "ws/history/handoffs/.*-001.reserved"
+    ]
+  }
+}

@@ -1,0 +1,5 @@
+{"type": "user", "timestamp": "2026-09-27T23:00:00Z", "message": {"role": "user", "content": "Show me the open tasks for T286."}}
+{"type": "assistant", "timestamp": "2026-09-27T23:00:30Z", "message": {"role": "assistant", "model": "code", "content": [{"type": "text", "text": "T286 is in progress."}]}}
+{"type": "user", "timestamp": "2026-09-27T23:02:00Z", "message": {"role": "user", "content": "Ruled: handoff, pre-compaction note, and close are one shape with three triggers."}}
+{"type": "assistant", "timestamp": "2026-09-27T23:02:30Z", "message": {"role": "assistant", "model": "code", "content": [{"type": "text", "text": "Noted."}]}}
+{"type": "user", "timestamp": "2026-09-27T23:03:00Z", "message": {"role": "user", "content": "What does the nightly check cover?"}}

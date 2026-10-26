@@ -1,0 +1,6 @@
+{
+  "name": "no-interview",
+  "run": "read",
+  "input": "Where does a spec go, and does the spec skill interview the person again?",
+  "expect": {"output_contains": ["specs/"]}
+}

@@ -1,0 +1,10 @@
+{
+  "name": "rehearse-text",
+  "run": "rehearsal",
+  "input": "bin/imessage-send --rehearsal --to replay@example.com --text 'Replay check: nothing is sent.' --no-sms-fallback",
+  "expect": {
+    "exit": 0,
+    "output_contains": ["\"sent\": false", "\"to\": \"replay@example.com\"", "stopped before the send"],
+    "sent_text": "Replay check: nothing is sent."
+  }
+}

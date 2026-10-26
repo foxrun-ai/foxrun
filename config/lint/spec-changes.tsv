@@ -1,0 +1,13 @@
+spec	rule added	why
+v2/team/spec.tsv	required_table=*=Seat|What it does|Runs on	The seat table must exist.
+v2/team/spec.tsv	section_nonempty=Files	The folder tree must exist.
+v2/team/spec.tsv	section_fence_count=Files=1	Files requires one non-empty tree fence.
+v3/top-pages/spec-STATE.tsv	section_nonempty=Do first|Limits|Waiting for Person|Blocked|In progress|In review|Open by stream|Last 7 days|Commands	Fixed headings must have bodies.
+v3/top-pages/spec-STATE.tsv	section_numbered_count=Do first=5	The approved startup list has five steps.
+v3/top-pages/spec-STATE.tsv	section_bullet_count=Limits=4	The approved limits list has four lines.
+v3/top-pages/spec-STATE.tsv	section_fence_count=Last 7 days=1	The activity count block must exist.
+v3/top-pages/spec-STATE.tsv	section_code_labels=Last 7 days=NEW TASKS|RUNS|DECISIONS	Each activity count must exist.
+v3/top-pages/spec-STATE.tsv	section_fence_count=Commands=1	The command fence must exist.
+v3/top-pages/spec-STATE.tsv	section_command_count=Commands=4	Four numbered command entries must exist.
+v3/top-pages/spec-STATE.tsv	required_table=Commands=Question|View	The query navigation table must exist.
+build-spec/spec.tsv	retained applied binding	Keep s6-pages build-spec form, content checks, and AGENTS.md/CLAUDE.md exceptions.

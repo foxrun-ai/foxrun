@@ -1,0 +1,20 @@
+{
+  "name": "nightly-from-system-docs",
+  "run": "dry-run",
+  "note": "A system question skips the workspace page and starts with the system DOCUMENTATION.md section.",
+  "input": "bin/ask-sources \"how does the nightly backup run\" --cwd {tmp}/foxrun/fake-shop",
+  "setup": {
+    "files": {
+      ".foxrun/DOCUMENTATION.md": "# Documentation (labeled fake)\n\n## ~/.foxrun/cron\n\nThe nightly job runs at 02:30 and pushes the state backup.\n",
+      "foxrun/fake-shop/AGENTS.md": "# fake-shop (labeled fake)\n\nOrders live in the orders table.\n"
+    }
+  },
+  "expect": {
+    "exit": 0,
+    "output_contains": [
+      "\"start_with\": \"{tmp}/.foxrun/DOCUMENTATION.md\"",
+      "\"section\": \"~/.foxrun/cron\"",
+      "\"role\": \"nearest AGENTS.md\""
+    ]
+  }
+}

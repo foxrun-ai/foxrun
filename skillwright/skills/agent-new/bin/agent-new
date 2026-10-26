@@ -1,0 +1,7 @@
+#!/bin/sh
+# The installed program owns identity and runtime cape paths.
+# Every flag, such as --help and --dry-run, passes through to that program.
+ROOT="${FOXRUN_HOME:-$HOME/.foxrun}/agents"
+PY="${AGENT_TEAM_PYTHON:-python3}"
+[ -f "$ROOT/tools/agent_new.py" ] || { echo "agent-new: $ROOT/tools/agent_new.py not found" >&2; exit 2; }
+exec "$PY" -B "$ROOT/tools/agent_new.py" "$@"

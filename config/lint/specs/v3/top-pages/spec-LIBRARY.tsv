@@ -1,0 +1,28 @@
+rule	value
+page	<portfolio>/atlas/LIBRARY.md
+made_by	a script, from the TOPICS.md of atlas and of each workspace wiki
+frontmatter_key	type
+frontmatter_key	workspace
+frontmatter_key	timestamp
+frontmatter_keys_allowed	type|workspace|timestamp
+frontmatter_format	timestamp=ISO 8601 with time and offset
+frontmatter_value	type=index
+frontmatter_value	workspace=portfolio
+h1	Library: portfolio
+block_order	h1 > intro > count block > the table of wikis > one section for each wiki with pages > Not placed yet
+count_block_labels	WIKIS|WITH PAGES|PAGES|MADE
+table_columns	wikis=Wiki|Topics page|Topics|Pages
+row_source	wikis=atlas first, then each workspace with a wiki/TOPICS.md, A to Z
+cell_source	Pages=the count of page links in that TOPICS.md
+table_columns	one wiki=Topic|Subtopics|Pages
+cell_source	Topic=a link to the section of that topic in the TOPICS.md of the wiki
+check	PAGES equals the sum of the Pages column
+section	Not placed yet=the blocks WIKIS WITH NO PAGE and WORKSPACES WITH NO TOPICS.md; a block with count 0 is left out
+link_form	relative path from the page
+link_target	every link opens a file, a folder, or a section that exists
+max_code_line	78
+max_table_columns	4
+sentence_max_words	20
+emoji	none
+forbidden_text	No records yet.|TODO|TBD
+purpose	see purpose.md and locations.md

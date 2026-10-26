@@ -1,0 +1,1064 @@
+{
+  "archive": {
+    "bytes": null,
+    "sha256": null,
+    "state": "not built; rebuild with base/distribution/build_release.py",
+    "url": "foxrun-workspace-13-night.1-integration.tar"
+  },
+  "blueprint_version": "13",
+  "bootstrap": {
+    "bytes": 5873,
+    "path": "code/foxrun-modules/base/distribution/release/fetch_install.py",
+    "sha256": "6b0643af6e60cad1168aed05c39d2602148c6254a12176f205b9ed7dfb9fac63"
+  },
+  "changing_tonight": [
+    {
+      "path": "code/foxrun-modules/base/core.py",
+      "ship_path": "base/core.py",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/views.py",
+      "ship_path": "base/views.py",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/amazon_account_markets",
+      "ship_path": "base/commands/amazon_account_markets",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/amazon_accounts",
+      "ship_path": "base/commands/amazon_accounts",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/amazon_compliance_cases",
+      "ship_path": "base/commands/amazon_compliance_cases",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/amazon_listing_changes",
+      "ship_path": "base/commands/amazon_listing_changes",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/amazon_listing_submissions",
+      "ship_path": "base/commands/amazon_listing_submissions",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/amazon_listings",
+      "ship_path": "base/commands/amazon_listings",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/base_approvals",
+      "ship_path": "base/commands/base_approvals",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/base_decisions",
+      "ship_path": "base/commands/base_decisions",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/base_fields",
+      "ship_path": "base/commands/base_fields",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/base_inbox_items",
+      "ship_path": "base/commands/base_inbox_items",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/base_installs",
+      "ship_path": "base/commands/base_installs",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/base_modules",
+      "ship_path": "base/commands/base_modules",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/base_object_types",
+      "ship_path": "base/commands/base_object_types",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/base_pages",
+      "ship_path": "base/commands/base_pages",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/base_proposals",
+      "ship_path": "base/commands/base_proposals",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/base_receipts",
+      "ship_path": "base/commands/base_receipts",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/base_values",
+      "ship_path": "base/commands/base_values",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/commerce_accounts",
+      "ship_path": "base/commands/commerce_accounts",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/commerce_customer_reviews",
+      "ship_path": "base/commands/commerce_customer_reviews",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/commerce_inventory_levels",
+      "ship_path": "base/commands/commerce_inventory_levels",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/commerce_line_items",
+      "ship_path": "base/commands/commerce_line_items",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/commerce_orders",
+      "ship_path": "base/commands/commerce_orders",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/commerce_prices",
+      "ship_path": "base/commands/commerce_prices",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/commerce_products",
+      "ship_path": "base/commands/commerce_products",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/commerce_receivings",
+      "ship_path": "base/commands/commerce_receivings",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/commerce_restock_recommendations",
+      "ship_path": "base/commands/commerce_restock_recommendations",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/commerce_restocks",
+      "ship_path": "base/commands/commerce_restocks",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/commerce_sales",
+      "ship_path": "base/commands/commerce_sales",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/commerce_sales_reports",
+      "ship_path": "base/commands/commerce_sales_reports",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/commerce_shipments",
+      "ship_path": "base/commands/commerce_shipments",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/commerce_skus",
+      "ship_path": "base/commands/commerce_skus",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/commerce_support_cases",
+      "ship_path": "base/commands/commerce_support_cases",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/design_briefs",
+      "ship_path": "base/commands/design_briefs",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/design_content",
+      "ship_path": "base/commands/design_content",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/people_agreements",
+      "ship_path": "base/commands/people_agreements",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/people_contacts",
+      "ship_path": "base/commands/people_contacts",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/people_conversations",
+      "ship_path": "base/commands/people_conversations",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/people_draft_facts",
+      "ship_path": "base/commands/people_draft_facts",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/people_drafts",
+      "ship_path": "base/commands/people_drafts",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/people_handle_snapshots",
+      "ship_path": "base/commands/people_handle_snapshots",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/people_handles",
+      "ship_path": "base/commands/people_handles",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/people_interactions",
+      "ship_path": "base/commands/people_interactions",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/people_meetings",
+      "ship_path": "base/commands/people_meetings",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/people_messages",
+      "ship_path": "base/commands/people_messages",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/people_opportunities",
+      "ship_path": "base/commands/people_opportunities",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/people_organization_memberships",
+      "ship_path": "base/commands/people_organization_memberships",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/people_organizations",
+      "ship_path": "base/commands/people_organizations",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/people_participants",
+      "ship_path": "base/commands/people_participants",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/people_pipeline_stages",
+      "ship_path": "base/commands/people_pipeline_stages",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/people_pipelines",
+      "ship_path": "base/commands/people_pipelines",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/treasury_budget_snapshots",
+      "ship_path": "base/commands/treasury_budget_snapshots",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/treasury_cancellations",
+      "ship_path": "base/commands/treasury_cancellations",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/treasury_recurring_series",
+      "ship_path": "base/commands/treasury_recurring_series",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/treasury_scheduled_transactions",
+      "ship_path": "base/commands/treasury_scheduled_transactions",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/treasury_transactions",
+      "ship_path": "base/commands/treasury_transactions",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/treasury_transfer_legs",
+      "ship_path": "base/commands/treasury_transfer_legs",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/ugc_deliverable_content",
+      "ship_path": "base/commands/ugc_deliverable_content",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/ugc_deliverables",
+      "ship_path": "base/commands/ugc_deliverables",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/ugc_file_requests",
+      "ship_path": "base/commands/ugc_file_requests",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/ugc_media_files",
+      "ship_path": "base/commands/ugc_media_files",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/ugc_usage_rights",
+      "ship_path": "base/commands/ugc_usage_rights",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/work_attachments",
+      "ship_path": "base/commands/work_attachments",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/work_bugs",
+      "ship_path": "base/commands/work_bugs",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/work_changes",
+      "ship_path": "base/commands/work_changes",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/work_comments",
+      "ship_path": "base/commands/work_comments",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/work_functions",
+      "ship_path": "base/commands/work_functions",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/work_goals",
+      "ship_path": "base/commands/work_goals",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/work_incidents",
+      "ship_path": "base/commands/work_incidents",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/work_lessons",
+      "ship_path": "base/commands/work_lessons",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/work_links",
+      "ship_path": "base/commands/work_links",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/work_measure_history",
+      "ship_path": "base/commands/work_measure_history",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/work_measures",
+      "ship_path": "base/commands/work_measures",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/work_programs",
+      "ship_path": "base/commands/work_programs",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/work_projects",
+      "ship_path": "base/commands/work_projects",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/work_runs",
+      "ship_path": "base/commands/work_runs",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/work_tasks",
+      "ship_path": "base/commands/work_tasks",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/work_themes",
+      "ship_path": "base/commands/work_themes",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/agent-team/tools/render_capabilities.py",
+      "ship_path": "agent-team/tools/render_capabilities.py",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/agent-team/tools/paths.py",
+      "ship_path": "agent-team/tools/paths.py",
+      "state": "changing tonight"
+    },
+    {
+      "path": "vault/foxrun/docs/contract-templates/agents-code-repo.md",
+      "ship_path": "base/contract-templates/agents-code-repo.md",
+      "state": "changing tonight"
+    },
+    {
+      "path": "vault/foxrun/docs/contract-templates/agents-portfolio.md",
+      "ship_path": "base/contract-templates/agents-portfolio.md",
+      "state": "changing tonight"
+    },
+    {
+      "path": "vault/foxrun/docs/contract-templates/agents-runtime-global.md",
+      "ship_path": "base/contract-templates/agents-runtime-global.md",
+      "state": "changing tonight"
+    },
+    {
+      "path": "vault/foxrun/docs/contract-templates/agents-workspace.md",
+      "ship_path": "base/contract-templates/agents-workspace.md",
+      "state": "changing tonight"
+    },
+    {
+      "path": "vault/foxrun/docs/contract-templates/capabilities.md",
+      "ship_path": "base/contract-templates/capabilities.md",
+      "state": "changing tonight"
+    },
+    {
+      "path": "vault/foxrun/docs/contract-templates/claude-shim.md",
+      "ship_path": "base/contract-templates/claude-shim.md",
+      "state": "changing tonight"
+    },
+    {
+      "path": "vault/foxrun/docs/contract-templates/glossary.md",
+      "ship_path": "base/contract-templates/glossary.md",
+      "state": "changing tonight"
+    },
+    {
+      "path": "vault/foxrun/docs/contract-templates/index.md",
+      "ship_path": "base/contract-templates/index.md",
+      "state": "changing tonight"
+    },
+    {
+      "path": "vault/foxrun/docs/contract-templates/resolver.md",
+      "ship_path": "base/contract-templates/resolver.md",
+      "state": "changing tonight"
+    },
+    {
+      "path": "vault/foxrun/docs/contract-templates/schema.md",
+      "ship_path": "base/contract-templates/schema.md",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/blueprint/target-v13.jsonl",
+      "ship_path": "base/blueprint/target-v13.jsonl",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/blueprint/columns-v13.jsonl",
+      "ship_path": "base/blueprint/columns-v13.jsonl",
+      "state": "changing tonight"
+    },
+    {
+      "path": "code/foxrun-modules/base/commands/base_capabilities",
+      "ship_path": "base/commands/base_capabilities",
+      "state": "changing tonight"
+    }
+  ],
+  "dependencies": {
+    "agent_team_generator": "PyYAML is required only when this optional generator runs",
+    "install": "Python 3.9+ and SQLite 3.37+, standard library only"
+  },
+  "excluded": [
+    "Private examples, personal agent identities, business fixtures, generated business pages, runtime settings, secrets, archived files, and undeclared files never ship."
+  ],
+  "files": [
+    {
+      "archive_path": "README.md",
+      "bytes": 1428,
+      "path": "code/foxrun-modules/base/distribution/release/files/README.md",
+      "sha256": "e26be8dfbe85ef6978ed4d6d9b44b5273d03ba63d5532d52e219cb42e6684ccd",
+      "source_path": "code/foxrun-modules/base/distribution/release-README.md",
+      "state": "fixed for review"
+    },
+    {
+      "archive_path": "agent-team/tools/paths.py",
+      "bytes": 669,
+      "path": "code/foxrun-modules/base/distribution/release/files/agent-team/tools/paths.py",
+      "sha256": "b657b3e601b9aaf24b476a040c034016cb788cd9005c5d66ee234731db599088",
+      "source_path": "code/agent-team/tools/paths.py",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "agent-team/tools/render_capabilities.py",
+      "bytes": 50712,
+      "path": "code/foxrun-modules/base/distribution/release/files/agent-team/tools/render_capabilities.py",
+      "sha256": "3bde70cb46265b45b3ac2e645f0ccac1005795cdc54b19187d79e6ddb3b72735",
+      "source_path": "code/agent-team/tools/render_capabilities.py",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/blueprint/columns-v13.jsonl",
+      "bytes": 408025,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/blueprint/columns-v13.jsonl",
+      "sha256": "2ef9963e204009b7ca3f1757385ab63a8ce3594cc6a77e63d7635068c8461f43",
+      "source_path": "code/foxrun-modules/base/blueprint/columns-v13.jsonl",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/blueprint/target-v13.jsonl",
+      "bytes": 108083,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/blueprint/target-v13.jsonl",
+      "sha256": "f3a1414ffd3203c454c1351b1fa42c4fdb967a74d99a5655be70dde8b66f8fa9",
+      "source_path": "code/foxrun-modules/base/blueprint/target-v13.jsonl",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/check_workspace.py",
+      "bytes": 26999,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/check_workspace.py",
+      "sha256": "a4a40a3c7b521254fe29c0d1ef89045ddd7a7b6d681167f3682378fdfbf333ec",
+      "source_path": "code/foxrun-modules/base/check_workspace.py",
+      "state": "fixed for review"
+    },
+    {
+      "archive_path": "base/commands/base_approvals",
+      "bytes": 293,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/base_approvals",
+      "sha256": "30f4ca948af71f015e5391a3c7bba10c8325cfc29a54cd373500441eed27042d",
+      "source_path": "code/foxrun-modules/base/commands/base_approvals",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/base_capabilities",
+      "bytes": 296,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/base_capabilities",
+      "sha256": "fecd7882a4bbcd9d04bd84bd1195fa697de9fc16aefa7636cb19ac9d6a893fb6",
+      "source_path": "code/foxrun-modules/base/commands/base_capabilities",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/base_decisions",
+      "bytes": 293,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/base_decisions",
+      "sha256": "31c9c6e9c48ef14b840388efa0486b591c85253a16a7c10c7a70186ff4c318db",
+      "source_path": "code/foxrun-modules/base/commands/base_decisions",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/base_fields",
+      "bytes": 290,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/base_fields",
+      "sha256": "113b9d9bb7f602663cd29cf35d4d1135acd164ed1696c18ea8374a85c552740d",
+      "source_path": "code/foxrun-modules/base/commands/base_fields",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/base_inbox_items",
+      "bytes": 295,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/base_inbox_items",
+      "sha256": "7fcecbf4c71fab66ca4d50224eab5e58c07efb4ce9a36de10551118b6f93ac96",
+      "source_path": "code/foxrun-modules/base/commands/base_inbox_items",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/base_installs",
+      "bytes": 292,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/base_installs",
+      "sha256": "6e7dbfd21b99e93c00d63b38dc5fcbe9c5d0d86ec5617ccacb5fe4e98f8495c3",
+      "source_path": "code/foxrun-modules/base/commands/base_installs",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/base_modules",
+      "bytes": 291,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/base_modules",
+      "sha256": "f9372d6092f1dc7e18b3fd0cce7c2c103f0136a9ff7d9bcb690de742f4fcd44f",
+      "source_path": "code/foxrun-modules/base/commands/base_modules",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/base_object_types",
+      "bytes": 296,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/base_object_types",
+      "sha256": "399530bfbbe2d291cde4f611da5b7fb0034b1a76266620c41fa6b0adb2e0486d",
+      "source_path": "code/foxrun-modules/base/commands/base_object_types",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/base_pages",
+      "bytes": 289,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/base_pages",
+      "sha256": "1cd80777b77e4421d27d960f7e7c5421972a5364f1ed79864d54ebfd0471ab5a",
+      "source_path": "code/foxrun-modules/base/commands/base_pages",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/base_proposals",
+      "bytes": 293,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/base_proposals",
+      "sha256": "ccd96389fd24b3704298be1c15242a62ae7d7cd50d55ff7f06bcd7f622c22044",
+      "source_path": "code/foxrun-modules/base/commands/base_proposals",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/base_receipts",
+      "bytes": 292,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/base_receipts",
+      "sha256": "a1d5b071af345de54df857e79151a29d764e9b0e0aa363985f5365e38d33d840",
+      "source_path": "code/foxrun-modules/base/commands/base_receipts",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/base_values",
+      "bytes": 290,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/base_values",
+      "sha256": "13db50d82b313efe290e93cb60d1cd85f5608cffa0526edc2fc21464e2f8b4f0",
+      "source_path": "code/foxrun-modules/base/commands/base_values",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/design_briefs",
+      "bytes": 292,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/design_briefs",
+      "sha256": "a406071b1761b39fd34ccecbef0e1480616cd31a2cf9973ec124fef155b8ee69",
+      "source_path": "code/foxrun-modules/base/commands/design_briefs",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/design_content",
+      "bytes": 293,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/design_content",
+      "sha256": "9768d13269000b4e8568c2f2618b447f265229ee5bf262e69679614b03d10b18",
+      "source_path": "code/foxrun-modules/base/commands/design_content",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/treasury_budget_snapshots",
+      "bytes": 304,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/treasury_budget_snapshots",
+      "sha256": "6b318013b335e51b0da90618bea0a2925cd9b4351ed312a0f899be9cf6630420",
+      "source_path": "code/foxrun-modules/base/commands/treasury_budget_snapshots",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/treasury_cancellations",
+      "bytes": 301,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/treasury_cancellations",
+      "sha256": "2322fcd23f850e0b3d701e783b21e17c24e3efa0885c514c80e33283721303c8",
+      "source_path": "code/foxrun-modules/base/commands/treasury_cancellations",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/treasury_recurring_series",
+      "bytes": 304,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/treasury_recurring_series",
+      "sha256": "d9df214e356de51d9448a7082ffd2561de305928d910f6c936df8137ae288654",
+      "source_path": "code/foxrun-modules/base/commands/treasury_recurring_series",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/treasury_scheduled_transactions",
+      "bytes": 310,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/treasury_scheduled_transactions",
+      "sha256": "5355e99353f5a510cd1476c60d81d0fad2cc8362bb96190d21025054b5feb07c",
+      "source_path": "code/foxrun-modules/base/commands/treasury_scheduled_transactions",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/treasury_transactions",
+      "bytes": 300,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/treasury_transactions",
+      "sha256": "c6ff717372242562025cfda7a1055a377d21366435c50ae87575be32a4ba0f87",
+      "source_path": "code/foxrun-modules/base/commands/treasury_transactions",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/treasury_transfer_legs",
+      "bytes": 301,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/treasury_transfer_legs",
+      "sha256": "1134a394949a136f77fdcd8c68f983fce921835153141df883018d36d66bc9a3",
+      "source_path": "code/foxrun-modules/base/commands/treasury_transfer_legs",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/work_attachments",
+      "bytes": 295,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/work_attachments",
+      "sha256": "7cc51fe3df863ddaee3a8d8b11325b9a102f4e3a11b00f068e63982ebd102b73",
+      "source_path": "code/foxrun-modules/base/commands/work_attachments",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/work_bugs",
+      "bytes": 288,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/work_bugs",
+      "sha256": "a74239e6c610cc6672bb0e652d70cbdf165bd040f1fd4ab5653495d5dc4a7124",
+      "source_path": "code/foxrun-modules/base/commands/work_bugs",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/work_changes",
+      "bytes": 291,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/work_changes",
+      "sha256": "bf47bbda9ae456abda55ac831d3206f1d1ad3a5e0938d1a12e3e98ec26232e9f",
+      "source_path": "code/foxrun-modules/base/commands/work_changes",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/work_comments",
+      "bytes": 292,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/work_comments",
+      "sha256": "28faf7f63f630bc978a7f4d5c7b7ad1474b992c776923d4801207e6c9e1f6d9d",
+      "source_path": "code/foxrun-modules/base/commands/work_comments",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/work_functions",
+      "bytes": 293,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/work_functions",
+      "sha256": "4253816399bfc87f6988a719eab8b686385b98e990d9b0612a915d0fae5cbfc0",
+      "source_path": "code/foxrun-modules/base/commands/work_functions",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/work_goals",
+      "bytes": 289,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/work_goals",
+      "sha256": "fb8c348567a1cd3524a402fbf33fe5a6f4ec711c771b84e58b237017317e1879",
+      "source_path": "code/foxrun-modules/base/commands/work_goals",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/work_incidents",
+      "bytes": 293,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/work_incidents",
+      "sha256": "94d97dd8b4eadc52e72a725ca0d921baf7e180f6ba6f7514dafe2f982ad42ba6",
+      "source_path": "code/foxrun-modules/base/commands/work_incidents",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/work_lessons",
+      "bytes": 291,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/work_lessons",
+      "sha256": "c0ff1c2c8490420518e6bc1318b0555314a00a4d7cfcb20e1a6cbfd48b83ce12",
+      "source_path": "code/foxrun-modules/base/commands/work_lessons",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/work_links",
+      "bytes": 289,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/work_links",
+      "sha256": "c611e76de545752edf563879c1e69135337115a1fb3a26420a4aa01bcddb8057",
+      "source_path": "code/foxrun-modules/base/commands/work_links",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/work_measure_history",
+      "bytes": 299,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/work_measure_history",
+      "sha256": "d77552ba56ce233e765c172a649618427ae54e928e633719861b3cb4729331e8",
+      "source_path": "code/foxrun-modules/base/commands/work_measure_history",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/work_measures",
+      "bytes": 292,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/work_measures",
+      "sha256": "94c7ab39337b55be4e338762b82153da1b4bb67433c7189bbf3d97df2e4e0b5f",
+      "source_path": "code/foxrun-modules/base/commands/work_measures",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/work_programs",
+      "bytes": 292,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/work_programs",
+      "sha256": "1c80a23992462c6eb2baff3b5e50f4a88b38d69945f1262fc179183c58c7e1af",
+      "source_path": "code/foxrun-modules/base/commands/work_programs",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/work_projects",
+      "bytes": 292,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/work_projects",
+      "sha256": "d7d3c76d39f866919d7cde588cf5bb2fa77ce6f743ed68212ba101203bfbf04f",
+      "source_path": "code/foxrun-modules/base/commands/work_projects",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/work_runs",
+      "bytes": 288,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/work_runs",
+      "sha256": "6ef4d928521ffeba98b5d5888b05c0eaab16cd7ddeb7a6642b9de007411bdcb1",
+      "source_path": "code/foxrun-modules/base/commands/work_runs",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/work_tasks",
+      "bytes": 289,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/work_tasks",
+      "sha256": "6161c14e4d919c6f25f80a157d374eedb8cf60ff813ea532b4a93e7a352cef3a",
+      "source_path": "code/foxrun-modules/base/commands/work_tasks",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/commands/work_themes",
+      "bytes": 290,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/commands/work_themes",
+      "sha256": "e3b7ca30a8d112a441cc5f11096b6b383a27fae3a5703d6bb1e8df599201cc95",
+      "source_path": "code/foxrun-modules/base/commands/work_themes",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/contract-templates/agents-code-repo.md",
+      "bytes": 465,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/contract-templates/agents-code-repo.md",
+      "sha256": "6c925668aa7c5ec414cadb966c298c4d382e636b9fa5f42d958229c7691f0aa3",
+      "source_path": "vault/foxrun/docs/contract-templates/agents-code-repo.md",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/contract-templates/agents-portfolio.md",
+      "bytes": 2805,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/contract-templates/agents-portfolio.md",
+      "sha256": "a26f0c0f6a130044b92e17f6da599e1b4dd168845a79265a9decda0ef08040bf",
+      "source_path": "vault/foxrun/docs/contract-templates/agents-portfolio.md",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/contract-templates/agents-runtime-global.md",
+      "bytes": 599,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/contract-templates/agents-runtime-global.md",
+      "sha256": "c67513b5c7e4010e44590d4dbe3bee7c242205d2371db0cb3ea1f8b54afcd822",
+      "source_path": "vault/foxrun/docs/contract-templates/agents-runtime-global.md",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/contract-templates/agents-workspace.md",
+      "bytes": 1966,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/contract-templates/agents-workspace.md",
+      "sha256": "bfcde1a71262281494c27d5b5874c1939cf7d9a14082797bd62b58aa5e5e6f4f",
+      "source_path": "vault/foxrun/docs/contract-templates/agents-workspace.md",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/contract-templates/capabilities.md",
+      "bytes": 1486,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/contract-templates/capabilities.md",
+      "sha256": "8c0fd991ae699b21c761dcb44cc191f58dd1aab2f9d1114b54536be033738055",
+      "source_path": "vault/foxrun/docs/contract-templates/capabilities.md",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/contract-templates/claude-shim.md",
+      "bytes": 323,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/contract-templates/claude-shim.md",
+      "sha256": "4ee95d92c9619729b38ba44f20e1f03d83ab607b62f9538c293e2a51cd916e96",
+      "source_path": "vault/foxrun/docs/contract-templates/claude-shim.md",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/contract-templates/glossary.md",
+      "bytes": 1108,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/contract-templates/glossary.md",
+      "sha256": "8ca1330d287eacf6d9cc2399ce05b57cecfb877ceb2271185412c982ab63e8d6",
+      "source_path": "vault/foxrun/docs/contract-templates/glossary.md",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/contract-templates/index.md",
+      "bytes": 958,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/contract-templates/index.md",
+      "sha256": "12bcfdc557b6839965179b4f86ce0b9822fd364515c531a15533abf692509caf",
+      "source_path": "vault/foxrun/docs/contract-templates/index.md",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/contract-templates/resolver.md",
+      "bytes": 2740,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/contract-templates/resolver.md",
+      "sha256": "b676626a7dc0895f641223bce92c11cf5ee9c0efe9d976a14183676e2cccd839",
+      "source_path": "vault/foxrun/docs/contract-templates/resolver.md",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/contract-templates/schema.md",
+      "bytes": 1376,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/contract-templates/schema.md",
+      "sha256": "365fb8ab29e1ab11dc7795917d103e3c7193d8232c78620c6a05b7a2131dd62c",
+      "source_path": "vault/foxrun/docs/contract-templates/schema.md",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/core.py",
+      "bytes": 44305,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/core.py",
+      "sha256": "30d81db07ae32ab0a456c45cd1a426a4bd99444b93a66dad9b91feae8e020909",
+      "source_path": "code/foxrun-modules/base/core.py",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "base/dictionary_v11.py",
+      "bytes": 15750,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/dictionary_v11.py",
+      "sha256": "ddecef96633cd3af60fae880f9c13759949525f6ce84304962c8c6fa84badebe",
+      "source_path": "code/foxrun-modules/base/dictionary_v11.py",
+      "state": "fixed for review"
+    },
+    {
+      "archive_path": "base/distribution/install.py",
+      "bytes": 4672,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/distribution/install.py",
+      "sha256": "4bca82ae76cf094e992fa96d2389197e675b2fed70fdb1adf14736a8ea94e2ce",
+      "source_path": "code/foxrun-modules/base/distribution/install.py",
+      "state": "fixed for review"
+    },
+    {
+      "archive_path": "base/distribution/lookup.py",
+      "bytes": 1389,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/distribution/lookup.py",
+      "sha256": "86238eae34f5ec6af8b245c272f0fc2e62fe3d1bfb97dc107eae7fb3700182b7",
+      "source_path": "code/foxrun-modules/base/distribution/lookup.py",
+      "state": "fixed for review"
+    },
+    {
+      "archive_path": "base/distribution/privacy.py",
+      "bytes": 25430,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/distribution/privacy.py",
+      "sha256": "fe07ebec7595ecbbc5097e493130dd21c38c4f04531cff106aee8e4574972da9",
+      "source_path": "code/foxrun-modules/base/distribution/privacy.py",
+      "state": "fixed for review"
+    },
+    {
+      "archive_path": "base/distribution/sample/rows.json",
+      "bytes": 1836,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/distribution/sample/rows.json",
+      "sha256": "cb2df07839497777fd3e0dcafc497cac03e638d886f5a13cd1ce57e7077c43ca",
+      "source_path": "code/foxrun-modules/base/distribution/sample/rows.json",
+      "state": "fixed for review"
+    },
+    {
+      "archive_path": "base/distribution/sample_workspace.py",
+      "bytes": 14078,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/distribution/sample_workspace.py",
+      "sha256": "b7f0de0648c55ddcd5953eabd8beb7aa480bf871c58e614ece69ec0eda22aa84",
+      "source_path": "code/foxrun-modules/base/distribution/sample_workspace.py",
+      "state": "fixed for review"
+    },
+    {
+      "archive_path": "base/distribution/skills/lookup/SKILL.md",
+      "bytes": 666,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/distribution/skills/lookup/SKILL.md",
+      "sha256": "69965da3980a3f4d386392e6616bda838fea8236632f15203b65447f40464634",
+      "source_path": "code/foxrun-modules/base/distribution/skills/lookup/SKILL.md",
+      "state": "fixed for review"
+    },
+    {
+      "archive_path": "base/paths.py",
+      "bytes": 779,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/paths.py",
+      "sha256": "a4a6eb0b1f85f08dd5a65efdc39602b37e8e7b47286df49196657b753db6fb4e",
+      "source_path": "code/foxrun-modules/base/paths.py",
+      "state": "fixed for review"
+    },
+    {
+      "archive_path": "base/person.py",
+      "bytes": 5018,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/person.py",
+      "sha256": "c537bff1b2f866facf947522b20d54269b715c0b9a7e727225dbfab3340ad1fd",
+      "source_path": "code/foxrun-modules/base/person.py",
+      "state": "fixed for review"
+    },
+    {
+      "archive_path": "base/views.py",
+      "bytes": 22423,
+      "path": "code/foxrun-modules/base/distribution/release/files/base/views.py",
+      "sha256": "e79b8f3ec448fd08800f25af8a715027f6cce9161ada8e7c62fdbf82461953be",
+      "source_path": "code/foxrun-modules/base/views.py",
+      "state": "changing tonight"
+    },
+    {
+      "archive_path": "events/history_action_map.csv",
+      "bytes": 13133,
+      "path": "code/foxrun-modules/base/distribution/release/files/events/history_action_map.csv",
+      "sha256": "6baf2feb552ffe34cfc451b264b7ed39c24efc6622f2e8d3e09ac653cfadb3c3",
+      "source_path": "code/foxrun-modules/events/history_action_map.csv",
+      "state": "fixed for review"
+    },
+    {
+      "archive_path": "events/history_actions.py",
+      "bytes": 13762,
+      "path": "code/foxrun-modules/base/distribution/release/files/events/history_actions.py",
+      "sha256": "44fe16dc582c4d788c596c5cf2f80dbed95c812c6bd4151212a40182822e282c",
+      "source_path": "code/foxrun-modules/events/history_actions.py",
+      "state": "fixed for review"
+    }
+  ],
+  "format": "foxrun-workspace-release/v1",
+  "install_command": "python3 fetch_install.py --manifest manifest.json --home /path/to/clean-home",
+  "later_checks": [
+    "Clean-home installation, twice",
+    "Real second machine",
+    "Public release URL after approval"
+  ],
+  "modules": [
+    {
+      "name": "base",
+      "version": "12"
+    },
+    {
+      "name": "work",
+      "version": "12"
+    },
+    {
+      "name": "people",
+      "version": "12"
+    },
+    {
+      "name": "design",
+      "version": "12"
+    },
+    {
+      "name": "wiki",
+      "version": "12"
+    },
+    {
+      "name": "commerce",
+      "version": "12"
+    }
+  ],
+  "previous_archive": {
+    "bytes": 819200,
+    "sha256": "437c0c044ef1f6099cd352f8e7da80044ceba76cb96d40fb25874e5df09ab07a",
+    "url": "foxrun-workspace-12-night.1.tar"
+  },
+  "public_copy": "Private source bindings are replaced in the shipped copy. Model object type, table, field, collection, module, link, and status names stay exact. Private workspace picks do not ship.",
+  "publication": "source manifest only; no archive built or published",
+  "skills": [
+    {
+      "name": "lookup",
+      "path": "base/distribution/skills/lookup/SKILL.md",
+      "version": "13-night.1"
+    }
+  ],
+  "state": "source manifest in review; archive rebuild required",
+  "version": "13-night.1"
+}

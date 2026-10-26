@@ -1,0 +1,2870 @@
+[
+ {
+  "name": "inline link with title",
+  "source": "[Proof](evidence.md \"Evidence\")",
+  "expected": "[Proof](../../sources/evidence.md \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "inline link with title in block quote",
+  "source": "> [Proof](evidence.md \"Evidence\")",
+  "expected": "> [Proof](../../sources/evidence.md \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "inline link with title in list item",
+  "source": "- [Proof](evidence.md \"Evidence\")",
+  "expected": "- [Proof](../../sources/evidence.md \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "inline link with title in nested list",
+  "source": "- Outer\n  - [Proof](evidence.md \"Evidence\")",
+  "expected": "- Outer\n  - [Proof](../../sources/evidence.md \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "inline link with title in ordered list, four-space indent",
+  "source": "10. [Proof](evidence.md \"Evidence\")",
+  "expected": "10. [Proof](../../sources/evidence.md \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "inline link with title in block quote in a list",
+  "source": "- > [Proof](evidence.md \"Evidence\")",
+  "expected": "- > [Proof](../../sources/evidence.md \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "inline link with title in list in a block quote",
+  "source": "> - [Proof](evidence.md \"Evidence\")",
+  "expected": "> - [Proof](../../sources/evidence.md \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "inline link with title in footnote",
+  "source": "Note[^w].\n\n[^w]: [Proof](evidence.md \"Evidence\")",
+  "expected": "Note[^w].\n\n[^w]: [Proof](../../sources/evidence.md \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "inline link with title in HTML block",
+  "source": "<div>\n\n[Proof](evidence.md \"Evidence\")\n\n</div>",
+  "expected": "<div>\n\n[Proof](../../sources/evidence.md \"Evidence\")\n\n</div>",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "inline link with title in table cell",
+  "source": "| Name | Link |\n| --- | --- |\n| Row | [Proof](evidence.md \"Evidence\") |",
+  "expected": "| Name | Link |\n| --- | --- |\n| Row | [Proof](../../sources/evidence.md \"Evidence\") |",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "inline link with title in callout",
+  "source": "> [!note] Title\n> [Proof](evidence.md \"Evidence\")",
+  "expected": "> [!note] Title\n> [Proof](../../sources/evidence.md \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "image",
+  "source": "![Diagram](diagram.svg)",
+  "expected": "![Diagram](../../sources/diagram.svg)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "image in block quote",
+  "source": "> ![Diagram](diagram.svg)",
+  "expected": "> ![Diagram](../../sources/diagram.svg)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "image in list item",
+  "source": "- ![Diagram](diagram.svg)",
+  "expected": "- ![Diagram](../../sources/diagram.svg)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "image in nested list",
+  "source": "- Outer\n  - ![Diagram](diagram.svg)",
+  "expected": "- Outer\n  - ![Diagram](../../sources/diagram.svg)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "image in ordered list, four-space indent",
+  "source": "10. ![Diagram](diagram.svg)",
+  "expected": "10. ![Diagram](../../sources/diagram.svg)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "image in block quote in a list",
+  "source": "- > ![Diagram](diagram.svg)",
+  "expected": "- > ![Diagram](../../sources/diagram.svg)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "image in list in a block quote",
+  "source": "> - ![Diagram](diagram.svg)",
+  "expected": "> - ![Diagram](../../sources/diagram.svg)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "image in footnote",
+  "source": "Note[^w].\n\n[^w]: ![Diagram](diagram.svg)",
+  "expected": "Note[^w].\n\n[^w]: ![Diagram](../../sources/diagram.svg)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "image in HTML block",
+  "source": "<div>\n\n![Diagram](diagram.svg)\n\n</div>",
+  "expected": "<div>\n\n![Diagram](../../sources/diagram.svg)\n\n</div>",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "image in table cell",
+  "source": "| Name | Link |\n| --- | --- |\n| Row | ![Diagram](diagram.svg) |",
+  "expected": "| Name | Link |\n| --- | --- |\n| Row | ![Diagram](../../sources/diagram.svg) |",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "image in callout",
+  "source": "> [!note] Title\n> ![Diagram](diagram.svg)",
+  "expected": "> [!note] Title\n> ![Diagram](../../sources/diagram.svg)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "angle destination",
+  "source": "[Proof](<saved evidence.md>)",
+  "expected": "[Proof](<../../sources/saved evidence.md>)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "angle destination in block quote",
+  "source": "> [Proof](<saved evidence.md>)",
+  "expected": "> [Proof](<../../sources/saved evidence.md>)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "angle destination in list item",
+  "source": "- [Proof](<saved evidence.md>)",
+  "expected": "- [Proof](<../../sources/saved evidence.md>)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "angle destination in nested list",
+  "source": "- Outer\n  - [Proof](<saved evidence.md>)",
+  "expected": "- Outer\n  - [Proof](<../../sources/saved evidence.md>)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "angle destination in ordered list, four-space indent",
+  "source": "10. [Proof](<saved evidence.md>)",
+  "expected": "10. [Proof](<../../sources/saved evidence.md>)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "angle destination in block quote in a list",
+  "source": "- > [Proof](<saved evidence.md>)",
+  "expected": "- > [Proof](<../../sources/saved evidence.md>)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "angle destination in list in a block quote",
+  "source": "> - [Proof](<saved evidence.md>)",
+  "expected": "> - [Proof](<../../sources/saved evidence.md>)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "angle destination in footnote",
+  "source": "Note[^w].\n\n[^w]: [Proof](<saved evidence.md>)",
+  "expected": "Note[^w].\n\n[^w]: [Proof](<../../sources/saved evidence.md>)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "angle destination in HTML block",
+  "source": "<div>\n\n[Proof](<saved evidence.md>)\n\n</div>",
+  "expected": "<div>\n\n[Proof](<../../sources/saved evidence.md>)\n\n</div>",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "angle destination in table cell",
+  "source": "| Name | Link |\n| --- | --- |\n| Row | [Proof](<saved evidence.md>) |",
+  "expected": "| Name | Link |\n| --- | --- |\n| Row | [Proof](<../../sources/saved evidence.md>) |",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "angle destination in callout",
+  "source": "> [!note] Title\n> [Proof](<saved evidence.md>)",
+  "expected": "> [!note] Title\n> [Proof](<../../sources/saved evidence.md>)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "full reference",
+  "source": "[Saved][proof]\n\n[proof]: evidence.md",
+  "expected": "[Saved][proof]\n\n[proof]: ../../sources/evidence.md",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "full reference in block quote",
+  "source": "> [Saved][proof]\n>\n> [proof]: evidence.md",
+  "expected": "> [Saved][proof]\n>\n> [proof]: ../../sources/evidence.md",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "full reference in list item",
+  "source": "- [Saved][proof]\n\n  [proof]: evidence.md",
+  "expected": "- [Saved][proof]\n\n  [proof]: ../../sources/evidence.md",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "full reference in nested list",
+  "source": "- Outer\n  - [Saved][proof]\n\n    [proof]: evidence.md",
+  "expected": "- Outer\n  - [Saved][proof]\n\n    [proof]: ../../sources/evidence.md",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "full reference in ordered list, four-space indent",
+  "source": "10. [Saved][proof]\n\n    [proof]: evidence.md",
+  "expected": "10. [Saved][proof]\n\n    [proof]: ../../sources/evidence.md",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "full reference in block quote in a list",
+  "source": "- > [Saved][proof]\n  >\n  > [proof]: evidence.md",
+  "expected": "- > [Saved][proof]\n  >\n  > [proof]: ../../sources/evidence.md",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "full reference in list in a block quote",
+  "source": "> - [Saved][proof]\n>\n>   [proof]: evidence.md",
+  "expected": "> - [Saved][proof]\n>\n>   [proof]: ../../sources/evidence.md",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "full reference in footnote",
+  "source": "Note[^w].\n\n[^w]: [Saved][proof]\n\n    [proof]: evidence.md",
+  "expected": "Note[^w].\n\n[^w]: [Saved][proof]\n\n    [proof]: ../../sources/evidence.md",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "full reference in HTML block",
+  "source": "<div>\n\n[Saved][proof]\n\n[proof]: evidence.md\n\n</div>",
+  "expected": "<div>\n\n[Saved][proof]\n\n[proof]: ../../sources/evidence.md\n\n</div>",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "full reference in table cell",
+  "source": "| Name | Link |\n| --- | --- |\n| Row | [Saved][proof] |\n\n[proof]: evidence.md",
+  "expected": "| Name | Link |\n| --- | --- |\n| Row | [Saved][proof] |\n\n[proof]: ../../sources/evidence.md",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "full reference in callout",
+  "source": "> [!note] Title\n> [Saved][proof]\n>\n> [proof]: evidence.md",
+  "expected": "> [!note] Title\n> [Saved][proof]\n>\n> [proof]: ../../sources/evidence.md",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "collapsed reference",
+  "source": "[proof][]\n\n[proof]: evidence.md 'Evidence'",
+  "expected": "[proof][]\n\n[proof]: ../../sources/evidence.md 'Evidence'",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "collapsed reference in block quote",
+  "source": "> [proof][]\n>\n> [proof]: evidence.md 'Evidence'",
+  "expected": "> [proof][]\n>\n> [proof]: ../../sources/evidence.md 'Evidence'",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "collapsed reference in list item",
+  "source": "- [proof][]\n\n  [proof]: evidence.md 'Evidence'",
+  "expected": "- [proof][]\n\n  [proof]: ../../sources/evidence.md 'Evidence'",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "collapsed reference in nested list",
+  "source": "- Outer\n  - [proof][]\n\n    [proof]: evidence.md 'Evidence'",
+  "expected": "- Outer\n  - [proof][]\n\n    [proof]: ../../sources/evidence.md 'Evidence'",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "collapsed reference in ordered list, four-space indent",
+  "source": "10. [proof][]\n\n    [proof]: evidence.md 'Evidence'",
+  "expected": "10. [proof][]\n\n    [proof]: ../../sources/evidence.md 'Evidence'",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "collapsed reference in block quote in a list",
+  "source": "- > [proof][]\n  >\n  > [proof]: evidence.md 'Evidence'",
+  "expected": "- > [proof][]\n  >\n  > [proof]: ../../sources/evidence.md 'Evidence'",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "collapsed reference in list in a block quote",
+  "source": "> - [proof][]\n>\n>   [proof]: evidence.md 'Evidence'",
+  "expected": "> - [proof][]\n>\n>   [proof]: ../../sources/evidence.md 'Evidence'",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "collapsed reference in footnote",
+  "source": "Note[^w].\n\n[^w]: [proof][]\n\n    [proof]: evidence.md 'Evidence'",
+  "expected": "Note[^w].\n\n[^w]: [proof][]\n\n    [proof]: ../../sources/evidence.md 'Evidence'",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "collapsed reference in HTML block",
+  "source": "<div>\n\n[proof][]\n\n[proof]: evidence.md 'Evidence'\n\n</div>",
+  "expected": "<div>\n\n[proof][]\n\n[proof]: ../../sources/evidence.md 'Evidence'\n\n</div>",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "collapsed reference in table cell",
+  "source": "| Name | Link |\n| --- | --- |\n| Row | [proof][] |\n\n[proof]: evidence.md 'Evidence'",
+  "expected": "| Name | Link |\n| --- | --- |\n| Row | [proof][] |\n\n[proof]: ../../sources/evidence.md 'Evidence'",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "collapsed reference in callout",
+  "source": "> [!note] Title\n> [proof][]\n>\n> [proof]: evidence.md 'Evidence'",
+  "expected": "> [!note] Title\n> [proof][]\n>\n> [proof]: ../../sources/evidence.md 'Evidence'",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "shortcut reference, destination and title on next lines",
+  "source": "[proof]\n\n[proof]:\n  evidence.md\n  \"Evidence\"",
+  "expected": "[proof]\n\n[proof]:\n  ../../sources/evidence.md\n  \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "shortcut reference, destination and title on next lines in block quote",
+  "source": "> [proof]\n>\n> [proof]:\n>   evidence.md\n>   \"Evidence\"",
+  "expected": "> [proof]\n>\n> [proof]:\n>   ../../sources/evidence.md\n>   \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "shortcut reference, destination and title on next lines in list item",
+  "source": "- [proof]\n\n  [proof]:\n    evidence.md\n    \"Evidence\"",
+  "expected": "- [proof]\n\n  [proof]:\n    ../../sources/evidence.md\n    \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "shortcut reference, destination and title on next lines in nested list",
+  "source": "- Outer\n  - [proof]\n\n    [proof]:\n      evidence.md\n      \"Evidence\"",
+  "expected": "- Outer\n  - [proof]\n\n    [proof]:\n      ../../sources/evidence.md\n      \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "shortcut reference, destination and title on next lines in ordered list, four-space indent",
+  "source": "10. [proof]\n\n    [proof]:\n      evidence.md\n      \"Evidence\"",
+  "expected": "10. [proof]\n\n    [proof]:\n      ../../sources/evidence.md\n      \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "shortcut reference, destination and title on next lines in block quote in a list",
+  "source": "- > [proof]\n  >\n  > [proof]:\n  >   evidence.md\n  >   \"Evidence\"",
+  "expected": "- > [proof]\n  >\n  > [proof]:\n  >   ../../sources/evidence.md\n  >   \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "shortcut reference, destination and title on next lines in list in a block quote",
+  "source": "> - [proof]\n>\n>   [proof]:\n>     evidence.md\n>     \"Evidence\"",
+  "expected": "> - [proof]\n>\n>   [proof]:\n>     ../../sources/evidence.md\n>     \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "shortcut reference, destination and title on next lines in footnote",
+  "source": "Note[^w].\n\n[^w]: [proof]\n\n    [proof]:\n      evidence.md\n      \"Evidence\"",
+  "expected": "Note[^w].\n\n[^w]: [proof]\n\n    [proof]:\n      ../../sources/evidence.md\n      \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "shortcut reference, destination and title on next lines in HTML block",
+  "source": "<div>\n\n[proof]\n\n[proof]:\n  evidence.md\n  \"Evidence\"\n\n</div>",
+  "expected": "<div>\n\n[proof]\n\n[proof]:\n  ../../sources/evidence.md\n  \"Evidence\"\n\n</div>",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "shortcut reference, destination and title on next lines in table cell",
+  "source": "| Name | Link |\n| --- | --- |\n| Row | [proof] |\n\n[proof]:\n  evidence.md\n  \"Evidence\"",
+  "expected": "| Name | Link |\n| --- | --- |\n| Row | [proof] |\n\n[proof]:\n  ../../sources/evidence.md\n  \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "shortcut reference, destination and title on next lines in callout",
+  "source": "> [!note] Title\n> [proof]\n>\n> [proof]:\n>   evidence.md\n>   \"Evidence\"",
+  "expected": "> [!note] Title\n> [proof]\n>\n> [proof]:\n>   ../../sources/evidence.md\n>   \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "inline link continued on next lines",
+  "source": "[Proof](\nevidence.md\n\"Evidence\")",
+  "expected": "[Proof](\n../../sources/evidence.md\n\"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "inline link continued on next lines in block quote",
+  "source": "> [Proof](\n> evidence.md\n> \"Evidence\")",
+  "expected": "> [Proof](\n> ../../sources/evidence.md\n> \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "inline link continued on next lines in list item",
+  "source": "- [Proof](\n  evidence.md\n  \"Evidence\")",
+  "expected": "- [Proof](\n  ../../sources/evidence.md\n  \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "inline link continued on next lines in nested list",
+  "source": "- Outer\n  - [Proof](\n    evidence.md\n    \"Evidence\")",
+  "expected": "- Outer\n  - [Proof](\n    ../../sources/evidence.md\n    \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "inline link continued on next lines in ordered list, four-space indent",
+  "source": "10. [Proof](\n    evidence.md\n    \"Evidence\")",
+  "expected": "10. [Proof](\n    ../../sources/evidence.md\n    \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "inline link continued on next lines in block quote in a list",
+  "source": "- > [Proof](\n  > evidence.md\n  > \"Evidence\")",
+  "expected": "- > [Proof](\n  > ../../sources/evidence.md\n  > \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "inline link continued on next lines in list in a block quote",
+  "source": "> - [Proof](\n>   evidence.md\n>   \"Evidence\")",
+  "expected": "> - [Proof](\n>   ../../sources/evidence.md\n>   \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "inline link continued on next lines in footnote",
+  "source": "Note[^w].\n\n[^w]: [Proof](\n    evidence.md\n    \"Evidence\")",
+  "expected": "Note[^w].\n\n[^w]: [Proof](\n    ../../sources/evidence.md\n    \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "inline link continued on next lines in HTML block",
+  "source": "<div>\n\n[Proof](\nevidence.md\n\"Evidence\")\n\n</div>",
+  "expected": "<div>\n\n[Proof](\n../../sources/evidence.md\n\"Evidence\")\n\n</div>",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "inline link continued on next lines in callout",
+  "source": "> [!note] Title\n> [Proof](\n> evidence.md\n> \"Evidence\")",
+  "expected": "> [!note] Title\n> [Proof](\n> ../../sources/evidence.md\n> \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "autolink and absolute URL",
+  "source": "<https://example.test/proof> [Remote](https://example.test/a.md)",
+  "expected": "<https://example.test/proof> [Remote](https://example.test/a.md)",
+  "rewritten": 0,
+  "untouched": 2,
+  "unresolved": 0
+ },
+ {
+  "name": "autolink and absolute URL in block quote",
+  "source": "> <https://example.test/proof> [Remote](https://example.test/a.md)",
+  "expected": "> <https://example.test/proof> [Remote](https://example.test/a.md)",
+  "rewritten": 0,
+  "untouched": 2,
+  "unresolved": 0
+ },
+ {
+  "name": "autolink and absolute URL in list item",
+  "source": "- <https://example.test/proof> [Remote](https://example.test/a.md)",
+  "expected": "- <https://example.test/proof> [Remote](https://example.test/a.md)",
+  "rewritten": 0,
+  "untouched": 2,
+  "unresolved": 0
+ },
+ {
+  "name": "autolink and absolute URL in nested list",
+  "source": "- Outer\n  - <https://example.test/proof> [Remote](https://example.test/a.md)",
+  "expected": "- Outer\n  - <https://example.test/proof> [Remote](https://example.test/a.md)",
+  "rewritten": 0,
+  "untouched": 2,
+  "unresolved": 0
+ },
+ {
+  "name": "autolink and absolute URL in ordered list, four-space indent",
+  "source": "10. <https://example.test/proof> [Remote](https://example.test/a.md)",
+  "expected": "10. <https://example.test/proof> [Remote](https://example.test/a.md)",
+  "rewritten": 0,
+  "untouched": 2,
+  "unresolved": 0
+ },
+ {
+  "name": "autolink and absolute URL in block quote in a list",
+  "source": "- > <https://example.test/proof> [Remote](https://example.test/a.md)",
+  "expected": "- > <https://example.test/proof> [Remote](https://example.test/a.md)",
+  "rewritten": 0,
+  "untouched": 2,
+  "unresolved": 0
+ },
+ {
+  "name": "autolink and absolute URL in list in a block quote",
+  "source": "> - <https://example.test/proof> [Remote](https://example.test/a.md)",
+  "expected": "> - <https://example.test/proof> [Remote](https://example.test/a.md)",
+  "rewritten": 0,
+  "untouched": 2,
+  "unresolved": 0
+ },
+ {
+  "name": "autolink and absolute URL in footnote",
+  "source": "Note[^w].\n\n[^w]: <https://example.test/proof> [Remote](https://example.test/a.md)",
+  "expected": "Note[^w].\n\n[^w]: <https://example.test/proof> [Remote](https://example.test/a.md)",
+  "rewritten": 0,
+  "untouched": 2,
+  "unresolved": 0
+ },
+ {
+  "name": "autolink and absolute URL in HTML block",
+  "source": "<div>\n\n<https://example.test/proof> [Remote](https://example.test/a.md)\n\n</div>",
+  "expected": "<div>\n\n<https://example.test/proof> [Remote](https://example.test/a.md)\n\n</div>",
+  "rewritten": 0,
+  "untouched": 2,
+  "unresolved": 0
+ },
+ {
+  "name": "autolink and absolute URL in table cell",
+  "source": "| Name | Link |\n| --- | --- |\n| Row | <https://example.test/proof> [Remote](https://example.test/a.md) |",
+  "expected": "| Name | Link |\n| --- | --- |\n| Row | <https://example.test/proof> [Remote](https://example.test/a.md) |",
+  "rewritten": 0,
+  "untouched": 2,
+  "unresolved": 0
+ },
+ {
+  "name": "autolink and absolute URL in callout",
+  "source": "> [!note] Title\n> <https://example.test/proof> [Remote](https://example.test/a.md)",
+  "expected": "> [!note] Title\n> <https://example.test/proof> [Remote](https://example.test/a.md)",
+  "rewritten": 0,
+  "untouched": 2,
+  "unresolved": 0
+ },
+ {
+  "name": "wikilink with heading and alias",
+  "source": "[[evidence#Proof|Saved proof]]",
+  "expected": "[Saved proof](../../sources/evidence.md#Proof)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilink with heading and alias in block quote",
+  "source": "> [[evidence#Proof|Saved proof]]",
+  "expected": "> [Saved proof](../../sources/evidence.md#Proof)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilink with heading and alias in list item",
+  "source": "- [[evidence#Proof|Saved proof]]",
+  "expected": "- [Saved proof](../../sources/evidence.md#Proof)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilink with heading and alias in nested list",
+  "source": "- Outer\n  - [[evidence#Proof|Saved proof]]",
+  "expected": "- Outer\n  - [Saved proof](../../sources/evidence.md#Proof)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilink with heading and alias in ordered list, four-space indent",
+  "source": "10. [[evidence#Proof|Saved proof]]",
+  "expected": "10. [Saved proof](../../sources/evidence.md#Proof)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilink with heading and alias in block quote in a list",
+  "source": "- > [[evidence#Proof|Saved proof]]",
+  "expected": "- > [Saved proof](../../sources/evidence.md#Proof)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilink with heading and alias in list in a block quote",
+  "source": "> - [[evidence#Proof|Saved proof]]",
+  "expected": "> - [Saved proof](../../sources/evidence.md#Proof)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilink with heading and alias in footnote",
+  "source": "Note[^w].\n\n[^w]: [[evidence#Proof|Saved proof]]",
+  "expected": "Note[^w].\n\n[^w]: [Saved proof](../../sources/evidence.md#Proof)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilink with heading and alias in HTML block",
+  "source": "<div>\n\n[[evidence#Proof|Saved proof]]\n\n</div>",
+  "expected": "<div>\n\n[Saved proof](../../sources/evidence.md#Proof)\n\n</div>",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilink with heading and alias in table cell",
+  "source": "| Name | Link |\n| --- | --- |\n| Row | [[evidence#Proof\\|Saved proof]] |",
+  "expected": "| Name | Link |\n| --- | --- |\n| Row | [Saved proof](../../sources/evidence.md#Proof) |",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilink with heading and alias in callout",
+  "source": "> [!note] Title\n> [[evidence#Proof|Saved proof]]",
+  "expected": "> [!note] Title\n> [Saved proof](../../sources/evidence.md#Proof)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "embed and block id",
+  "source": "![[diagram.svg|300]] [[evidence#^block-1]]",
+  "expected": "![300](../../sources/diagram.svg) [evidence#^block-1](../../sources/evidence.md#^block-1)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "embed and block id in block quote",
+  "source": "> ![[diagram.svg|300]] [[evidence#^block-1]]",
+  "expected": "> ![300](../../sources/diagram.svg) [evidence#^block-1](../../sources/evidence.md#^block-1)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "embed and block id in list item",
+  "source": "- ![[diagram.svg|300]] [[evidence#^block-1]]",
+  "expected": "- ![300](../../sources/diagram.svg) [evidence#^block-1](../../sources/evidence.md#^block-1)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "embed and block id in nested list",
+  "source": "- Outer\n  - ![[diagram.svg|300]] [[evidence#^block-1]]",
+  "expected": "- Outer\n  - ![300](../../sources/diagram.svg) [evidence#^block-1](../../sources/evidence.md#^block-1)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "embed and block id in ordered list, four-space indent",
+  "source": "10. ![[diagram.svg|300]] [[evidence#^block-1]]",
+  "expected": "10. ![300](../../sources/diagram.svg) [evidence#^block-1](../../sources/evidence.md#^block-1)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "embed and block id in block quote in a list",
+  "source": "- > ![[diagram.svg|300]] [[evidence#^block-1]]",
+  "expected": "- > ![300](../../sources/diagram.svg) [evidence#^block-1](../../sources/evidence.md#^block-1)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "embed and block id in list in a block quote",
+  "source": "> - ![[diagram.svg|300]] [[evidence#^block-1]]",
+  "expected": "> - ![300](../../sources/diagram.svg) [evidence#^block-1](../../sources/evidence.md#^block-1)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "embed and block id in footnote",
+  "source": "Note[^w].\n\n[^w]: ![[diagram.svg|300]] [[evidence#^block-1]]",
+  "expected": "Note[^w].\n\n[^w]: ![300](../../sources/diagram.svg) [evidence#^block-1](../../sources/evidence.md#^block-1)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "embed and block id in HTML block",
+  "source": "<div>\n\n![[diagram.svg|300]] [[evidence#^block-1]]\n\n</div>",
+  "expected": "<div>\n\n![300](../../sources/diagram.svg) [evidence#^block-1](../../sources/evidence.md#^block-1)\n\n</div>",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "embed and block id in table cell",
+  "source": "| Name | Link |\n| --- | --- |\n| Row | ![[diagram.svg\\|300]] [[evidence#^block-1]] |",
+  "expected": "| Name | Link |\n| --- | --- |\n| Row | ![300](../../sources/diagram.svg) [evidence#^block-1](../../sources/evidence.md#^block-1) |",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "embed and block id in callout",
+  "source": "> [!note] Title\n> ![[diagram.svg|300]] [[evidence#^block-1]]",
+  "expected": "> [!note] Title\n> ![300](../../sources/diagram.svg) [evidence#^block-1](../../sources/evidence.md#^block-1)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "footnote definition",
+  "source": "Text[^n].\n\n[^n]: See [Proof](evidence.md).",
+  "expected": "Text[^n].\n\n[^n]: See [Proof](../../sources/evidence.md).",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "footnote definition in block quote",
+  "source": "> Text[^n].\n>\n> [^n]: See [Proof](evidence.md).",
+  "expected": "> Text[^n].\n>\n> [^n]: See [Proof](../../sources/evidence.md).",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "footnote definition in list item",
+  "source": "- Text[^n].\n\n  [^n]: See [Proof](evidence.md).",
+  "expected": "- Text[^n].\n\n  [^n]: See [Proof](../../sources/evidence.md).",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "footnote definition in nested list",
+  "source": "- Outer\n  - Text[^n].\n\n    [^n]: See [Proof](evidence.md).",
+  "expected": "- Outer\n  - Text[^n].\n\n    [^n]: See [Proof](../../sources/evidence.md).",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "footnote definition in ordered list, four-space indent",
+  "source": "10. Text[^n].\n\n    [^n]: See [Proof](evidence.md).",
+  "expected": "10. Text[^n].\n\n    [^n]: See [Proof](../../sources/evidence.md).",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "footnote definition in block quote in a list",
+  "source": "- > Text[^n].\n  >\n  > [^n]: See [Proof](evidence.md).",
+  "expected": "- > Text[^n].\n  >\n  > [^n]: See [Proof](../../sources/evidence.md).",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "footnote definition in list in a block quote",
+  "source": "> - Text[^n].\n>\n>   [^n]: See [Proof](evidence.md).",
+  "expected": "> - Text[^n].\n>\n>   [^n]: See [Proof](../../sources/evidence.md).",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "footnote definition in HTML block",
+  "source": "<div>\n\nText[^n].\n\n[^n]: See [Proof](evidence.md).\n\n</div>",
+  "expected": "<div>\n\nText[^n].\n\n[^n]: See [Proof](../../sources/evidence.md).\n\n</div>",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "footnote definition in callout",
+  "source": "> [!note] Title\n> Text[^n].\n>\n> [^n]: See [Proof](evidence.md).",
+  "expected": "> [!note] Title\n> Text[^n].\n>\n> [^n]: See [Proof](../../sources/evidence.md).",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "HTML image",
+  "source": "<img src=\"diagram.svg\" alt=\"Diagram\">",
+  "expected": "<img src=\"../../sources/diagram.svg\" alt=\"Diagram\">",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "HTML image in block quote",
+  "source": "> <img src=\"diagram.svg\" alt=\"Diagram\">",
+  "expected": "> <img src=\"../../sources/diagram.svg\" alt=\"Diagram\">",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "HTML image in list item",
+  "source": "- <img src=\"diagram.svg\" alt=\"Diagram\">",
+  "expected": "- <img src=\"../../sources/diagram.svg\" alt=\"Diagram\">",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "HTML image in nested list",
+  "source": "- Outer\n  - <img src=\"diagram.svg\" alt=\"Diagram\">",
+  "expected": "- Outer\n  - <img src=\"../../sources/diagram.svg\" alt=\"Diagram\">",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "HTML image in ordered list, four-space indent",
+  "source": "10. <img src=\"diagram.svg\" alt=\"Diagram\">",
+  "expected": "10. <img src=\"../../sources/diagram.svg\" alt=\"Diagram\">",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "HTML image in block quote in a list",
+  "source": "- > <img src=\"diagram.svg\" alt=\"Diagram\">",
+  "expected": "- > <img src=\"../../sources/diagram.svg\" alt=\"Diagram\">",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "HTML image in list in a block quote",
+  "source": "> - <img src=\"diagram.svg\" alt=\"Diagram\">",
+  "expected": "> - <img src=\"../../sources/diagram.svg\" alt=\"Diagram\">",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "HTML image in footnote",
+  "source": "Note[^w].\n\n[^w]: <img src=\"diagram.svg\" alt=\"Diagram\">",
+  "expected": "Note[^w].\n\n[^w]: <img src=\"../../sources/diagram.svg\" alt=\"Diagram\">",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "HTML image in HTML block",
+  "source": "<div>\n\n<img src=\"diagram.svg\" alt=\"Diagram\">\n\n</div>",
+  "expected": "<div>\n\n<img src=\"../../sources/diagram.svg\" alt=\"Diagram\">\n\n</div>",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "HTML image in table cell",
+  "source": "| Name | Link |\n| --- | --- |\n| Row | <img src=\"diagram.svg\" alt=\"Diagram\"> |",
+  "expected": "| Name | Link |\n| --- | --- |\n| Row | <img src=\"../../sources/diagram.svg\" alt=\"Diagram\"> |",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "HTML image in callout",
+  "source": "> [!note] Title\n> <img src=\"diagram.svg\" alt=\"Diagram\">",
+  "expected": "> [!note] Title\n> <img src=\"../../sources/diagram.svg\" alt=\"Diagram\">",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "missing file",
+  "source": "[Gone](missing.md)",
+  "expected": "[Gone](missing.md)",
+  "rewritten": 0,
+  "untouched": 0,
+  "unresolved": 1
+ },
+ {
+  "name": "missing file in block quote",
+  "source": "> [Gone](missing.md)",
+  "expected": "> [Gone](missing.md)",
+  "rewritten": 0,
+  "untouched": 0,
+  "unresolved": 1
+ },
+ {
+  "name": "missing file in list item",
+  "source": "- [Gone](missing.md)",
+  "expected": "- [Gone](missing.md)",
+  "rewritten": 0,
+  "untouched": 0,
+  "unresolved": 1
+ },
+ {
+  "name": "missing file in nested list",
+  "source": "- Outer\n  - [Gone](missing.md)",
+  "expected": "- Outer\n  - [Gone](missing.md)",
+  "rewritten": 0,
+  "untouched": 0,
+  "unresolved": 1
+ },
+ {
+  "name": "missing file in ordered list, four-space indent",
+  "source": "10. [Gone](missing.md)",
+  "expected": "10. [Gone](missing.md)",
+  "rewritten": 0,
+  "untouched": 0,
+  "unresolved": 1
+ },
+ {
+  "name": "missing file in block quote in a list",
+  "source": "- > [Gone](missing.md)",
+  "expected": "- > [Gone](missing.md)",
+  "rewritten": 0,
+  "untouched": 0,
+  "unresolved": 1
+ },
+ {
+  "name": "missing file in list in a block quote",
+  "source": "> - [Gone](missing.md)",
+  "expected": "> - [Gone](missing.md)",
+  "rewritten": 0,
+  "untouched": 0,
+  "unresolved": 1
+ },
+ {
+  "name": "missing file in footnote",
+  "source": "Note[^w].\n\n[^w]: [Gone](missing.md)",
+  "expected": "Note[^w].\n\n[^w]: [Gone](missing.md)",
+  "rewritten": 0,
+  "untouched": 0,
+  "unresolved": 1
+ },
+ {
+  "name": "missing file in HTML block",
+  "source": "<div>\n\n[Gone](missing.md)\n\n</div>",
+  "expected": "<div>\n\n[Gone](missing.md)\n\n</div>",
+  "rewritten": 0,
+  "untouched": 0,
+  "unresolved": 1
+ },
+ {
+  "name": "missing file in table cell",
+  "source": "| Name | Link |\n| --- | --- |\n| Row | [Gone](missing.md) |",
+  "expected": "| Name | Link |\n| --- | --- |\n| Row | [Gone](missing.md) |",
+  "rewritten": 0,
+  "untouched": 0,
+  "unresolved": 1
+ },
+ {
+  "name": "missing file in callout",
+  "source": "> [!note] Title\n> [Gone](missing.md)",
+  "expected": "> [!note] Title\n> [Gone](missing.md)",
+  "rewritten": 0,
+  "untouched": 0,
+  "unresolved": 1
+ },
+ {
+  "name": "anchor only",
+  "source": "[Top](#answer)",
+  "expected": "[Top](#answer)",
+  "rewritten": 0,
+  "untouched": 1,
+  "unresolved": 0
+ },
+ {
+  "name": "anchor only in block quote",
+  "source": "> [Top](#answer)",
+  "expected": "> [Top](#answer)",
+  "rewritten": 0,
+  "untouched": 1,
+  "unresolved": 0
+ },
+ {
+  "name": "anchor only in list item",
+  "source": "- [Top](#answer)",
+  "expected": "- [Top](#answer)",
+  "rewritten": 0,
+  "untouched": 1,
+  "unresolved": 0
+ },
+ {
+  "name": "anchor only in nested list",
+  "source": "- Outer\n  - [Top](#answer)",
+  "expected": "- Outer\n  - [Top](#answer)",
+  "rewritten": 0,
+  "untouched": 1,
+  "unresolved": 0
+ },
+ {
+  "name": "anchor only in ordered list, four-space indent",
+  "source": "10. [Top](#answer)",
+  "expected": "10. [Top](#answer)",
+  "rewritten": 0,
+  "untouched": 1,
+  "unresolved": 0
+ },
+ {
+  "name": "anchor only in block quote in a list",
+  "source": "- > [Top](#answer)",
+  "expected": "- > [Top](#answer)",
+  "rewritten": 0,
+  "untouched": 1,
+  "unresolved": 0
+ },
+ {
+  "name": "anchor only in list in a block quote",
+  "source": "> - [Top](#answer)",
+  "expected": "> - [Top](#answer)",
+  "rewritten": 0,
+  "untouched": 1,
+  "unresolved": 0
+ },
+ {
+  "name": "anchor only in footnote",
+  "source": "Note[^w].\n\n[^w]: [Top](#answer)",
+  "expected": "Note[^w].\n\n[^w]: [Top](#answer)",
+  "rewritten": 0,
+  "untouched": 1,
+  "unresolved": 0
+ },
+ {
+  "name": "anchor only in HTML block",
+  "source": "<div>\n\n[Top](#answer)\n\n</div>",
+  "expected": "<div>\n\n[Top](#answer)\n\n</div>",
+  "rewritten": 0,
+  "untouched": 1,
+  "unresolved": 0
+ },
+ {
+  "name": "anchor only in table cell",
+  "source": "| Name | Link |\n| --- | --- |\n| Row | [Top](#answer) |",
+  "expected": "| Name | Link |\n| --- | --- |\n| Row | [Top](#answer) |",
+  "rewritten": 0,
+  "untouched": 1,
+  "unresolved": 0
+ },
+ {
+  "name": "anchor only in callout",
+  "source": "> [!note] Title\n> [Top](#answer)",
+  "expected": "> [!note] Title\n> [Top](#answer)",
+  "rewritten": 0,
+  "untouched": 1,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the fragment mark",
+  "source": "[Proof](evidence.md&#35;saved-proof \"Evidence\")",
+  "expected": "[Proof](../../sources/evidence.md&#35;saved-proof \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the fragment mark in block quote",
+  "source": "> [Proof](evidence.md&#35;saved-proof \"Evidence\")",
+  "expected": "> [Proof](../../sources/evidence.md&#35;saved-proof \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the fragment mark in list item",
+  "source": "- [Proof](evidence.md&#35;saved-proof \"Evidence\")",
+  "expected": "- [Proof](../../sources/evidence.md&#35;saved-proof \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the fragment mark in nested list",
+  "source": "- Outer\n  - [Proof](evidence.md&#35;saved-proof \"Evidence\")",
+  "expected": "- Outer\n  - [Proof](../../sources/evidence.md&#35;saved-proof \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the fragment mark in ordered list, four-space indent",
+  "source": "10. [Proof](evidence.md&#35;saved-proof \"Evidence\")",
+  "expected": "10. [Proof](../../sources/evidence.md&#35;saved-proof \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the fragment mark in block quote in a list",
+  "source": "- > [Proof](evidence.md&#35;saved-proof \"Evidence\")",
+  "expected": "- > [Proof](../../sources/evidence.md&#35;saved-proof \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the fragment mark in list in a block quote",
+  "source": "> - [Proof](evidence.md&#35;saved-proof \"Evidence\")",
+  "expected": "> - [Proof](../../sources/evidence.md&#35;saved-proof \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the fragment mark in footnote",
+  "source": "Note[^w].\n\n[^w]: [Proof](evidence.md&#35;saved-proof \"Evidence\")",
+  "expected": "Note[^w].\n\n[^w]: [Proof](../../sources/evidence.md&#35;saved-proof \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the fragment mark in HTML block",
+  "source": "<div>\n\n[Proof](evidence.md&#35;saved-proof \"Evidence\")\n\n</div>",
+  "expected": "<div>\n\n[Proof](../../sources/evidence.md&#35;saved-proof \"Evidence\")\n\n</div>",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the fragment mark in table cell",
+  "source": "| Name | Link |\n| --- | --- |\n| Row | [Proof](evidence.md&#35;saved-proof \"Evidence\") |",
+  "expected": "| Name | Link |\n| --- | --- |\n| Row | [Proof](../../sources/evidence.md&#35;saved-proof \"Evidence\") |",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the fragment mark in callout",
+  "source": "> [!note] Title\n> [Proof](evidence.md&#35;saved-proof \"Evidence\")",
+  "expected": "> [!note] Title\n> [Proof](../../sources/evidence.md&#35;saved-proof \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the fragment mark",
+  "source": "[Proof](evidence.md\\#saved-proof \"Evidence\")",
+  "expected": "[Proof](../../sources/evidence.md\\#saved-proof \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the fragment mark in block quote",
+  "source": "> [Proof](evidence.md\\#saved-proof \"Evidence\")",
+  "expected": "> [Proof](../../sources/evidence.md\\#saved-proof \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the fragment mark in list item",
+  "source": "- [Proof](evidence.md\\#saved-proof \"Evidence\")",
+  "expected": "- [Proof](../../sources/evidence.md\\#saved-proof \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the fragment mark in nested list",
+  "source": "- Outer\n  - [Proof](evidence.md\\#saved-proof \"Evidence\")",
+  "expected": "- Outer\n  - [Proof](../../sources/evidence.md\\#saved-proof \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the fragment mark in ordered list, four-space indent",
+  "source": "10. [Proof](evidence.md\\#saved-proof \"Evidence\")",
+  "expected": "10. [Proof](../../sources/evidence.md\\#saved-proof \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the fragment mark in block quote in a list",
+  "source": "- > [Proof](evidence.md\\#saved-proof \"Evidence\")",
+  "expected": "- > [Proof](../../sources/evidence.md\\#saved-proof \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the fragment mark in list in a block quote",
+  "source": "> - [Proof](evidence.md\\#saved-proof \"Evidence\")",
+  "expected": "> - [Proof](../../sources/evidence.md\\#saved-proof \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the fragment mark in footnote",
+  "source": "Note[^w].\n\n[^w]: [Proof](evidence.md\\#saved-proof \"Evidence\")",
+  "expected": "Note[^w].\n\n[^w]: [Proof](../../sources/evidence.md\\#saved-proof \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the fragment mark in HTML block",
+  "source": "<div>\n\n[Proof](evidence.md\\#saved-proof \"Evidence\")\n\n</div>",
+  "expected": "<div>\n\n[Proof](../../sources/evidence.md\\#saved-proof \"Evidence\")\n\n</div>",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the fragment mark in table cell",
+  "source": "| Name | Link |\n| --- | --- |\n| Row | [Proof](evidence.md\\#saved-proof \"Evidence\") |",
+  "expected": "| Name | Link |\n| --- | --- |\n| Row | [Proof](../../sources/evidence.md\\#saved-proof \"Evidence\") |",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the fragment mark in callout",
+  "source": "> [!note] Title\n> [Proof](evidence.md\\#saved-proof \"Evidence\")",
+  "expected": "> [!note] Title\n> [Proof](../../sources/evidence.md\\#saved-proof \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the query mark",
+  "source": "[Proof](evidence.md&#63;view=1 \"Evidence\")",
+  "expected": "[Proof](../../sources/evidence.md&#63;view=1 \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the query mark in block quote",
+  "source": "> [Proof](evidence.md&#63;view=1 \"Evidence\")",
+  "expected": "> [Proof](../../sources/evidence.md&#63;view=1 \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the query mark in list item",
+  "source": "- [Proof](evidence.md&#63;view=1 \"Evidence\")",
+  "expected": "- [Proof](../../sources/evidence.md&#63;view=1 \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the query mark in nested list",
+  "source": "- Outer\n  - [Proof](evidence.md&#63;view=1 \"Evidence\")",
+  "expected": "- Outer\n  - [Proof](../../sources/evidence.md&#63;view=1 \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the query mark in ordered list, four-space indent",
+  "source": "10. [Proof](evidence.md&#63;view=1 \"Evidence\")",
+  "expected": "10. [Proof](../../sources/evidence.md&#63;view=1 \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the query mark in block quote in a list",
+  "source": "- > [Proof](evidence.md&#63;view=1 \"Evidence\")",
+  "expected": "- > [Proof](../../sources/evidence.md&#63;view=1 \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the query mark in list in a block quote",
+  "source": "> - [Proof](evidence.md&#63;view=1 \"Evidence\")",
+  "expected": "> - [Proof](../../sources/evidence.md&#63;view=1 \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the query mark in footnote",
+  "source": "Note[^w].\n\n[^w]: [Proof](evidence.md&#63;view=1 \"Evidence\")",
+  "expected": "Note[^w].\n\n[^w]: [Proof](../../sources/evidence.md&#63;view=1 \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the query mark in HTML block",
+  "source": "<div>\n\n[Proof](evidence.md&#63;view=1 \"Evidence\")\n\n</div>",
+  "expected": "<div>\n\n[Proof](../../sources/evidence.md&#63;view=1 \"Evidence\")\n\n</div>",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the query mark in table cell",
+  "source": "| Name | Link |\n| --- | --- |\n| Row | [Proof](evidence.md&#63;view=1 \"Evidence\") |",
+  "expected": "| Name | Link |\n| --- | --- |\n| Row | [Proof](../../sources/evidence.md&#63;view=1 \"Evidence\") |",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity as the query mark in callout",
+  "source": "> [!note] Title\n> [Proof](evidence.md&#63;view=1 \"Evidence\")",
+  "expected": "> [!note] Title\n> [Proof](../../sources/evidence.md&#63;view=1 \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the query mark",
+  "source": "[Proof](evidence.md\\?view=1 \"Evidence\")",
+  "expected": "[Proof](../../sources/evidence.md\\?view=1 \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the query mark in block quote",
+  "source": "> [Proof](evidence.md\\?view=1 \"Evidence\")",
+  "expected": "> [Proof](../../sources/evidence.md\\?view=1 \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the query mark in list item",
+  "source": "- [Proof](evidence.md\\?view=1 \"Evidence\")",
+  "expected": "- [Proof](../../sources/evidence.md\\?view=1 \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the query mark in nested list",
+  "source": "- Outer\n  - [Proof](evidence.md\\?view=1 \"Evidence\")",
+  "expected": "- Outer\n  - [Proof](../../sources/evidence.md\\?view=1 \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the query mark in ordered list, four-space indent",
+  "source": "10. [Proof](evidence.md\\?view=1 \"Evidence\")",
+  "expected": "10. [Proof](../../sources/evidence.md\\?view=1 \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the query mark in block quote in a list",
+  "source": "- > [Proof](evidence.md\\?view=1 \"Evidence\")",
+  "expected": "- > [Proof](../../sources/evidence.md\\?view=1 \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the query mark in list in a block quote",
+  "source": "> - [Proof](evidence.md\\?view=1 \"Evidence\")",
+  "expected": "> - [Proof](../../sources/evidence.md\\?view=1 \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the query mark in footnote",
+  "source": "Note[^w].\n\n[^w]: [Proof](evidence.md\\?view=1 \"Evidence\")",
+  "expected": "Note[^w].\n\n[^w]: [Proof](../../sources/evidence.md\\?view=1 \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the query mark in HTML block",
+  "source": "<div>\n\n[Proof](evidence.md\\?view=1 \"Evidence\")\n\n</div>",
+  "expected": "<div>\n\n[Proof](../../sources/evidence.md\\?view=1 \"Evidence\")\n\n</div>",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the query mark in table cell",
+  "source": "| Name | Link |\n| --- | --- |\n| Row | [Proof](evidence.md\\?view=1 \"Evidence\") |",
+  "expected": "| Name | Link |\n| --- | --- |\n| Row | [Proof](../../sources/evidence.md\\?view=1 \"Evidence\") |",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escape as the query mark in callout",
+  "source": "> [!note] Title\n> [Proof](evidence.md\\?view=1 \"Evidence\")",
+  "expected": "> [!note] Title\n> [Proof](../../sources/evidence.md\\?view=1 \"Evidence\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "definition with an entity as the fragment mark",
+  "source": "[proof]\n\n[proof]: evidence.md&#35;saved-proof \"Evidence\"",
+  "expected": "[proof]\n\n[proof]: ../../sources/evidence.md&#35;saved-proof \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "definition with an entity as the fragment mark in block quote",
+  "source": "> [proof]\n>\n> [proof]: evidence.md&#35;saved-proof \"Evidence\"",
+  "expected": "> [proof]\n>\n> [proof]: ../../sources/evidence.md&#35;saved-proof \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "definition with an entity as the fragment mark in list item",
+  "source": "- [proof]\n\n  [proof]: evidence.md&#35;saved-proof \"Evidence\"",
+  "expected": "- [proof]\n\n  [proof]: ../../sources/evidence.md&#35;saved-proof \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "definition with an entity as the fragment mark in nested list",
+  "source": "- Outer\n  - [proof]\n\n    [proof]: evidence.md&#35;saved-proof \"Evidence\"",
+  "expected": "- Outer\n  - [proof]\n\n    [proof]: ../../sources/evidence.md&#35;saved-proof \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "definition with an entity as the fragment mark in ordered list, four-space indent",
+  "source": "10. [proof]\n\n    [proof]: evidence.md&#35;saved-proof \"Evidence\"",
+  "expected": "10. [proof]\n\n    [proof]: ../../sources/evidence.md&#35;saved-proof \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "definition with an entity as the fragment mark in block quote in a list",
+  "source": "- > [proof]\n  >\n  > [proof]: evidence.md&#35;saved-proof \"Evidence\"",
+  "expected": "- > [proof]\n  >\n  > [proof]: ../../sources/evidence.md&#35;saved-proof \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "definition with an entity as the fragment mark in list in a block quote",
+  "source": "> - [proof]\n>\n>   [proof]: evidence.md&#35;saved-proof \"Evidence\"",
+  "expected": "> - [proof]\n>\n>   [proof]: ../../sources/evidence.md&#35;saved-proof \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "definition with an entity as the fragment mark in footnote",
+  "source": "Note[^w].\n\n[^w]: [proof]\n\n    [proof]: evidence.md&#35;saved-proof \"Evidence\"",
+  "expected": "Note[^w].\n\n[^w]: [proof]\n\n    [proof]: ../../sources/evidence.md&#35;saved-proof \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "definition with an entity as the fragment mark in HTML block",
+  "source": "<div>\n\n[proof]\n\n[proof]: evidence.md&#35;saved-proof \"Evidence\"\n\n</div>",
+  "expected": "<div>\n\n[proof]\n\n[proof]: ../../sources/evidence.md&#35;saved-proof \"Evidence\"\n\n</div>",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "definition with an entity as the fragment mark in table cell",
+  "source": "| Name | Link |\n| --- | --- |\n| Row | [proof] |\n\n[proof]: evidence.md&#35;saved-proof \"Evidence\"",
+  "expected": "| Name | Link |\n| --- | --- |\n| Row | [proof] |\n\n[proof]: ../../sources/evidence.md&#35;saved-proof \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "definition with an entity as the fragment mark in callout",
+  "source": "> [!note] Title\n> [proof]\n>\n> [proof]: evidence.md&#35;saved-proof \"Evidence\"",
+  "expected": "> [!note] Title\n> [proof]\n>\n> [proof]: ../../sources/evidence.md&#35;saved-proof \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links that climb out with ../",
+  "source": "[Up](../notes/elsewhere.md#part) [Far](../../people/ada-lovelace.md)",
+  "expected": "[Up](../../notes/elsewhere.md#part) [Far](../../../people/ada-lovelace.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links that climb out with ../ in block quote",
+  "source": "> [Up](../notes/elsewhere.md#part) [Far](../../people/ada-lovelace.md)",
+  "expected": "> [Up](../../notes/elsewhere.md#part) [Far](../../../people/ada-lovelace.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links that climb out with ../ in list item",
+  "source": "- [Up](../notes/elsewhere.md#part) [Far](../../people/ada-lovelace.md)",
+  "expected": "- [Up](../../notes/elsewhere.md#part) [Far](../../../people/ada-lovelace.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links that climb out with ../ in nested list",
+  "source": "- Outer\n  - [Up](../notes/elsewhere.md#part) [Far](../../people/ada-lovelace.md)",
+  "expected": "- Outer\n  - [Up](../../notes/elsewhere.md#part) [Far](../../../people/ada-lovelace.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links that climb out with ../ in ordered list, four-space indent",
+  "source": "10. [Up](../notes/elsewhere.md#part) [Far](../../people/ada-lovelace.md)",
+  "expected": "10. [Up](../../notes/elsewhere.md#part) [Far](../../../people/ada-lovelace.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links that climb out with ../ in block quote in a list",
+  "source": "- > [Up](../notes/elsewhere.md#part) [Far](../../people/ada-lovelace.md)",
+  "expected": "- > [Up](../../notes/elsewhere.md#part) [Far](../../../people/ada-lovelace.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links that climb out with ../ in list in a block quote",
+  "source": "> - [Up](../notes/elsewhere.md#part) [Far](../../people/ada-lovelace.md)",
+  "expected": "> - [Up](../../notes/elsewhere.md#part) [Far](../../../people/ada-lovelace.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links that climb out with ../ in footnote",
+  "source": "Note[^w].\n\n[^w]: [Up](../notes/elsewhere.md#part) [Far](../../people/ada-lovelace.md)",
+  "expected": "Note[^w].\n\n[^w]: [Up](../../notes/elsewhere.md#part) [Far](../../../people/ada-lovelace.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links that climb out with ../ in HTML block",
+  "source": "<div>\n\n[Up](../notes/elsewhere.md#part) [Far](../../people/ada-lovelace.md)\n\n</div>",
+  "expected": "<div>\n\n[Up](../../notes/elsewhere.md#part) [Far](../../../people/ada-lovelace.md)\n\n</div>",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links that climb out with ../ in table cell",
+  "source": "| Name | Link |\n| --- | --- |\n| Row | [Up](../notes/elsewhere.md#part) [Far](../../people/ada-lovelace.md) |",
+  "expected": "| Name | Link |\n| --- | --- |\n| Row | [Up](../../notes/elsewhere.md#part) [Far](../../../people/ada-lovelace.md) |",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links that climb out with ../ in callout",
+  "source": "> [!note] Title\n> [Up](../notes/elsewhere.md#part) [Far](../../people/ada-lovelace.md)",
+  "expected": "> [!note] Title\n> [Up](../../notes/elsewhere.md#part) [Far](../../../people/ada-lovelace.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "encoded characters and an anchor",
+  "source": "[Note](notes%20%231.md#top) [Same](<notes %231.md> \"Note\")",
+  "expected": "[Note](../../sources/notes%20%231.md#top) [Same](<../../sources/notes %231.md> \"Note\")",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "encoded characters and an anchor in block quote",
+  "source": "> [Note](notes%20%231.md#top) [Same](<notes %231.md> \"Note\")",
+  "expected": "> [Note](../../sources/notes%20%231.md#top) [Same](<../../sources/notes %231.md> \"Note\")",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "encoded characters and an anchor in list item",
+  "source": "- [Note](notes%20%231.md#top) [Same](<notes %231.md> \"Note\")",
+  "expected": "- [Note](../../sources/notes%20%231.md#top) [Same](<../../sources/notes %231.md> \"Note\")",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "encoded characters and an anchor in nested list",
+  "source": "- Outer\n  - [Note](notes%20%231.md#top) [Same](<notes %231.md> \"Note\")",
+  "expected": "- Outer\n  - [Note](../../sources/notes%20%231.md#top) [Same](<../../sources/notes %231.md> \"Note\")",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "encoded characters and an anchor in ordered list, four-space indent",
+  "source": "10. [Note](notes%20%231.md#top) [Same](<notes %231.md> \"Note\")",
+  "expected": "10. [Note](../../sources/notes%20%231.md#top) [Same](<../../sources/notes %231.md> \"Note\")",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "encoded characters and an anchor in block quote in a list",
+  "source": "- > [Note](notes%20%231.md#top) [Same](<notes %231.md> \"Note\")",
+  "expected": "- > [Note](../../sources/notes%20%231.md#top) [Same](<../../sources/notes %231.md> \"Note\")",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "encoded characters and an anchor in list in a block quote",
+  "source": "> - [Note](notes%20%231.md#top) [Same](<notes %231.md> \"Note\")",
+  "expected": "> - [Note](../../sources/notes%20%231.md#top) [Same](<../../sources/notes %231.md> \"Note\")",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "encoded characters and an anchor in footnote",
+  "source": "Note[^w].\n\n[^w]: [Note](notes%20%231.md#top) [Same](<notes %231.md> \"Note\")",
+  "expected": "Note[^w].\n\n[^w]: [Note](../../sources/notes%20%231.md#top) [Same](<../../sources/notes %231.md> \"Note\")",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "encoded characters and an anchor in HTML block",
+  "source": "<div>\n\n[Note](notes%20%231.md#top) [Same](<notes %231.md> \"Note\")\n\n</div>",
+  "expected": "<div>\n\n[Note](../../sources/notes%20%231.md#top) [Same](<../../sources/notes %231.md> \"Note\")\n\n</div>",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "encoded characters and an anchor in table cell",
+  "source": "| Name | Link |\n| --- | --- |\n| Row | [Note](notes%20%231.md#top) [Same](<notes %231.md> \"Note\") |",
+  "expected": "| Name | Link |\n| --- | --- |\n| Row | [Note](../../sources/notes%20%231.md#top) [Same](<../../sources/notes %231.md> \"Note\") |",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "encoded characters and an anchor in callout",
+  "source": "> [!note] Title\n> [Note](notes%20%231.md#top) [Same](<notes %231.md> \"Note\")",
+  "expected": "> [!note] Title\n> [Note](../../sources/notes%20%231.md#top) [Same](<../../sources/notes %231.md> \"Note\")",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links to a folder",
+  "source": "[Folder](folder/) [Bare](folder) [Here](.) [Up](..)",
+  "expected": "[Folder](../../sources/folder/) [Bare](../../sources/folder) [Here](../../sources) [Up](../..)",
+  "rewritten": 4,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links to a folder in block quote",
+  "source": "> [Folder](folder/) [Bare](folder) [Here](.) [Up](..)",
+  "expected": "> [Folder](../../sources/folder/) [Bare](../../sources/folder) [Here](../../sources) [Up](../..)",
+  "rewritten": 4,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links to a folder in list item",
+  "source": "- [Folder](folder/) [Bare](folder) [Here](.) [Up](..)",
+  "expected": "- [Folder](../../sources/folder/) [Bare](../../sources/folder) [Here](../../sources) [Up](../..)",
+  "rewritten": 4,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links to a folder in nested list",
+  "source": "- Outer\n  - [Folder](folder/) [Bare](folder) [Here](.) [Up](..)",
+  "expected": "- Outer\n  - [Folder](../../sources/folder/) [Bare](../../sources/folder) [Here](../../sources) [Up](../..)",
+  "rewritten": 4,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links to a folder in ordered list, four-space indent",
+  "source": "10. [Folder](folder/) [Bare](folder) [Here](.) [Up](..)",
+  "expected": "10. [Folder](../../sources/folder/) [Bare](../../sources/folder) [Here](../../sources) [Up](../..)",
+  "rewritten": 4,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links to a folder in block quote in a list",
+  "source": "- > [Folder](folder/) [Bare](folder) [Here](.) [Up](..)",
+  "expected": "- > [Folder](../../sources/folder/) [Bare](../../sources/folder) [Here](../../sources) [Up](../..)",
+  "rewritten": 4,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links to a folder in list in a block quote",
+  "source": "> - [Folder](folder/) [Bare](folder) [Here](.) [Up](..)",
+  "expected": "> - [Folder](../../sources/folder/) [Bare](../../sources/folder) [Here](../../sources) [Up](../..)",
+  "rewritten": 4,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links to a folder in footnote",
+  "source": "Note[^w].\n\n[^w]: [Folder](folder/) [Bare](folder) [Here](.) [Up](..)",
+  "expected": "Note[^w].\n\n[^w]: [Folder](../../sources/folder/) [Bare](../../sources/folder) [Here](../../sources) [Up](../..)",
+  "rewritten": 4,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links to a folder in HTML block",
+  "source": "<div>\n\n[Folder](folder/) [Bare](folder) [Here](.) [Up](..)\n\n</div>",
+  "expected": "<div>\n\n[Folder](../../sources/folder/) [Bare](../../sources/folder) [Here](../../sources) [Up](../..)\n\n</div>",
+  "rewritten": 4,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links to a folder in table cell",
+  "source": "| Name | Link |\n| --- | --- |\n| Row | [Folder](folder/) [Bare](folder) [Here](.) [Up](..) |",
+  "expected": "| Name | Link |\n| --- | --- |\n| Row | [Folder](../../sources/folder/) [Bare](../../sources/folder) [Here](../../sources) [Up](../..) |",
+  "rewritten": 4,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "links to a folder in callout",
+  "source": "> [!note] Title\n> [Folder](folder/) [Bare](folder) [Here](.) [Up](..)",
+  "expected": "> [!note] Title\n> [Folder](../../sources/folder/) [Bare](../../sources/folder) [Here](../../sources) [Up](../..)",
+  "rewritten": 4,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "wikilinks by shortest path",
+  "source": "[[twin]] [[near|Near]]",
+  "expected": "[twin](../../../people/twin.md) [Near](../../sources/near.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilinks by shortest path in block quote",
+  "source": "> [[twin]] [[near|Near]]",
+  "expected": "> [twin](../../../people/twin.md) [Near](../../sources/near.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilinks by shortest path in list item",
+  "source": "- [[twin]] [[near|Near]]",
+  "expected": "- [twin](../../../people/twin.md) [Near](../../sources/near.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilinks by shortest path in nested list",
+  "source": "- Outer\n  - [[twin]] [[near|Near]]",
+  "expected": "- Outer\n  - [twin](../../../people/twin.md) [Near](../../sources/near.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilinks by shortest path in ordered list, four-space indent",
+  "source": "10. [[twin]] [[near|Near]]",
+  "expected": "10. [twin](../../../people/twin.md) [Near](../../sources/near.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilinks by shortest path in block quote in a list",
+  "source": "- > [[twin]] [[near|Near]]",
+  "expected": "- > [twin](../../../people/twin.md) [Near](../../sources/near.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilinks by shortest path in list in a block quote",
+  "source": "> - [[twin]] [[near|Near]]",
+  "expected": "> - [twin](../../../people/twin.md) [Near](../../sources/near.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilinks by shortest path in footnote",
+  "source": "Note[^w].\n\n[^w]: [[twin]] [[near|Near]]",
+  "expected": "Note[^w].\n\n[^w]: [twin](../../../people/twin.md) [Near](../../sources/near.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilinks by shortest path in HTML block",
+  "source": "<div>\n\n[[twin]] [[near|Near]]\n\n</div>",
+  "expected": "<div>\n\n[twin](../../../people/twin.md) [Near](../../sources/near.md)\n\n</div>",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilinks by shortest path in table cell",
+  "source": "| Name | Link |\n| --- | --- |\n| Row | [[twin]] [[near\\|Near]] |",
+  "expected": "| Name | Link |\n| --- | --- |\n| Row | [twin](../../../people/twin.md) [Near](../../sources/near.md) |",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilinks by shortest path in callout",
+  "source": "> [!note] Title\n> [[twin]] [[near|Near]]",
+  "expected": "> [!note] Title\n> [twin](../../../people/twin.md) [Near](../../sources/near.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "review round 4: literal fragment",
+  "source": "[Proof](evidence.md#saved-proof \"Evidence\")\n",
+  "expected": "[Proof](../../sources/evidence.md#saved-proof \"Evidence\")\n",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "review": 4
+ },
+ {
+  "name": "review round 4: entity fragment",
+  "source": "[Proof](evidence.md&#35;saved-proof \"Evidence\")\n",
+  "expected": "[Proof](../../sources/evidence.md&#35;saved-proof \"Evidence\")\n",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "review": 4
+ },
+ {
+  "name": "review round 4: escaped fragment",
+  "source": "[Proof](evidence.md\\#saved-proof \"Evidence\")\n",
+  "expected": "[Proof](../../sources/evidence.md\\#saved-proof \"Evidence\")\n",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "review": 4
+ },
+ {
+  "name": "review round 4: entity query",
+  "source": "[Proof](evidence.md&#63;view=1 \"Evidence\")\n",
+  "expected": "[Proof](../../sources/evidence.md&#63;view=1 \"Evidence\")\n",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "review": 4
+ },
+ {
+  "name": "review round 4: escaped query",
+  "source": "[Proof](evidence.md\\?view=1 \"Evidence\")\n",
+  "expected": "[Proof](../../sources/evidence.md\\?view=1 \"Evidence\")\n",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "review": 4
+ },
+ {
+  "name": "review round 4: quoted entity reference",
+  "source": "> [proof]\n>\n> [proof]: evidence.md&#35;saved-proof \"Evidence\"\n",
+  "expected": "> [proof]\n>\n> [proof]: ../../sources/evidence.md&#35;saved-proof \"Evidence\"\n",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "review": 4
+ },
+ {
+  "name": "review round 4: list entity reference",
+  "source": "10. [proof]\n\n    [proof]: evidence.md&#35;saved-proof \"Evidence\"\n",
+  "expected": "10. [proof]\n\n    [proof]: ../../sources/evidence.md&#35;saved-proof \"Evidence\"\n",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "review": 4
+ },
+ {
+  "name": "named entities as marks, and an HTML attribute",
+  "source": "[A](evidence.md&num;top) [B](evidence.md&quest;v=1) <a href=\"evidence.md&#35;top\">C</a>",
+  "expected": "[A](../../sources/evidence.md&num;top) [B](../../sources/evidence.md&quest;v=1) <a href=\"../../sources/evidence.md&#35;top\">C</a>",
+  "rewritten": 3,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escaped and entity dots still climb",
+  "source": "[Up](\\.\\./notes/elsewhere.md) [Up](&#46;&#46;/notes/elsewhere.md)",
+  "expected": "[Up](../../sources/\\.\\./notes/elsewhere.md) [Up](../../sources/&#46;&#46;/notes/elsewhere.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "wikilink by path beats a shorter name elsewhere",
+  "source": "[[notes/twin]] [[foxrun/notes/twin|T]] [[../notes/twin]]",
+  "expected": "[notes/twin](../../notes/twin.md) [T](../../notes/twin.md) [../notes/twin](../../notes/twin.md)",
+  "rewritten": 3,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "review round 1: reference definition",
+  "source": "[the saved evidence][evidence]\n\n[evidence]: evidence.md\n",
+  "expected": "[the saved evidence][evidence]\n\n[evidence]: ../../sources/evidence.md\n",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "review": 1
+ },
+ {
+  "name": "review round 2: next-line shortcut",
+  "source": "[proof]\n\n[proof]:\n  evidence.md \"Evidence\"\n",
+  "expected": "[proof]\n\n[proof]:\n  ../../sources/evidence.md \"Evidence\"\n",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "review": 2
+ },
+ {
+  "name": "review round 2: next-line explicit",
+  "source": "[Saved][proof]\n\n[proof]:\n  evidence.md \"Evidence\"\n",
+  "expected": "[Saved][proof]\n\n[proof]:\n  ../../sources/evidence.md \"Evidence\"\n",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "review": 2
+ },
+ {
+  "name": "review round 3: quoted reference",
+  "source": "> [proof]\n>\n> [proof]: evidence.md \"Evidence\"\n",
+  "expected": "> [proof]\n>\n> [proof]: ../../sources/evidence.md \"Evidence\"\n",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "review": 3
+ },
+ {
+  "name": "review round 3: quoted next-line reference",
+  "source": "> [proof]\n>\n> [proof]:\n>   evidence.md \"Evidence\"\n",
+  "expected": "> [proof]\n>\n> [proof]:\n>   ../../sources/evidence.md \"Evidence\"\n",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "review": 3
+ },
+ {
+  "name": "review round 3: list next-line reference",
+  "source": "1. [proof]\n\n   [proof]:\n     evidence.md \"Evidence\"\n",
+  "expected": "1. [proof]\n\n   [proof]:\n     ../../sources/evidence.md \"Evidence\"\n",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "review": 3
+ },
+ {
+  "name": "review round 3: four-space list definition",
+  "source": "10. [proof]\n\n    [proof]: evidence.md \"Evidence\"\n",
+  "expected": "10. [proof]\n\n    [proof]: ../../sources/evidence.md \"Evidence\"\n",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "review": 3
+ },
+ {
+  "name": "review round 3: quoted next-line inline",
+  "source": "> [Proof](\n> evidence.md \"Evidence\")\n",
+  "expected": "> [Proof](\n> ../../sources/evidence.md \"Evidence\")\n",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "review": 3
+ },
+ {
+  "name": "CRLF: inline, definition, and use",
+  "source": "[Proof](evidence.md)\r\n\r\n[proof]:\r\n  evidence.md \"Evidence\"\r\n\r\n[proof]\r\n",
+  "expected": "[Proof](../../sources/evidence.md)\r\n\r\n[proof]:\r\n  ../../sources/evidence.md \"Evidence\"\r\n\r\n[proof]\r\n",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "CRLF: quoted next-line reference",
+  "source": "> [proof]\r\n>\r\n> [proof]:\r\n>   <saved evidence.md>\r\n>   \"Evidence\"\r\n",
+  "expected": "> [proof]\r\n>\r\n> [proof]:\r\n>   <../../sources/saved evidence.md>\r\n>   \"Evidence\"\r\n",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "CRLF: list item and wikilink",
+  "source": "- [[evidence|Proof]]\r\n- ![Diagram](diagram.svg)\r\n",
+  "expected": "- [Proof](../../sources/evidence.md)\r\n- ![Diagram](../../sources/diagram.svg)\r\n",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "CRLF: fenced code stays",
+  "source": "```\r\n[Proof](evidence.md)\r\n```\r\n[Proof](evidence.md)\r\n",
+  "expected": "```\r\n[Proof](evidence.md)\r\n```\r\n[Proof](../../sources/evidence.md)\r\n",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "unicode path in angle brackets",
+  "source": "[Preuve](<café/naïve notes.md>)",
+  "expected": "[Preuve](<../../sources/café/naïve notes.md>)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "unicode path, percent-encoded",
+  "source": "[Preuve](caf%C3%A9/na%C3%AFve%20notes.md)",
+  "expected": "[Preuve](../../sources/caf%C3%A9/na%C3%AFve%20notes.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "unicode path, partly encoded",
+  "source": "[Preuve](café/naïve%20notes.md#résumé)",
+  "expected": "[Preuve](../../sources/café/naïve%20notes.md#résumé)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "unicode wikilink",
+  "source": "[[café/naïve notes|Notes]]",
+  "expected": "[Notes](../../sources/caf%C3%A9/na%C3%AFve%20notes.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "unicode definition",
+  "source": "[preuve]\n\n[preuve]: <café/naïve notes.md> \"Résumé\"",
+  "expected": "[preuve]\n\n[preuve]: <../../sources/café/naïve notes.md> \"Résumé\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "space as %20",
+  "source": "[Proof](saved%20evidence.md)",
+  "expected": "[Proof](../../sources/saved%20evidence.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "balanced parentheses",
+  "source": "[Proof](nested(one).md)",
+  "expected": "[Proof](../../sources/nested(one).md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escaped parentheses",
+  "source": "[Proof](nested\\(one\\).md)",
+  "expected": "[Proof](../../sources/nested\\(one\\).md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "parentheses in angle brackets",
+  "source": "[Proof](<nested(one).md> (Title))",
+  "expected": "[Proof](<../../sources/nested(one).md> (Title))",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "parentheses in a definition",
+  "source": "[proof]\n\n[proof]: nested(one).md",
+  "expected": "[proof]\n\n[proof]: ../../sources/nested(one).md",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "entity in a destination",
+  "source": "[Proof](evidence&amp;more.md)",
+  "expected": "[Proof](../../sources/evidence&amp;more.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "query and heading stay",
+  "source": "[Proof](evidence.md?mode=saved#proof)",
+  "expected": "[Proof](../../sources/evidence.md?mode=saved#proof)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "folder with trailing slash",
+  "source": "[Folder](folder/)",
+  "expected": "[Folder](../../sources/folder/)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "parent folder and dot path",
+  "source": "[Up](../notes/elsewhere.md) [Here](./evidence.md) [Far](../../people/ada-lovelace.md)",
+  "expected": "[Up](../../notes/elsewhere.md) [Here](../../sources/evidence.md) [Far](../../../people/ada-lovelace.md)",
+  "rewritten": 3,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "note with its .md left out",
+  "source": "[Proof](evidence) [Deep](folder/deep#part)",
+  "expected": "[Proof](../../sources/evidence.md) [Deep](../../sources/folder/deep.md#part)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "path from the vault root",
+  "source": "[Proof](foxrun/sources/evidence.md) [Ada](people/ada-lovelace)",
+  "expected": "[Proof](../../../foxrun/sources/evidence.md) [Ada](../../../people/ada-lovelace.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "same file twice on one line",
+  "source": "[One](evidence.md) and [Two](evidence.md#proof)",
+  "expected": "[One](../../sources/evidence.md) and [Two](../../sources/evidence.md#proof)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "absolute URLs",
+  "source": "[Web](https://example.test/a.md \"T\") [Mail](mailto:a@example.test) [Net](//example.test/a.md) [File](file:///tmp/a.md)",
+  "expected": "[Web](https://example.test/a.md \"T\") [Mail](mailto:a@example.test) [Net](//example.test/a.md) [File](file:///tmp/a.md)",
+  "rewritten": 0,
+  "untouched": 4,
+  "unresolved": 0
+ },
+ {
+  "name": "absolute URL definition on next line",
+  "source": "[proof]\n\n[proof]:\n https://example.test/proof\n \"Evidence\"",
+  "expected": "[proof]\n\n[proof]:\n https://example.test/proof\n \"Evidence\"",
+  "rewritten": 0,
+  "untouched": 1,
+  "unresolved": 0
+ },
+ {
+  "name": "root path",
+  "source": "[Root](/foxrun/sources/evidence.md)",
+  "expected": "[Root](/foxrun/sources/evidence.md)",
+  "rewritten": 0,
+  "untouched": 1,
+  "unresolved": 0
+ },
+ {
+  "name": "autolinks",
+  "source": "<https://example.test/proof> <mailto:a@example.test> <a@example.test>",
+  "expected": "<https://example.test/proof> <mailto:a@example.test> <a@example.test>",
+  "rewritten": 0,
+  "untouched": 3,
+  "unresolved": 0
+ },
+ {
+  "name": "anchor wikilink",
+  "source": "[[#Answer|Top]] [[#^block-1]]",
+  "expected": "[[#Answer|Top]] [[#^block-1]]",
+  "rewritten": 0,
+  "untouched": 2,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "empty destinations",
+  "source": "[Answer]() [Answer](<> \"Answer\")",
+  "expected": "[Answer]() [Answer](<> \"Answer\")",
+  "rewritten": 0,
+  "untouched": 2,
+  "unresolved": 0
+ },
+ {
+  "name": "missing definition",
+  "source": "[gone]\n\n[gone]: missing.md \"Gone\"",
+  "expected": "[gone]\n\n[gone]: missing.md \"Gone\"",
+  "rewritten": 0,
+  "untouched": 0,
+  "unresolved": 1
+ },
+ {
+  "name": "missing wikilink and embed",
+  "source": "[[missing|Gone]] ![[missing.png]]",
+  "expected": "[[missing|Gone]] ![[missing.png]]",
+  "rewritten": 0,
+  "untouched": 0,
+  "unresolved": 2,
+  "commonmark": false
+ },
+ {
+  "name": "missing HTML image",
+  "source": "<img src=\"missing.png\">",
+  "expected": "<img src=\"missing.png\">",
+  "rewritten": 0,
+  "untouched": 0,
+  "unresolved": 1
+ },
+ {
+  "name": "missing beside found",
+  "source": "[Gone](missing.md) [Proof](evidence.md)\n\n> [gone]: <missing folder/a.md>\n> [gone] [proof]\n>\n> [proof]: evidence.md",
+  "expected": "[Gone](missing.md) [Proof](../../sources/evidence.md)\n\n> [gone]: <missing folder/a.md>\n> [gone] [proof]\n>\n> [proof]: ../../sources/evidence.md",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 2
+ },
+ {
+  "name": "code span",
+  "source": "`[Proof](evidence.md) [proof]: evidence.md [[evidence|Proof]]`",
+  "expected": "`[Proof](evidence.md) [proof]: evidence.md [[evidence|Proof]]`",
+  "rewritten": 0,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "double backtick span",
+  "source": "``[Proof](evidence.md) ` [[evidence]]`` [Proof](evidence.md)",
+  "expected": "``[Proof](evidence.md) ` [[evidence]]`` [Proof](../../sources/evidence.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "backtick fence",
+  "source": "```md\n[proof]\n[proof]:\n evidence.md\n[[evidence]]\n```",
+  "expected": "```md\n[proof]\n[proof]:\n evidence.md\n[[evidence]]\n```",
+  "rewritten": 0,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "tilde fence",
+  "source": "~~~markdown\n[Proof](evidence.md)\n~~~",
+  "expected": "~~~markdown\n[Proof](evidence.md)\n~~~",
+  "rewritten": 0,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "long fence",
+  "source": "````\n```\n[Proof](evidence.md)\n````\n[Proof](evidence.md)",
+  "expected": "````\n```\n[Proof](evidence.md)\n````\n[Proof](../../sources/evidence.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "indented code",
+  "source": "Text.\n\n    [Proof](evidence.md)\n\n[Proof](evidence.md)",
+  "expected": "Text.\n\n    [Proof](evidence.md)\n\n[Proof](../../sources/evidence.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "fence in a block quote",
+  "source": "> ```md\n> [Proof](evidence.md)\n> ```\n\n[Proof](evidence.md)",
+  "expected": "> ```md\n> [Proof](evidence.md)\n> ```\n\n[Proof](../../sources/evidence.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "fence in a list item",
+  "source": "- ```md\n  [Proof](evidence.md)\n  ```\n\n  [Proof](evidence.md)",
+  "expected": "- ```md\n  [Proof](evidence.md)\n  ```\n\n  [Proof](../../sources/evidence.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "indented code in a list item",
+  "source": "- Text.\n\n      [Proof](evidence.md)\n\n  [Proof](evidence.md)",
+  "expected": "- Text.\n\n      [Proof](evidence.md)\n\n  [Proof](../../sources/evidence.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "HTML comment in a line",
+  "source": "Text <!-- [Proof](evidence.md) --> [Proof](evidence.md)",
+  "expected": "Text <!-- [Proof](evidence.md) --> [Proof](../../sources/evidence.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "HTML comment that starts a line makes the line HTML",
+  "source": "<!-- note --> [Proof](evidence.md)\n\n[Proof](evidence.md)",
+  "expected": "<!-- note --> [Proof](evidence.md)\n\n[Proof](../../sources/evidence.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "HTML comment block",
+  "source": "<!--\n[Proof](evidence.md)\n\n[proof]: evidence.md\n<img src=\"diagram.svg\">\n-->\n\n[Proof](evidence.md)",
+  "expected": "<!--\n[Proof](evidence.md)\n\n[proof]: evidence.md\n<img src=\"diagram.svg\">\n-->\n\n[Proof](../../sources/evidence.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "HTML block text is not Markdown",
+  "source": "<div>\n[Proof](evidence.md)\n<a href=\"evidence.md#proof\">Proof</a>\n</div>",
+  "expected": "<div>\n[Proof](evidence.md)\n<a href=\"../../sources/evidence.md#proof\">Proof</a>\n</div>",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "escaped bracket",
+  "source": "\\[Proof](evidence.md) [Proof](evidence.md)",
+  "expected": "\\[Proof](evidence.md) [Proof](../../sources/evidence.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "suspect": true
+ },
+ {
+  "name": "definition inside a paragraph is text",
+  "source": "Text.\n[proof]: evidence.md\n\n[Proof](evidence.md)",
+  "expected": "Text.\n[proof]: evidence.md\n\n[Proof](../../sources/evidence.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "suspect": true
+ },
+ {
+  "name": "reference with no definition is text",
+  "source": "[Saved][nope] [Proof](evidence.md)",
+  "expected": "[Saved][nope] [Proof](../../sources/evidence.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "footnote text that is also a definition",
+  "source": "Text[^n].\n\n[^n]: evidence.md \"Evidence\"",
+  "expected": "Text[^n].\n\n[^n]: ../../sources/evidence.md \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "footnote_text": true
+ },
+ {
+  "name": "footnote text that is also a definition, on the next line, in a block quote",
+  "source": "> Text[^n].\n>\n> [^n]:\n>     <saved evidence.md>",
+  "expected": "> Text[^n].\n>\n> [^n]:\n>     <../../sources/saved evidence.md>",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "footnote_text": true
+ },
+ {
+  "name": "footnote text of one word is not a missing link",
+  "source": "Text[^n] and more[^m].\n\n[^n]: Ibid.\n[^m]: https://example.test/a.md",
+  "expected": "Text[^n] and more[^m].\n\n[^n]: Ibid.\n[^m]: https://example.test/a.md",
+  "rewritten": 0,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "footnote line that starts with an HTML comment",
+  "source": "Note[^w].\n\n[^w]: <!-- note --> [Proof](evidence.md)",
+  "expected": "Note[^w].\n\n[^w]: <!-- note --> [Proof](../../sources/evidence.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "footnote_text": true
+ },
+ {
+  "name": "footnote word that is a note name stays text",
+  "source": "Text[^n].\n\n[^n]: evidence",
+  "expected": "Text[^n].\n\n[^n]: evidence",
+  "rewritten": 0,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "footnote with a second paragraph",
+  "source": "Text[^n].\n\n[^n]: First.\n\n    Second [Proof](evidence.md).",
+  "expected": "Text[^n].\n\n[^n]: First.\n\n    Second [Proof](../../sources/evidence.md).",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "task list boxes",
+  "source": "- [ ] [Proof](evidence.md)\n- [x] [done]\n\n[done]: evidence.md",
+  "expected": "- [ ] [Proof](../../sources/evidence.md)\n- [x] [done]\n\n[done]: ../../sources/evidence.md",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "destination with a space is text",
+  "source": "[Proof](saved evidence.md) [Proof](evidence.md)",
+  "expected": "[Proof](saved evidence.md) [Proof](../../sources/evidence.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "linked image",
+  "source": "[![Diagram](diagram.svg)](evidence.md \"Evidence\")",
+  "expected": "[![Diagram](../../sources/diagram.svg)](../../sources/evidence.md \"Evidence\")",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "linked reference image",
+  "source": "[![Diagram][image]](evidence.md)\n\n[image]: diagram.svg",
+  "expected": "[![Diagram][image]](../../sources/evidence.md)\n\n[image]: ../../sources/diagram.svg",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "brackets in link text",
+  "source": "[Saved [proof]](evidence.md)",
+  "expected": "[Saved [proof]](../../sources/evidence.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "code in link text",
+  "source": "[Saved `proof]`](evidence.md)",
+  "expected": "[Saved `proof]`](../../sources/evidence.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "label case and spaces",
+  "source": "[Saved][ PROOF  LINK ]\n\n[proof link]: evidence.md",
+  "expected": "[Saved][ PROOF  LINK ]\n\n[proof link]: ../../sources/evidence.md",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "label on two lines",
+  "source": "[Saved][proof\nlink]\n\n[proof\nlink]: evidence.md",
+  "expected": "[Saved][proof\nlink]\n\n[proof\nlink]: ../../sources/evidence.md",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "definition before its use",
+  "source": "[proof]: evidence.md\n\n[proof]",
+  "expected": "[proof]: ../../sources/evidence.md\n\n[proof]",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "two definitions in a row",
+  "source": "[a] [b]\n\n[a]: evidence.md\n[b]: <saved evidence.md> \"Saved\"",
+  "expected": "[a] [b]\n\n[a]: ../../sources/evidence.md\n[b]: <../../sources/saved evidence.md> \"Saved\"",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "definition with a continued title",
+  "source": "[proof]\n\n[proof]: evidence.md \"Saved\nevidence\"",
+  "expected": "[proof]\n\n[proof]: ../../sources/evidence.md \"Saved\nevidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "image reference",
+  "source": "![Diagram][image]\n\n[image]: diagram.svg",
+  "expected": "![Diagram][image]\n\n[image]: ../../sources/diagram.svg",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "title holds link text",
+  "source": "[Proof](evidence.md \"see [x](diagram.svg)\")",
+  "expected": "[Proof](../../sources/evidence.md \"see [x](diagram.svg)\")",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "headings",
+  "source": "# Title [Proof](evidence.md)\n\nSecond [Proof](evidence.md)\n---\n",
+  "expected": "# Title [Proof](../../sources/evidence.md)\n\nSecond [Proof](../../sources/evidence.md)\n---\n",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "lazy continuation in a block quote",
+  "source": "> [Proof](\nevidence.md) and\n[Second](diagram.svg)",
+  "expected": "> [Proof](\n../../sources/evidence.md) and\n[Second](../../sources/diagram.svg)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "tab-indented list",
+  "source": "-\t[Proof](evidence.md)\n\n\t[proof]\n\n\t[proof]:\n\t\tevidence.md",
+  "expected": "-\t[Proof](../../sources/evidence.md)\n\n\t[proof]\n\n\t[proof]:\n\t\t../../sources/evidence.md",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "three containers deep",
+  "source": "1. > - [proof]\n   >\n   >   [proof]:\n   >     evidence.md\n   >     \"Evidence\"",
+  "expected": "1. > - [proof]\n   >\n   >   [proof]:\n   >     ../../sources/evidence.md\n   >     \"Evidence\"",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "nested block quotes",
+  "source": "> > [Proof](\n> > <saved evidence.md>)\n>\n> [Second](diagram.svg)",
+  "expected": "> > [Proof](\n> > <../../sources/saved evidence.md>)\n>\n> [Second](../../sources/diagram.svg)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "Markdown after an HTML tag line",
+  "source": "<details>\n<summary>More</summary>\n\n- [Proof](evidence.md)\n\n</details>",
+  "expected": "<details>\n<summary>More</summary>\n\n- [Proof](../../sources/evidence.md)\n\n</details>",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ },
+ {
+  "name": "wikilink by name",
+  "source": "[[evidence]]",
+  "expected": "[evidence](../../sources/evidence.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilink with extension",
+  "source": "[[evidence.md]]",
+  "expected": "[evidence.md](../../sources/evidence.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilink by vault path",
+  "source": "[[foxrun/sources/evidence|Proof]]",
+  "expected": "[Proof](../../sources/evidence.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilink by name in another folder",
+  "source": "[[elsewhere]] [[ada-lovelace|Ada]]",
+  "expected": "[elsewhere](../../notes/elsewhere.md) [Ada](../../../people/ada-lovelace.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilink heading with spaces",
+  "source": "[[evidence#Saved Proof|Proof]]",
+  "expected": "[Proof](../../sources/evidence.md#Saved%20Proof)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "note embed",
+  "source": "![[evidence]]",
+  "expected": "![evidence](../../sources/evidence.md)",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "wikilink in a heading and a quote",
+  "source": "## See [[evidence]]\n\n> [[saved evidence|Saved]]",
+  "expected": "## See [evidence](../../sources/evidence.md)\n\n> [Saved](../../sources/saved%20evidence.md)",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "commonmark": false
+ },
+ {
+  "name": "HTML link and image attributes",
+  "source": "<a href='evidence.md#proof'>Proof</a> <img src=diagram.svg> <img data-src=\"diagram.svg\">",
+  "expected": "<a href='../../sources/evidence.md#proof'>Proof</a> <img src=../../sources/diagram.svg> <img data-src=\"diagram.svg\">",
+  "rewritten": 2,
+  "untouched": 0,
+  "unresolved": 0,
+  "suspect": true
+ },
+ {
+  "name": "HTML attributes that stay",
+  "source": "<a href=\"https://example.test/a.md\">Web</a> <a href=\"#top\">Top</a>",
+  "expected": "<a href=\"https://example.test/a.md\">Web</a> <a href=\"#top\">Top</a>",
+  "rewritten": 0,
+  "untouched": 2,
+  "unresolved": 0
+ },
+ {
+  "name": "HTML tag on two lines in a block quote",
+  "source": "> Text <a\n> href=\"evidence.md\">Proof</a>",
+  "expected": "> Text <a\n> href=\"../../sources/evidence.md\">Proof</a>",
+  "rewritten": 1,
+  "untouched": 0,
+  "unresolved": 0
+ }
+]

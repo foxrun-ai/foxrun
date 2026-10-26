@@ -1,0 +1,23 @@
+#!/usr/bin/env python3
+"""amazon: checked writes for Amazon tables."""
+
+from __future__ import annotations
+import sys
+from pathlib import Path
+
+ROOT = next(p for p in Path(__file__).resolve().parents if (p / 'base/table.py').is_file())
+sys.path.insert(0, str(ROOT / 'base'))
+from table import CommandConfig, main
+import table
+FIXTURE = next(p for p in Path(__file__).resolve().parents if (p / 'cedar-fixture.json').is_file())
+table.MODULES_ROOT = FIXTURE
+
+main(CommandConfig(
+    module="amazon",
+    writable=("accounts", "compliance_cases"),
+    mirrors={
+        "listings": "the Amazon listing feeder",
+        "ads_campaigns": "the Amazon advertising feeder",
+    },
+    trends=("account_health_history",),
+))

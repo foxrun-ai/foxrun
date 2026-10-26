@@ -1,0 +1,20 @@
+{
+  "name": "foxrun",
+  "interface": {
+    "displayName": "Foxrun"
+  },
+  "plugins": [
+    {
+      "name": "foxrun",
+      "source": {
+        "source": "local",
+        "path": "./plugins/foxrun"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "read-no-cookie-values",
+  "run": "read",
+  "input": "After the cookie import, what does the agent report to the person, and what must it never print?",
+  "expect": {"output_contains": ["domain", "value"]}
+}

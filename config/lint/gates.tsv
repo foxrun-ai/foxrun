@@ -1,0 +1,2 @@
+stage	path	required_text
+nightly	cron/nightly.py	run_lint(

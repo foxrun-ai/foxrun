@@ -1,0 +1,6 @@
+{
+  "name": "three-parts",
+  "run": "read",
+  "input": "What text does a checkpoint comment start with, and where is it written?",
+  "expect": {"output_contains": ["checkpoint:", "comment"]}
+}

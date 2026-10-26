@@ -1,0 +1,92 @@
+rule	value
+page	<home>/tools/<kind>/<name>.md; <home> is the system home or a workspace
+tool_beside_page	the tool's own folder or file, when it is in the home, is <kind>/<name>/ or <kind>/<name>.<ending> beside the page
+frontmatter_key	type
+frontmatter_key	workspace
+frontmatter_key	timestamp
+frontmatter_key	name
+frontmatter_key	what
+frontmatter_key	kind
+frontmatter_key	use
+frontmatter_key	status
+frontmatter_key	command
+frontmatter_keys_allowed	type|workspace|timestamp|name|what|kind|use|status|command
+frontmatter_key_order	type > workspace > timestamp > name > what > kind > use > status > command
+frontmatter_rule	what=2 to 6 words that say what kind of thing the tool is, from its makers' words; other pages show it beside the name of the tool
+frontmatter_value	type=tool
+frontmatter_value	workspace=the workspace folder name; system in the system home
+frontmatter_format	timestamp=ISO 8601 with time and offset
+frontmatter_rule	name=the file name without .md
+frontmatter_rule	kind=the name of the folder the page is in
+frontmatter_enum	kind=cli|mcp|plugin|service|external-app|schedule
+frontmatter_enum	status=live|installing|chosen|candidate
+frontmatter_enum	use=secrets|vault & search|tickets|comms|gmail|creator & content|data & docs|dev & repos|sessions|browser control|computer use
+use_rule	a use never names a business; a workspace can add its own uses for its own page
+use_list_source	9 words are headings of sample-shop/tools/TOOLS.md, his menu of 2026-09-04; 2 are his words of 2026-10-13: browser control, computer use
+frontmatter_rule	command=the one word an agent types or names to reach the tool: the command of a cli, the server name of an mcp
+status_mark	live=✅|installing=🔄|chosen=☑️|candidate=⬜
+status_meaning	live=installed, and the Check command printed the line in It prints
+status_meaning	installing=the install or the sign-in is not finished
+status_meaning	chosen=he picked it; it is not installed
+status_meaning	candidate=found; he did not rule on it
+h1	<name>
+block_order	h1 > what it is > How <person> uses it > install line > facts table > Install > Use > Skills that need it > Settings > Notes
+content_rule_1	read the tool's own source first: its README, its --help, its man page, or its package description; what it is comes only from that
+content_rule_2	how the person uses it comes only from evidence of his real use: his skills that name the tool, his own tool page, and his wrapper when there is one
+content_rule_3	his wrapper is never presented as the tool: Install, Use, and Settings give the tool's own commands and files first, and each line of his is labeled his
+content_rule_4	a source that cannot be read (no network, not installed) is named as a gap in the Source row and in proof.tsv; the gap is never filled from his wrapper
+what_it_is	required: the first paragraph under the h1, two sentences
+what_it_is_sentence_1	<name> is "<the kind of thing, in its makers' words>" (its makers' words).
+what_it_is_sentence_2	starts with: In plain words: ; one sentence; 20 words or fewer after the colon; for a person who is not an engineer
+makers_words_check	the words in quotes in sentence 1 are in a source named in proof.tsv, word for word, letter case ignored
+plain_sentence_forbidden_words	CLI|MCP|API|JSON|OAuth|SDK|stdio|binary|runtime|wrapper|daemon|endpoint|token|repo
+his_use_block	required: the second paragraph is: **How <person> uses it.** This part is his use, not the tool:; on a product page it is: **How Foxrun uses it.** This part is Foxrun's use, not the tool:
+his_use_list	required: a list of 2 to 4 lines right under it; each line is one fact of his real use
+his_use_check	no line of his use is in the first paragraph; no maker claim is in the list
+proof_file	required: proof.tsv beside the pages, columns page|part|claim|source|words at the source
+proof_rows	one row or more for: what it is, the plain sentence, each line of his use, the Use table, the Settings table
+proof_source_check	a source in proof.tsv that is a file exists; the words in the last column are in that file
+writer_note	the page does not hold the comment WRITER RULES of the template
+install_line	the paragraph after the list of his use: **Install:** [<page name>](<url>) · `<command>`
+install_line_rule	the link opens the page that says how to install the tool; a tool of ours links to its repo
+facts_table_columns	Field|Value
+facts_table_rows	Use|Kind|Status|Where|His yes|Source
+facts_cell	Use=front matter use, then ' · ' and a link to the CAPABILITIES.md of the home
+facts_cell	Kind=front matter kind
+facts_cell	Status=<mark> <status> · <version>
+facts_cell	Where=the full path of the tool, or its address; a page for a tool outside the home says where it is
+facts_cell	Source=The tool: <the tool's own sources that were read>. His use: <his skills, his page, his wrapper>. A source that was not read is named here.
+facts_cell	His yes=each action that needs his yes; None. when no action needs it
+facts_cell	Owner=optional row; product when Foxrun ships the page (an update replaces it), person for your own page; no row means person
+facts_cell	Why=optional row, on a product page: dependency, needed by <skill>, or recommended, then the reason
+heading_order	Install > Use > Skills that need it > Settings > Notes
+headings_allowed	Install|Use|Skills that need it|Settings|Notes
+headings_required	Install|Use|Skills that need it|Settings
+table_columns	Install=Step|Command|It prints
+table_rows_required	Install=Install and Check; Check is the last row and It prints is not —
+table_columns	Use=To|Run
+use_rule	the rows of Use are the tool's own commands, each one in its help text or its README; a verb of his wrapper is not a row
+table_row_count	Use=1 to 6
+code_block_count	Use=0 or 1; for one command that is too long for a cell
+table_columns	Skills that need it=Skill|What it does
+row_source	Skills that need it=every skill, in this home and in the system home, whose SKILL.md holds name or command as a whole word; a script fills the rows
+cell_source	What it does=the first sentence of the skill description, cut at 120 characters with ' …'
+skills_line	the sentence before the table: These skills name this tool. They do not work when it is not set up.
+table_when_empty	Skills that need it=the sentence: No skill names this tool.
+no_business_name	a page in the system home holds no workspace name (each folder name of the portfolio but atlas and inbox, with - or with a space, any letter case) and no name on the extra list
+business_names_extra	a list the person keeps; its home is his call; the examples use sample-business and sample-workspace
+left_off	on a system page a skill whose name or line holds a business name gets no row; one sentence after the table gives the count
+table_columns	Settings=What|Where
+settings_rule	a path or (not on disk); never a secret value; a secret is named by its place only
+section	Notes=0 to 5 list lines, one sentence or two each; rules of use and facts that do not fit a table
+link_form	relative path from the page
+link_target	every link to a file opens a file that exists; a web address is not checked
+sentence_max_words	20
+max_code_line	78
+max_table_columns	4
+page_max_lines	100
+forbidden_headings	Overview|What is it?|How do we reach it?|What does it cost us?|What's gated?|Status & runtimes|Current state
+forbidden_text	TODO|TBD|as of June audit
+emoji	only the status mark in the Status row
+settings_rule_2	the tool's own settings come first; a file of his wrapper is labeled his
+notes_rule	a rule of his in Notes starts with: His rule:

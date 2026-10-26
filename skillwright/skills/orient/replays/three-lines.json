@@ -1,0 +1,6 @@
+{
+  "name": "three-lines",
+  "run": "read",
+  "input": "Which command does orient run first, and which view lists what needs the person?",
+  "expect": {"output_contains": ["foxrun.py start", "needs_me"]}
+}

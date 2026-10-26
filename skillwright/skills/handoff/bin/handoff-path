@@ -1,0 +1,69 @@
+#!/usr/bin/env python3
+"""Reserve a dated handoff path without racing another writer."""
+
+import argparse
+from datetime import datetime
+import os
+from pathlib import Path
+import re
+
+
+SUBJECT = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--timestamp", action="store_true", help="print current ISO time with a colon in the UTC offset")
+    parser.add_argument("workspace", type=Path, nargs="?", help="existing workspace folder")
+    parser.add_argument("subject", nargs="?", help="lowercase kebab subject")
+    args = parser.parse_args()
+
+    if args.timestamp:
+        if args.workspace or args.subject:
+            parser.error("--timestamp takes no workspace or subject")
+        print(datetime.now().astimezone().isoformat(timespec="seconds"))
+        return
+    if not args.workspace or not args.subject:
+        parser.error("workspace and subject are required")
+
+    if not SUBJECT.fullmatch(args.subject):
+        parser.error("subject must be lowercase kebab-case")
+    if not args.workspace.is_dir():
+        parser.error("workspace folder does not exist")
+
+    handoffs = args.workspace / "history" / "handoffs"
+    handoffs.mkdir(parents=True, exist_ok=True)
+    today = datetime.now().astimezone().date().isoformat()
+    number = 1
+    while True:
+        prefix = f"{today}-{number:03d}"
+        existing = f"{prefix}-*.md"
+        if any(handoffs.glob(existing)):
+            number += 1
+            continue
+
+        reservation = handoffs / f".{prefix}.reserved"
+        try:
+            descriptor = os.open(reservation, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o666)
+        except FileExistsError:
+            number += 1
+            continue
+        os.close(descriptor)
+
+        if any(handoffs.glob(existing)):
+            number += 1
+            continue
+
+        path = handoffs / f"{prefix}-{args.subject}.md"
+        try:
+            descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o666)
+        except FileExistsError:
+            number += 1
+            continue
+        os.close(descriptor)
+        print(path)
+        return
+
+
+if __name__ == "__main__":
+    main()

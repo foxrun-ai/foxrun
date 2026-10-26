@@ -1,0 +1,51 @@
+{
+  "format": 1,
+  "squad": "dev-mid",
+  "purpose": "Contracts, key top files, and workspace folder shape: the rules agents read and the shape they keep. Middle size: Opus high does the thinking and an independent Opus reads it; Codex only moves and rechecks.",
+  "lead": "architect",
+  "source": "Contract review squad policy, 2026-10-20",
+  "scope": [
+    "contracts: ~/.foxrun/profile/AGENTS.md, ~/.foxrun/AGENTS.md (system-home ownership and installed code), ~/foxrun/AGENTS.md and CLAUDE.md, every workspace AGENTS.md, CLAUDE.md, RESOLVER.md, souls, seat files",
+    "key top files: index.md, GLOSSARY.md, STATE.md, HOME.md, log.md and log.jsonl",
+    "folder shape: what is allowed at the top of each workspace"
+  ],
+  "roles": {
+    "draft": {
+      "department": "architecture",
+      "runtime": "claude",
+      "tier": "judgment",
+      "effort": "high"
+    },
+    "judgment-read": {
+      "department": "architecture",
+      "runtime": "claude",
+      "tier": "judgment",
+      "effort": "high",
+      "rule": "a second, independent session"
+    },
+    "approve": {
+      "who": "person",
+      "when": "any change to a contract"
+    },
+    "move": {
+      "department": "engineering",
+      "runtime": "codex",
+      "tier": "code",
+      "effort": "high",
+      "rule": "only after the person's yes, with a checked backup"
+    },
+    "recheck": {
+      "department": "audit",
+      "runtime": "codex",
+      "tier": "cheap",
+      "effort": "medium"
+    }
+  },
+  "rules": [
+    "cite the ruling for every change",
+    "never move or delete in the live portfolio without the person's yes for that workspace",
+    "no test weakened",
+    "when two sources disagree, stop and report",
+    "each worker is its own run_in_background call"
+  ]
+}

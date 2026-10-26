@@ -1,0 +1,66 @@
+{
+  "comments": [
+    {
+      "id": 343,
+      "subject_id": "T4",
+      "body": "person (stages): It's fine; it's either paying or getting paid. I like this, love the way you did that. We could go with exactly what you outlined, or try to figure out a hybrid.",
+      "at": "2026-09-22T18:36:02-04:00"
+    },
+    {
+      "id": 344,
+      "subject_id": "T4",
+      "body": "person: I agree with everything you're saying (two lists + shared heat score). You did some miscategorization with my ventures; send me something again.",
+      "at": "2026-09-22T18:37:13-04:00"
+    },
+    {
+      "id": 345,
+      "subject_id": "T4",
+      "body": "person: This is perfect. Arcwell is past idea. I need a key: all the options in one line with a dot between each, above each category.",
+      "at": "2026-09-22T18:42:42-04:00"
+    },
+    {
+      "id": 1102,
+      "subject_id": "T5",
+      "body": "person 9.29 on event question 2 (snapshot verb): 'Yep, let's go with A.' Ruled A: taking a snapshot is 'created' on the snapshot file, one row in the file's history tagged with the session; no new verb snapshotted.",
+      "at": "2026-09-29T14:23:53-04:00"
+    },
+    {
+      "id": 1108,
+      "subject_id": "T5",
+      "body": "person 9.29 on R12: 'Yep, approved.' Ruled R12 (merged wording from the three event reviews).",
+      "at": "2026-09-29T14:35:52-04:00"
+    },
+    {
+      "id": 1109,
+      "subject_id": "T5",
+      "body": "person 9.29 on R13: 'approved'. Ruled R13 (SQLite vs JSONL). Effect: log.jsonl stops being a source; receipts are base_receipts rows and log.md is built from base_timeline. Replaces clauses: pr-g-cedar-shop-rule-12 'a report run is a log.jsonl line' (now a work_runs row); pr-data-folder 'next to log.jsonl'. Follow-up at migration: the log skill writes rows, not lines.",
+      "at": "2026-09-29T14:36:37-04:00"
+    },
+    {
+      "id": 1123,
+      "subject_id": "T5",
+      "body": "person 9.29 15:02 (Architect session 501192e0, routed by the Chief of Staff from the T3 replay): I think I need all this stuff to kind of settle, and then we go one by one.",
+      "at": "2026-09-29T15:12:11-04:00"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "pr-db-event-snapshot-verb",
+      "person_words": "Yep, let's go with A.",
+      "decided_on": "2026-09-29",
+      "source": "comment:1102"
+    },
+    {
+      "id": "g-cedar-shop-rule-4",
+      "person_words": "Yep, approved.",
+      "decided_on": "2026-09-29",
+      "source": "comment:1108"
+    },
+    {
+      "id": "g-cedar-shop-rule-5",
+      "person_words": "approved",
+      "decided_on": "2026-09-29",
+      "source": "comment:1109"
+    }
+  ]
+}

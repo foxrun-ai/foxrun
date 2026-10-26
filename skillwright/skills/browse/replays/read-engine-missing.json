@@ -1,0 +1,6 @@
+{
+  "name": "read-engine-missing",
+  "run": "read",
+  "input": "The browse engine check prints NO_ENGINE. What does the agent use instead, and what does it tell the person about the engine?",
+  "expect": {"output_contains": ["built-in", "Add-on"]}
+}

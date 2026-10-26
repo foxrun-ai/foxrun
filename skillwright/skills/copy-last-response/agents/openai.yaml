@@ -1,0 +1,7 @@
+interface:
+  display_name: "Copy Last Response"
+  short_description: "Wrap the last agent reply for stable copy/paste."
+  default_prompt: "Use $copy-last-response to turn the previous assistant response into a copy-paste-stable Markdown code block."
+
+policy:
+  allow_implicit_invocation: true

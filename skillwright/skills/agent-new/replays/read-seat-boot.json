@@ -1,0 +1,7 @@
+{
+  "name": "read-seat-boot",
+  "run": "read",
+  "input": "An existing system seat has a personal copy. Which file does agent-new read before it updates that seat?",
+  "note": "The start command names the seat file that base.paths.resolve_seat selects.",
+  "expect": {"output_contains": ["File:", "base.paths.resolve_seat", "--seat <id>"]}
+}

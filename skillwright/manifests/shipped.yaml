@@ -1,0 +1,4 @@
+format: 1
+source: product
+skills: [log, to-tickets, capture, handoff]
+optional_addons: config/optional-addons.tsv

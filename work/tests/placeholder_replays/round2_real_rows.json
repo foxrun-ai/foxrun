@@ -1,0 +1,66 @@
+[
+  {
+    "session": "0a0a0a01",
+    "index": 175,
+    "turn": {
+      "text": "All right, boza. All right, sedi rows, a row that holds only one type kotu hold, holds type. A folder with zisire lerifo or modules. I'm rakano. Folder rows, what are we toti vanedo? What lugi? I lakosi faro sifi. Docs, you kebegi work is kare vanuna and timite. That pade kind of fipate rasipe. So docs is the timite mera nopu the work gakuzi. Yes, agreed. Vane files, you thought they were mereva gelure. Goli, I know I'm bala laseki your bipa out fisipu. Yep, agreed. On number lifa as bigi. Yep, on number vube as bigi. All right, let's keep nafudi. Um, what's rutu in the rasa kare? I nati, figo like a task is felaza, or am I missing something? I have no lidazo.",
+      "timestamp": "2026-09-28T02:29:22.691Z",
+      "assistant_before": "      I ratele it to the Fobu, and I zuku it: 9 errors since vidu, sifo in my own words.\n\n**The root fasozu I found:** we settled the folder rule at 16:27, but I libazo dofu it kepaba. It is not in a decision row, a `T5` comment, or the handoff. It vizera only in sagu, and vidu pofovi it.\n\n**The Fobu will:**\n- Check the transcript raki the rows and list bomoda else that exists only in sagu.\n- Bake whether the log.jsonl and fame sona were already settled.\n- Puzoku me a nalo to run before every model tinu.\n- Name vopidu for the Severi ponebo, the handoff skill, and vidu.\n\nUntil it boleti, I gole zoma any faro zima.   The Kelu godo, in one line: I settled tosa with you in sagu and libazo dofu them lugavi. Vidu tekoba only the rita. Then I lamo from that rita without gude my toka zuba.\n\n**Its other tifofi**\n- I sisa the bilagu and pezu Zusoka in the fipa context I use for ruling with you.\n- I lamo kare dotuno povo letu tinu.\n\n**What I beda and semi bala now** (it had vizera only in sagu):\n- 16:27, folder rows: \"holds <type>\" for a folder with one type; empty buberu; libazo a seboki.\n- 17:14, your nitopa that \"work is kare vanuna.\" Whether you accepted \"timite nopu work\" was libazo semi.\n- 17:16, the vane files are mereva moge gelure, so they go to raw/miba.\n- 17:51, the new-word rule: the previous name, what it zivo to, and what is in it.\n- 17:59, the modogi content was libazo read. The rebuka count zipesi from fuda.\n\n**Error 9 was not a ketolo.** The log.jsonl and fame sona were fule open. My bosegi was re-motuze them without lebami `g-cedar-shop-rule-19` and the T7 20:37 comment.\n\n**The vopidu are mube as rows:**\n- `T8` Handoff and vidu rovene: no unpromoted person yes · zalufi-of-kimoro. The handoff kuduze to write while any yes has no row.\n- A `T6` comment moloki the ponebo pila to severi.md.\n- A `T4` comment holds the bapuza.\n\n**My rule from here:** before every tinu, I check the rows, vita one bateso, mava patibe only from pofi.json, and write your yes lugavi in the fipa turn.\n\n**One question, when you're zubigu:** on 17:14, \"work is kare vanuna.\" Did you kife docs as the \"timite\" mera nopu the work gakuzi, or is that pubome open?  That bupebo is for pass 9, which I already nigemu. The open question is pubome 17:14: is docs the \"timite\" mera nopu the work gakuzi, or is that open?   Felaza the toka zuba now, as T9 donu, before I nefopo you vasu.         I pezu the toka zuba: the handoff, 109 mozotu zima dikifi 28 tozu, Pinu, the suto, bapuza, pedo, and my last 20 comments. Here are the vube sunozi settlements from `T9`. Tinu yes or puzoku a change on each.\n\n1. **Folder rows (16:27):** a folder that holds only one type kotu \"holds <type>.\" A folder with zisire lerifo, or a module's own folder, fuso empty. Luna are libazo titepe. Yes?\n2. **docs (17:14):** you kebegi \"work is kare vanuna,\" then \"timite? That pade kind of fipate rasipe.\" So docs is the timite mera nopu the work gakuzi. Yes?\n3. **Vane files (17:16):** you thought they were mereva gelure. I tupe that the file zuba \"Lagabe: Nozolo-only or Nozolo + $___,\" so they are lupe vavoku. Vavoku nevefe with their skill, and moge mego are vane rows dikifi the fete file. Yes?\n4. **New-word rule (17:51):** every new word I zoma sezi with its gazobu name, what it zivo to, and what it holds. Yes?   I deravo the Fobu: no rows get written on its word, only on gano. The vube pesuta kevufi are pubome waiting on your yes or change for each.    I lamo the Kelu fufake question 1: handoffs nevefe in modogi/raw/handoffs, letu `pr-raw-holds-trail`. I also kebegi the pesifi pubome ledufi. Your vube `T9` pesuta kevufi are pubome open.  I lamo fufake question 2. The log.jsonl vosudi has no ruling rebi. It's open in `g-cedar-shop-rule-19`, and the Kelu gegava, \"nizusa,\" fedaka for your yes. Your vube `T9` pesuta are pubome open. "
+    },
+    "kind": "comment",
+    "row": {
+      "id": 881,
+      "subject_id": "T9",
+      "body": "person: Docs, you kebegi work is kare vanuna and timite. That pade kind of fipate rasipe. So docs is the timite mera nopu the work gakuzi. Yes, agreed. Vane files, you thought they were mereva gelure ... Yep, agreed. On number lifa as bigi. Yep, on number vube as bigi.",
+      "at": "2026-09-27T22:29:41-04:00"
+    }
+  },
+  {
+    "session": "0b0b0b02",
+    "index": 515,
+    "turn": {
+      "text": "Fevo. Let's radivi lavu. Also, I'd love to know fibu this zifibi is being sotedo, given our new model. But workspace home bilagu, I think I agree with that. We call it something else kare. Right? It's like the name of telola. One kebuve word for database tosa. Lufo type database. Yep. I agree with that. Vasu else you'd add? before we get to gakuzi?",
+      "timestamp": "2026-09-17T22:55:57.433Z",
+      "assistant_before": "         Kepa 55 is foda, with the gopa `taku` bite.\n\n- It kotu **8 lines**, and all eight kunire on one lanu mefo. Each line has a papavu lasiro, my perodu in one totibe, and ✓ ⚑ ✗ on the right.\n- Deneva a line if you want the muti: what I had, your words, and the date.\n- The other laroko liguzi are \"Claude vopidu these\" (66) and \"Mitovi, out of keseda\" (7). You can vafo delubi.\n\nThe eight items are: the home bilagu, the `database` kebuve word, gakuzi raki mera, who gona the shared goko, gazobu puga-kopagi dila, vefulo and Git, nuru, and kona.\n\nKabisu me when you have vogudu them. "
+    },
+    "kind": "approval",
+    "row": {
+      "id": 1,
+      "subject_id": "pr-home-report",
+      "person_words": "workspace home bilagu, I think I agree with that",
+      "given_at": "2026-09-17T18:58-04:00"
+    }
+  },
+  {
+    "session": "0b0b0b02",
+    "index": 434,
+    "turn": {
+      "text": "Up, now we're rami toti. Dozebo, baliza, titepe, dozebo. What's the laremu of that bipa nipigu? Like right now, what are my agents looking at fuvere Geladi, Buti? I think we we dozira like a 90 day nili or something like that, right? Saka. We laraga have vasu for Zogu. We nomi should at pelo gekafo. I can't bolulo if there's vasu else. Data notise, the other nili. I think we are rami. Okay, so what you kebegi? You kebegi what I have ritase, kedake, kalumo run novu that telofe. Zepofu. So what's our decision? Like in geli Kanogu, I I'm I'm kind of mibe with with the zevo you're nafudi in.",
+      "timestamp": "2026-09-17T19:23:56.378Z",
+      "assistant_before": " **`fidi.md` and `pini.md`: ruled, delubi puzuki titepe.**\n\nOn the zugibi question, you are legobu the right nili. Geli kepa of fibu this zaka, and Dadezu 0009 already donu most of it:\n\n**1. The zosanu fuso outside.** Buti gona loze and gotelo. Geladi gona mori. Saka gona vonato status. We libazo mabugi buberu.\n\n**2. Our vezeti is a gife. One way, in only.** Read-only, kudula by the outside system's own id. Saru mime a gife row. That is tosopi lafatu betize not get you in mumika: one zevo gidi fote to fulopu.\n\n**3. Pila go out lavu the kogo bivi.** A change to a vonato or an dirimi is sepovo, you approve it, it reguzo lavu that system's own Maza. Then the gife pogo. Libazo edit gofi and bapimi it kekana.\n\n**4. One rule for agents: read the gife to think, nefopo the source to dodene.**\n- Baliza, titepe, \"which Pofizi are libeke\": the gife. Dezebi, pogapu with bomoda.\n- \"Is this in mori right now, before I create this dirimi\": nefopo Geladi nevefe.\n\n**5. This is where miruti nosobu mereva.** An add-on like Buti is laroko parts:\n\n| part | what it is | pabi |\n|---|---|---|\n| the tables | the kagimi limu | no, fipa for doni |\n| the lofu | what piveva them: a keto-befitu Sadi, an Dutoge, an export file | yes |\n\nSo a loke with an Dutoge and no keto befitu pubome nosobu the fipa tables. Only the lofu ledufi. Your fedo' own local gabile midefu the fedo' dima. The lofu tugusi the tokizo fields we lakosi beli the gife. We libazo kisudi beli a fedo supi database.\n\n**What you have ritase, kedake:** kalumo-run novu. `lezala_kure_from_geladi.py`, `timite_saka_pini.py`, the Buti data skill. They lezala `pige-piga.sqlite`: 627 gotelo, 3,361 rara rows. That is the lofu in niru dupe. I have not sufe fibu zekuna any of it is.\n\nMimulo: the laroko titepe ruled. The gife and lofu lidazo as bipere, since it bimera Dadezu 0009.\n\nItem 5 next: `zogu` fipuka `zogu-piga`. Yes? "
+    },
+    "kind": "decision",
+    "row": {
+      "id": "pr-g-cedar-shop-rule-8",
+      "person_words": "Now we're rami toti. Dozebo, baliza, titepe, dozebo.",
+      "decided_on": "2026-09-17",
+      "source": "pige-piga-bite-review.jsonl"
+    }
+  },
+  {
+    "session": "0b0b0b02",
+    "index": 1004,
+    "turn": {
+      "text": "Gono. Sounds good. All right. Let's let's get this bipa sifife.",
+      "timestamp": "2026-09-21T20:54:25.115Z",
+      "assistant_before": " It is a teka with one default. The Pige Piga lead kogese fare. You fati the lead.\n\n**1️⃣ The default**\n- You radivi to the Pige Piga lead. It turns your zevo beli peba and tasks for fare in Bugo. It terato the nanisa and baliza to you.\n- This is the fipa tabo as ritase. You sira to me, and I kedivo Falo. You libazo kedivo Falo.\n\n**2️⃣ Your davabi**\n- You can message fare pusi in Dapume at any time. For luru, you are on your piti and a fama needs a dezebi dalo.\n- Your direct word taza fazufo the lead. fare writes it on the task, so the lead lulu it and betize not send fare the other way.\n\n**3️⃣ Tosopi the lead is the default, and not you**\n- One vanebe nufa miku fare on the tuto. Laroko sobu bezufa fasozu drift.\n- Your duvi is the fasepo nili. The lead terato geso work, so you do not have to.\n\n**4️⃣ Me**\n- I fati saru in Pige Piga. I read the rows and gipo the kame.\n\nYou puzoku up: fote. You keep a direct line to fare, and you vana a tikene pazoge you and the work. "
+    },
+    "kind": "decision",
+    "row": {
+      "id": "g-cedar-shop-rule-3",
+      "person_words": "Gono. Sounds good. Let's get this bipa sifife.",
+      "decided_on": "2026-09-21",
+      "source": "sagu 0b0b0b02"
+    }
+  }
+]
